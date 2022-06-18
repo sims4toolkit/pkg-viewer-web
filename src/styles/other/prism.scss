@@ -10,7 +10,7 @@ code[class*="language-"],
 pre[class*="language-"] {
   background: none;
   font-family: Consolas, Monaco, monospace;
-  font-size: 0.9em;
+  font-size: 0.95em;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -73,7 +73,7 @@ pre[class*="language-"] {
     &.prolog,
     &.doctype,
     &.cdata {
-      color: rgba(121, 121, 121, 0.74);
+      color: rgb(159, 155, 155);
     }
 
     &.punctuation {
@@ -83,7 +83,7 @@ pre[class*="language-"] {
     &.tag,
     &.namespace,
     &.deleted {
-      color: #e06c75;
+      color: #e05964;
     }
 
     &.function,
@@ -94,7 +94,7 @@ pre[class*="language-"] {
     &.boolean,
     &.attr-name,
     &.number {
-      color: #e69552;
+      color: #e08a43;
     }
 
     &.property,
@@ -117,7 +117,7 @@ pre[class*="language-"] {
     &.attr-value,
     &.regex,
     &.variable {
-      color: #98c379;
+      color: #90c16d;
     }
 
     &.operator,
@@ -144,7 +144,7 @@ pre[class*="language-"] {
     &.prolog,
     &.doctype,
     &.cdata {
-      color: rgba(121, 120, 120, 0.8);
+      color: rgb(121, 119, 119);
     }
 
     &.punctuation {
@@ -154,7 +154,7 @@ pre[class*="language-"] {
     &.tag,
     &.namespace,
     &.deleted {
-      color: #e2555a;
+      color: #d5484d;
     }
 
     &.function,
@@ -165,7 +165,7 @@ pre[class*="language-"] {
     &.boolean,
     &.attr-name,
     &.number {
-      color: #e27720;
+      color: #d27626;
     }
 
     &.property,
@@ -188,13 +188,13 @@ pre[class*="language-"] {
     &.attr-value,
     &.regex,
     &.variable {
-      color: #17a04c;
+      color: #1db858;
     }
 
     &.operator,
     &.entity,
     &.url {
-      color: #4c545a;
+      color: #3d4348;
     }
 
     &.inserted {
