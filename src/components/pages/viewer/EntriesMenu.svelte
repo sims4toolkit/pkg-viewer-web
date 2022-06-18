@@ -75,7 +75,7 @@
 
     .entries-wrapper {
       overflow-y: auto;
-      max-height: 90%;
+      max-height: 92%;
     }
   }
 </style>

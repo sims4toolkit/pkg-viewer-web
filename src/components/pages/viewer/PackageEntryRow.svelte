@@ -28,7 +28,7 @@
 </script>
 
 <button class="button-wrapper w-100 text-left" on:click={onClick}>
-  <div class="entry-row p-half mb-half" class:active>
+  <div class="entry-row p-half mb-half mr-half" class:active>
     <p class="mt-0 mb-half nowrap">{getDisplayName()}</p>
     <p class="small-title my-0 nowrap">
       {getTypeDisplay(entry.key.type, entry.key.group)}
