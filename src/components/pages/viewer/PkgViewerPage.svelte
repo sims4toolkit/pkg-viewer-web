@@ -1,9 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import type { ResourceKey } from "@s4tk/models/lib/packages/types";
   import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
-  const { formatAsHexString, formatResourceInstance } = window.S4TK.formatting;
+
+  const { Package } = window.S4TK.models;
+  const { Buffer } = window.S4TK.Node;
   const { BinaryResourceType, TuningResourceType, SimDataGroup } =
     window.S4TK.enums;
+  const { formatAsHexString, formatResourceInstance } = window.S4TK.formatting;
 
   export let params: {
     server: string;
@@ -11,11 +15,7 @@
     filename: string;
   };
 
-  let key = {
-    type: BinaryResourceType.SimData,
-    group: SimDataGroup.PieMenuCategory,
-    instance: 0x1234567890abcdefn,
-  };
+  let key: ResourceKey;
 
   onMount(async () => {
     navbarTitleType.set("file");
@@ -26,18 +26,22 @@
 
     if (res.ok) {
       const buffer = await res.arrayBuffer();
-      console.log(buffer);
+      const pkg = await Package.fromAsync(Buffer.from(buffer));
+      const entry = pkg.get(0);
+      key = entry.key;
     } else {
       console.error("Ahhhh");
     }
   });
 
   $: {
-    navbarTextStore.set(
-      `${getTypeDisplay(key.type, key.group)}, ${formatResourceInstance(
-        key.instance
-      )}`
-    );
+    if (key) {
+      navbarTextStore.set(
+        `${getTypeDisplay(key.type, key.group)}, ${formatResourceInstance(
+          key.instance
+        )}`
+      );
+    }
   }
 
   function getTypeDisplay(type: number, group?: number): string {
