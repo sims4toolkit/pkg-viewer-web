@@ -1,8 +1,8 @@
 <script lang="ts">
-  // intentionally blank
+  export let onClick: () => void;
 </script>
 
-<button class="button-wrapper drop-shadow flex-center">
+<button class="button-wrapper drop-shadow flex-center" on:click={onClick}>
   <img src="./assets/menu.svg" class="is-svg" alt="Menu" />
 </button>
 

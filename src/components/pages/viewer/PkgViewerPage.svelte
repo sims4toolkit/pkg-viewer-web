@@ -4,6 +4,7 @@
   import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import MenuButton from "./MenuButton.svelte";
+  import EntriesMenu from "./EntriesMenu.svelte";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -19,6 +20,7 @@
 
   let key: ResourceKey;
   let content: string = "";
+  let showMenu = false;
 
   onMount(async () => {
     navbarTitleType.set("file");
@@ -64,6 +66,10 @@
       ).replace(/([A-Z])/g, " $1");
     }
   }
+
+  function toggleMenu() {
+    showMenu = !showMenu;
+  }
 </script>
 
 <svelte:head>
@@ -72,13 +78,18 @@
 
 <section id="viewer-section">
   {#if content}
+    {#if showMenu}
+      <EntriesMenu onClose={toggleMenu} />
+    {/if}
     <PrismWrapper>
       {content}
     </PrismWrapper>
   {/if}
 </section>
 
-<MenuButton />
+{#if !showMenu}
+  <MenuButton onClick={toggleMenu} />
+{/if}
 
 <style lang="scss">
   // intentionally blank
