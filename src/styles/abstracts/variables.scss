@@ -55,6 +55,8 @@ $azure-blue: #0095eb;
     --filter-svg: var(--filter-light);
     --filter-svg-invert: var(--filter-dark);
     --filter-bg-blur: blur(12px) brightness(55%);
+    --filter-warning: invert(79%) sepia(62%) saturate(968%) hue-rotate(334deg)
+      brightness(99%) contrast(87%);
   }
 
   // light theme variables
@@ -86,5 +88,7 @@ $azure-blue: #0095eb;
     --filter-svg: var(--filter-dark);
     --filter-svg-invert: var(--filter-light);
     --filter-bg-blur: blur(12px);
+    --filter-warning: invert(56%) sepia(94%) saturate(423%) hue-rotate(1deg)
+      brightness(92%) contrast(101%);
   }
 }

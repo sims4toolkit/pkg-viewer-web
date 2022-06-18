@@ -11,7 +11,7 @@
   const navbarWidth = 0; // this is styled in Navbar
   const collapsedLeftWidth = 25; // this is styled in Navbar
   const leftCollapsePoint: number = 100;
-  const defaultLeftWidth: number = 300; // default left width set in styling
+  const defaultLeftWidth: number = 350; // default left width set in styling
   const maxLeftWidthPercent: number = 0.9;
 
   let resizer: HTMLElement;
@@ -126,7 +126,7 @@
 </div>
 
 <style lang="scss">
-  $default-left-width: 300px;
+  $default-left-width: 350px;
   $resizer-width: 4px; // this is hardcoded in script
   $resizer-border: 2px;
 

@@ -9,6 +9,10 @@
   font-family: $font-roboto-mono, monospace;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 .nowrap {
   white-space: nowrap;
 }
@@ -63,6 +67,10 @@
 
 .accent-color {
   color: var(--color-accent) !important;
+}
+
+.accent-color-secondary {
+  color: var(--color-accent-secondary) !important;
 }
 
 .error-color {

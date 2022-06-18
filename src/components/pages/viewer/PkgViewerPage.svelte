@@ -55,10 +55,6 @@
   function collapseFileExplorer() {
     splitview.collapseLeftPanel();
   }
-
-  function selectEntry(index: number) {
-    selectedIndex = index;
-  }
 </script>
 
 <svelte:head>
@@ -69,7 +65,6 @@
   {#if pkg != undefined}
     <ResizableSplitView leftPanelName="File Explorer" bind:this={splitview}>
       <EntriesMenu
-        {selectEntry}
         slot="left"
         onClose={collapseFileExplorer}
         bind:selectedIndex
