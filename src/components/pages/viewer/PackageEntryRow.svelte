@@ -45,14 +45,16 @@
   .entry-row {
     border-radius: 8px;
     overflow-x: hidden;
+    border: 1px solid var(--color-bg-secondary);
 
     &.active {
-      background-color: var(--color-shadow);
+      border-color: var(--color-text);
+      background-color: var(--color-card);
     }
 
     &:not(.active):hover {
       cursor: pointer;
-      background-color: var(--color-card-secondary);
+      background-color: var(--color-card);
     }
   }
 </style>
