@@ -3,8 +3,8 @@
   import type { ResourceKey } from "@s4tk/models/lib/packages/types";
   import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
-  import MenuButton from "./MenuButton.svelte";
   import EntriesMenu from "./EntriesMenu.svelte";
+  import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -18,9 +18,9 @@
     filename: string;
   };
 
+  let splitview: any;
   let key: ResourceKey;
   let content: string = "";
-  let showMenu = false;
 
   onMount(async () => {
     navbarTitleType.set("file");
@@ -67,8 +67,8 @@
     }
   }
 
-  function toggleMenu() {
-    showMenu = !showMenu;
+  function collapseFileExplorer() {
+    splitview.collapseLeftPanel();
   }
 </script>
 
@@ -78,18 +78,14 @@
 
 <section id="viewer-section">
   {#if content}
-    {#if showMenu}
-      <EntriesMenu onClose={toggleMenu} />
-    {/if}
-    <PrismWrapper>
-      {content}
-    </PrismWrapper>
+    <ResizableSplitView leftPanelName="File Explorer" bind:this={splitview}>
+      <EntriesMenu slot="left" onClose={collapseFileExplorer} />
+      <PrismWrapper slot="right">
+        {content}
+      </PrismWrapper>
+    </ResizableSplitView>
   {/if}
 </section>
-
-{#if !showMenu}
-  <MenuButton onClick={toggleMenu} />
-{/if}
 
 <style lang="scss">
   // intentionally blank

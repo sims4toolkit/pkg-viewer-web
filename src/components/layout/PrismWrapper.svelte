@@ -4,10 +4,15 @@
   export let language = "xml";
 </script>
 
-<Prism {language}>
-  <slot />
-</Prism>
+<div class="prism-wrapper">
+  <Prism {language}>
+    <slot />
+  </Prism>
+</div>
 
 <style lang="scss">
-  // intentionally blank
+  .prism-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+  }
 </style>
