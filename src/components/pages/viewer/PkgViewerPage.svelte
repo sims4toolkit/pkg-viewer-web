@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import type { ResourceKey } from "@s4tk/models/lib/packages/types";
   import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
+  import PrismWrapper from "../../layout/PrismWrapper.svelte";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -16,6 +17,7 @@
   };
 
   let key: ResourceKey;
+  let content: string = "";
 
   onMount(async () => {
     navbarTitleType.set("file");
@@ -26,9 +28,13 @@
 
     if (res.ok) {
       const buffer = await res.arrayBuffer();
-      const pkg = await Package.fromAsync(Buffer.from(buffer));
-      const entry = pkg.get(0);
+      const pkg = await Package.fromAsync(Buffer.from(buffer), {
+        saveBuffer: true,
+      });
+      const entry = pkg.get(2);
       key = entry.key;
+      content = entry.value.getBuffer().toString();
+      console.log(content);
     } else {
       console.error("Ahhhh");
     }
@@ -64,13 +70,11 @@
 </svelte:head>
 
 <section id="viewer-section">
-  <p>Testing: {params.filename}</p>
-  <p>{getTypeDisplay(TuningResourceType.Trait)}</p>
-  <p>{getTypeDisplay(BinaryResourceType.SimData, 1234)}</p>
-  <p>
-    {getTypeDisplay(BinaryResourceType.SimData, SimDataGroup.PieMenuCategory)}
-  </p>
-  <p>{getTypeDisplay(0x1234)}</p>
+  {#if content}
+    <PrismWrapper>
+      {content}
+    </PrismWrapper>
+  {/if}
 </section>
 
 <style lang="scss">

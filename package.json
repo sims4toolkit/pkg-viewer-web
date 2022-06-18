@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "file-saver": "^2.0.5",
+    "svelte-prism": "^1.1.5",
     "svelte-spa-router": "^3.2.0"
   },
   "overrides": {
