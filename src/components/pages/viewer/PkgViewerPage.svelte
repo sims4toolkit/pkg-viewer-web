@@ -5,6 +5,7 @@
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import EntriesMenu from "./EntriesMenu.svelte";
   import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
+  import type { Package } from "@s4tk/models";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -21,6 +22,7 @@
   let splitview: any;
   let key: ResourceKey;
   let content: string = "";
+  let pkg: Package;
 
   onMount(async () => {
     navbarTitleType.set("file");
@@ -31,7 +33,7 @@
 
     if (res.ok) {
       const buffer = await res.arrayBuffer();
-      const pkg = await Package.fromAsync(Buffer.from(buffer), {
+      pkg = await Package.fromAsync(Buffer.from(buffer), {
         saveBuffer: true,
       });
       const entry = pkg.get(2);
@@ -79,7 +81,7 @@
 <section id="viewer-section">
   {#if content}
     <ResizableSplitView leftPanelName="File Explorer" bind:this={splitview}>
-      <EntriesMenu slot="left" onClose={collapseFileExplorer} />
+      <EntriesMenu slot="left" onClose={collapseFileExplorer} {pkg} />
       <PrismWrapper slot="right">
         {content}
       </PrismWrapper>
