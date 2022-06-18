@@ -3,7 +3,7 @@
 import type { fnv32, fnv64 } from "@s4tk/hashing";
 import type { formatAsHexString, formatResourceKey, formatStringKey, formatResourceInstance } from "@s4tk/hashing/formatting";
 import type { Package, StringTableResource, XmlResource, SimDataResource, RawResource } from "@s4tk/models";
-import type { StringTableLocale, BinaryResourceType, TuningResourceType, SimDataGroup } from "@s4tk/models/enums";
+import type { StringTableLocale, BinaryResourceType, TuningResourceType, SimDataGroup, EncodingType } from "@s4tk/models/enums";
 
 interface UserSettings {
   isLightTheme: boolean;
@@ -17,6 +17,7 @@ declare global {
         BinaryResourceType: typeof BinaryResourceType;
         TuningResourceType: typeof TuningResourceType;
         SimDataGroup: typeof SimDataGroup;
+        EncodingType: typeof EncodingType;
       },
       formatting: {
         formatAsHexString: typeof formatAsHexString;

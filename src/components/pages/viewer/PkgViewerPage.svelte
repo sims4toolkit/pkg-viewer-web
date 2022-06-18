@@ -6,12 +6,11 @@
   import EntriesMenu from "./EntriesMenu.svelte";
   import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
   import type { Package } from "@s4tk/models";
+  import { getTypeDisplay } from "../../../typescript/helpers";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
-  const { BinaryResourceType, TuningResourceType, SimDataGroup } =
-    window.S4TK.enums;
-  const { formatAsHexString, formatResourceInstance } = window.S4TK.formatting;
+  const { formatResourceInstance } = window.S4TK.formatting;
 
   export let params: {
     server: string;
@@ -20,9 +19,10 @@
   };
 
   let splitview: any;
-  let key: ResourceKey;
-  let content: string = "";
   let pkg: Package;
+  let selectedIndex = 0;
+
+  $: entry = pkg?.get(selectedIndex);
 
   onMount(async () => {
     navbarTitleType.set("file");
@@ -36,55 +36,46 @@
       pkg = await Package.fromAsync(Buffer.from(buffer), {
         saveBuffer: true,
       });
-      const entry = pkg.get(2);
-      key = entry.key;
-      content = entry.value.getBuffer().toString();
-      console.log(content);
     } else {
       console.error("Ahhhh");
     }
   });
 
   $: {
-    if (key) {
+    if (entry?.key) {
       navbarTextStore.set(
-        `${getTypeDisplay(key.type, key.group)}, ${formatResourceInstance(
-          key.instance
-        )}`
+        `${getTypeDisplay(
+          entry?.key.type,
+          entry?.key.group
+        )}, ${formatResourceInstance(entry?.key.instance)}`
       );
-    }
-  }
-
-  function getTypeDisplay(type: number, group?: number): string {
-    if (type === BinaryResourceType.SimData) {
-      return group in SimDataGroup
-        ? `${SimDataGroup[group].replace(/([A-Z])/g, " $1")} SimData`
-        : "SimData";
-    } else {
-      return (
-        BinaryResourceType[type] ??
-        TuningResourceType[type] ??
-        "Type " + formatAsHexString(type, 8, true)
-      ).replace(/([A-Z])/g, " $1");
     }
   }
 
   function collapseFileExplorer() {
     splitview.collapseLeftPanel();
   }
+
+  function selectEntry(index: number) {
+    selectedIndex = index;
+  }
 </script>
 
 <svelte:head>
-  <title>Pkg...</title>
+  <title>{params.filename}</title>
 </svelte:head>
 
 <section id="viewer-section">
-  {#if content}
+  {#if pkg != undefined}
     <ResizableSplitView leftPanelName="File Explorer" bind:this={splitview}>
-      <EntriesMenu slot="left" onClose={collapseFileExplorer} {pkg} />
-      <PrismWrapper slot="right">
-        {content}
-      </PrismWrapper>
+      <EntriesMenu
+        {selectEntry}
+        slot="left"
+        onClose={collapseFileExplorer}
+        bind:selectedIndex
+        {pkg}
+      />
+      <PrismWrapper slot="right" {entry} />
     </ResizableSplitView>
   {/if}
 </section>

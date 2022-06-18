@@ -1,13 +1,48 @@
 <script>
+  const { EncodingType } = window.S4TK.enums;
+
   // this only exists because svelte-prism doesn't play nice with TS
   import Prism from "svelte-prism";
-  export let language = "xml";
+  export let entry;
+
+  let language = "xml";
+  let content = "";
+  let showContent = true;
+
+  $: {
+    if (entry != undefined) {
+      content = getContent();
+      showContent = false;
+      setTimeout(() => {
+        showContent = true;
+      }, 100);
+    }
+  }
+
+  function getContent() {
+    switch (entry.value.encodingType) {
+      case EncodingType.XML:
+        language = "xml";
+        return entry.value.content;
+      case EncodingType.DATA:
+        language = "xml";
+        return entry.value.toXmlDocument().toXml();
+      case EncodingType.STBL:
+        language = "js";
+        return JSON.stringify(entry.value.toJsonObject(), null, 2);
+      default:
+        language = "xml";
+        return "Unsupported encoding.";
+    }
+  }
 </script>
 
 <div class="prism-wrapper">
-  <Prism {language}>
-    <slot />
-  </Prism>
+  {#if showContent}
+    <Prism {language}>
+      {content}
+    </Prism>
+  {/if}
 </div>
 
 <style lang="scss">
