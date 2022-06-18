@@ -3,6 +3,7 @@
   import type { ResourceKey } from "@s4tk/models/lib/packages/types";
   import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
+  import MenuButton from "./MenuButton.svelte";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -76,6 +77,8 @@
     </PrismWrapper>
   {/if}
 </section>
+
+<MenuButton />
 
 <style lang="scss">
   // intentionally blank
