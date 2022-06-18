@@ -1,11 +1,15 @@
 <script lang="ts">
-  import Router, { replace } from "svelte-spa-router";
-  import HomePage from "./components/pages/HomePage.svelte";
-  import Footer from "./components/Footer.svelte";
+  import Router from "svelte-spa-router";
   import Navbar from "./components/Navbar.svelte";
+  import Footer from "./components/Footer.svelte";
+  import HomePage from "./components/pages/home/HomePage.svelte";
+  import PkgViewerPage from "./components/pages/viewer/PkgViewerPage.svelte";
+  import NotFoundPage from "./components/pages/NotFoundPage.svelte";
 
   const routes = {
     "/": HomePage,
+    "/discord/:cdn": PkgViewerPage,
+    "*": NotFoundPage,
   };
 </script>
 
