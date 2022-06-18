@@ -8,7 +8,7 @@
 
   const routes = {
     "/": HomePage,
-    "/discord/:cdn": PkgViewerPage,
+    "/discord/:server/:message/:filename": PkgViewerPage,
     "*": NotFoundPage,
   };
 </script>

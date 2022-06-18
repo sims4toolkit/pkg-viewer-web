@@ -13,4 +13,6 @@ function createSettingStore<T>(name: string): Writable<T> {
 
 export const isLightThemeStore = createSettingStore<boolean>("isLightTheme");
 
-export const navbarTextStore = writable("Package Viewer");
+export const navbarTextStore = writable("");
+
+export const navbarTitleType = writable<"home" | "file">("home");

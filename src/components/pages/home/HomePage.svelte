@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { navbarTextStore } from "../../../typescript/stores";
-
+  import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
   import ContentArea from "../../layout/ContentArea.svelte";
 
   onMount(() => {
     navbarTextStore.set("Package Viewer");
+    navbarTitleType.set("home");
   });
 </script>
 
@@ -16,7 +16,8 @@
 <section id="home-section" class="flex-center-v">
   <ContentArea>
     <h2>Hello</h2>
-    <a href="#/discord/a">Go to viewer.</a>
+    <a href="#/discord/1234567890/1234567890/something.package">Go to viewer.</a
+    >
   </ContentArea>
 </section>
 

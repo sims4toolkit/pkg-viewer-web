@@ -1,9 +1,10 @@
 <script lang="ts">
   import { link, location } from "svelte-spa-router";
-  import { navbarTextStore } from "../typescript/stores";
+  import { navbarTextStore, navbarTitleType } from "../typescript/stores";
   import ThemeToggler from "./shared/ThemeToggler.svelte";
 
   let navbarText = "";
+  let navbarClass: "home" | "file" = "home";
 
   $: settingsIcon = $location === "/settings" ? "settings" : "settings-outline";
   $: homeIcon = $location === "/" ? "home" : "home-outline";
@@ -11,14 +12,22 @@
   navbarTextStore.subscribe((value) => {
     navbarText = value;
   });
+
+  navbarTitleType.subscribe((value) => {
+    navbarClass = value;
+  });
 </script>
 
 <nav class="flex-center-v flex-space-between bottom-shadow">
   <div class="left flex-center-v flex-space-between">
-    <a href="/" use:link class="flex-center-v flex-space-between">
-      <img src="../assets/s4tk-transparent.png" alt="Sims 4 Toolkit Icon" />
+    {#if navbarClass === "home"}
+      <div class="flex-center-v flex-space-between">
+        <img src="../assets/s4tk-transparent.png" alt="Sims 4 Toolkit Icon" />
+        <h3 class="m-0">{navbarText}</h3>
+      </div>
+    {:else}
       <h3 class="m-0">{navbarText}</h3>
-    </a>
+    {/if}
   </div>
   <div class="right flex-center-v flex-space-between">
     <a href="/" class:active={$location === "/"} use:link title="Home">
@@ -57,6 +66,7 @@
     z-index: 1024;
     white-space: nowrap;
     backdrop-filter: blur(6px);
+    overflow-x: auto;
     -webkit-backdrop-filter: blur(6px);
 
     div.left {
