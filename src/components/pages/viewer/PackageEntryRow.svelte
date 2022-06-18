@@ -29,11 +29,13 @@
 
 <button class="button-wrapper w-100 text-left" on:click={onClick}>
   <div class="entry-row p-half mb-half" class:active>
-    <h3 class="my-0 nowrap">{getDisplayName()}</h3>
-    <p class="small-title mb-0 nowrap">
+    <p class="mt-0 mb-half nowrap">{getDisplayName()}</p>
+    <p class="small-title my-0 nowrap">
       {getTypeDisplay(entry.key.type, entry.key.group)}
     </p>
-    <p class="small-title my-0 nowrap">{formatResourceKey(entry.key)}</p>
+    <p class="small-title monospace my-0 nowrap">
+      {formatResourceKey(entry.key)}
+    </p>
   </div>
 </button>
 

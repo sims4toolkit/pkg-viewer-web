@@ -31,7 +31,7 @@
       <img src="./assets/x.svg" class="is-svg" alt="Close" />
     </button>
   </div>
-  <div>
+  <div class="entries-wrapper">
     {#if pkg != undefined}
       {#if numHidden > 0}
         <div class="flex-center-v flex-gap-small mb-1 nowrap">
@@ -71,6 +71,11 @@
     img {
       height: 1em;
       width: auto;
+    }
+
+    .entries-wrapper {
+      overflow-y: auto;
+      max-height: 90%;
     }
   }
 </style>

@@ -98,7 +98,7 @@
     </div>
   {/if}
   <div
-    class="left-panel"
+    class="left-panel h-100"
     bind:this={leftPanel}
     hidden={leftIsCollapsed}
     class:prevent-interaction={isResizing}
