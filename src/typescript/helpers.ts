@@ -4,13 +4,26 @@ const { formatAsHexString } = window.S4TK.formatting;
 export function getTypeDisplay(type: number, group?: number): string {
   if (type === BinaryResourceType.SimData) {
     return group in SimDataGroup
-      ? `${SimDataGroup[group].replace(/([A-Z])/g, " $1")} SimData`
+      ? `${useSpaces(SimDataGroup[group])} SimData`
       : "SimData";
+  } else if (type in TuningResourceType) {
+    return useSpaces(TuningResourceType[type]) + " Tuning";
   } else {
-    return (
+    return useSpaces(
       BinaryResourceType[type] ??
-      TuningResourceType[type] ??
       "Type " + formatAsHexString(type, 8, true)
-    ).replace(/([A-Z])/g, " $1");
+    );
   }
+}
+
+export function isEncodingSupported(type: number): boolean {
+  return (
+    type === BinaryResourceType.StringTable ||
+    type === BinaryResourceType.SimData ||
+    type in TuningResourceType
+  );
+}
+
+function useSpaces(name: string): string {
+  return name.replace(/([A-Z])/g, " $1");
 }

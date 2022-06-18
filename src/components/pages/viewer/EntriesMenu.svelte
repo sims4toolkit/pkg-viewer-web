@@ -1,10 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { Package } from "@s4tk/models";
-  import type { ResourceKeyPair } from "@s4tk/models/types";
   import PackageEntryRow from "./PackageEntryRow.svelte";
-
-  const { BinaryResourceType, TuningResourceType } = window.S4TK.enums;
+  import { isEncodingSupported } from "../../../typescript/helpers";
 
   export let onClose: () => void;
   export let pkg: Package;
@@ -12,20 +10,14 @@
 
   let showUnsupported = false;
 
-  $: supportedEntries = pkg?.entries.filter(entryFilter);
+  $: supportedEntries = pkg?.entries.filter((e) =>
+    isEncodingSupported(e.key.type)
+  );
   $: entries = showUnsupported ? pkg?.entries : supportedEntries;
   $: numHidden = (pkg?.size ?? 0) - (supportedEntries?.length ?? 0);
   $: hiddenText = `${numHidden} ${
     numHidden === 1 ? "entry uses" : "entries use"
   } unsupported encoding.`;
-
-  function entryFilter(entry: ResourceKeyPair): boolean {
-    return (
-      entry.key.type === BinaryResourceType.StringTable ||
-      entry.key.type === BinaryResourceType.SimData ||
-      entry.key.type in TuningResourceType
-    );
-  }
 
   onMount(() => {
     selectedIndex = entries[0].id;
