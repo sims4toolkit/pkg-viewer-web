@@ -66,12 +66,16 @@
     numHidden === 1 ? "entry uses" : "entries use"
   } unsupported encoding.`;
 
+  $: filteredText = `${entries.length - filteredEntries.length} ${
+    entries.length - filteredEntries.length === 1 ? "entry" : "entries"
+  } hidden by filters.`;
+
   $: {
     selectedTypeOption;
     selectedSimDataGroup;
     nameInputValue;
     instInputValue;
-    
+
     const isFiltered =
       selectedTypeOption ||
       selectedSimDataGroup ||
@@ -115,6 +119,14 @@
 
     return true;
   }
+
+  function clearFilters() {
+    selectedTypeOption = 0;
+    selectedSimDataGroup = 0;
+    nameInputValue = "";
+    instInputValue = "";
+    showFilterWindow = false;
+  }
 </script>
 
 <div id="entries-menu" class="px-half">
@@ -136,19 +148,40 @@
   <div class="entries-wrapper">
     {#if pkg != undefined}
       {#if numHidden > 0}
-        <div class="flex-center-v flex-gap-small mb-1 nowrap">
-          <img
-            src="./assets/warning-outline.svg"
-            class="is-svg warning-svg"
-            alt="Warning"
-          />
-          <p class="subtle-text my-0">{hiddenText}</p>
+        <div class="flex-center-v flex-space-between mb-1 nowrap">
+          <div class="flex-center-v flex-gap-small">
+            <img
+              src="./assets/warning-outline.svg"
+              class="is-svg warning-svg"
+              alt="Warning"
+            />
+            <p class="subtle-text my-0">{hiddenText}</p>
+          </div>
           <button
             class="button-wrapper"
             on:click={() => (showUnsupported = !showUnsupported)}
           >
             <p class="subtle-text my-0 underline accent-color-secondary">
               {showUnsupported ? "HIDE" : "SHOW"}
+            </p>
+          </button>
+        </div>
+      {/if}
+      {#if filteredEntries && filteredEntries?.length !== entries?.length}
+        <div class="flex-center-v flex-space-between mb-1 nowrap">
+          <div class="flex-center-v flex-gap-small">
+            <img
+              src="./assets/warning-outline.svg"
+              class="is-svg warning-svg"
+              alt="Warning"
+            />
+            <p class="subtle-text my-0">
+              {filteredText}
+            </p>
+          </div>
+          <button class="button-wrapper" on:click={clearFilters}>
+            <p class="subtle-text my-0 underline accent-color-secondary">
+              CLEAR
             </p>
           </button>
         </div>
