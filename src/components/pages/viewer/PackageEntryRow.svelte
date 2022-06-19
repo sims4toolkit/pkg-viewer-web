@@ -41,7 +41,7 @@
 
 <style lang="scss">
   .entry-row {
-    border-radius: 8px;
+    border-radius: 4px;
     overflow-x: hidden;
     border: 1px solid var(--color-bg-secondary);
 

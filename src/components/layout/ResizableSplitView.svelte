@@ -194,7 +194,7 @@
       cursor: col-resize;
       border-right: $resizer-border solid var(--color-bg-secondary);
       background-color: transparent;
-      z-index: 1024;
+      z-index: 512;
 
       &.highlight {
         border-right-color: var(--color-accent);
