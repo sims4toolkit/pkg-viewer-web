@@ -20,6 +20,7 @@
   let splitview: any;
   let pkg: PackageType;
   let selectedIndex = 0;
+  let error = false;
 
   $: entry = pkg?.get(selectedIndex);
 
@@ -31,12 +32,19 @@
     );
 
     if (res.ok) {
-      const buffer = await res.arrayBuffer();
-      pkg = await Package.fromAsync(Buffer.from(buffer), {
-        saveBuffer: true,
-      });
+      try {
+        const buffer = await res.arrayBuffer();
+        pkg = await Package.fromAsync(Buffer.from(buffer), {
+          saveBuffer: true,
+        });
+      } catch (err) {
+        console.error(err);
+        navbarTextStore.set("No Package Found");
+        error = true;
+      }
     } else {
-      console.error("Ahhhh");
+      navbarTextStore.set("No Package Found");
+      error = true;
     }
   });
 
@@ -71,9 +79,20 @@
       />
       <PrismWrapper slot="right" {entry} />
     </ResizableSplitView>
+  {:else if error}
+    <div class="error-display flex-center">
+      <h3>No package was found at the provided address.</h3>
+    </div>
   {/if}
 </section>
 
 <style lang="scss">
-  // intentionally blank
+  .error-display {
+    height: 85vh;
+    width: 100%;
+
+    h3 {
+      color: var(--color-text-subtle);
+    }
+  }
 </style>

@@ -210,13 +210,19 @@
           </button>
         </div>
       {/if}
-      {#each filteredEntries as entry (entry.id)}
-        <PackageEntryRow
-          onClick={() => (selectedIndex = entry.id)}
-          {entry}
-          active={selectedIndex === entry.id}
-        />
-      {/each}
+      {#if filteredEntries?.length}
+        {#each filteredEntries as entry (entry.id)}
+          <PackageEntryRow
+            onClick={() => (selectedIndex = entry.id)}
+            {entry}
+            active={selectedIndex === entry.id}
+          />
+        {/each}
+      {:else}
+        <div class="no-entries-container flex-center">
+          <h3>No entries found.</h3>
+        </div>
+      {/if}
     {/if}
   </div>
 </div>
@@ -285,6 +291,16 @@
     .entries-wrapper {
       overflow-y: auto;
       max-height: 92%;
+    }
+
+    .no-entries-container {
+      height: 100%;
+      width: 100%;
+      text-align: center;
+
+      h3 {
+        color: var(--color-text-subtle);
+      }
     }
   }
 </style>
