@@ -50,3 +50,8 @@ div[contenteditable="true"] {
     content: "";
   }
 }
+
+hr {
+  background-color: transparent;
+  border: 1px solid  var(--color-divider);
+}

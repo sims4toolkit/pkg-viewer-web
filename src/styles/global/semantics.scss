@@ -18,6 +18,10 @@
   &.warning-svg {
     filter: var(--filter-warning);
   }
+
+  &.text-height {
+    height: 1.2em;
+  }
 }
 
 .disclaimer,

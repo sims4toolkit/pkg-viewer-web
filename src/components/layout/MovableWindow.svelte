@@ -94,6 +94,9 @@
 
     .window-content {
       overflow-y: auto;
+      max-width: 100%;
+      overflow-x: hidden;
+      max-height: 360px;
     }
 
     .movable-window-header {
