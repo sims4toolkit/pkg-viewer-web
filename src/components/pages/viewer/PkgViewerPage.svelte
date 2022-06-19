@@ -75,6 +75,7 @@
       <EntriesMenu
         slot="left"
         onClose={collapseFileExplorer}
+        onWarningClick={() => (showWarnings = true)}
         bind:selectedIndex
         {pkg}
         {warnings}

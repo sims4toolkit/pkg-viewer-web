@@ -17,6 +17,7 @@
     window.S4TK.enums;
 
   export let onClose: () => void;
+  export let onWarningClick: () => void;
   export let pkg: Package;
   export let warnings: Map<number, string[]>;
   export let selectedIndex: number;
@@ -215,6 +216,7 @@
         {#each filteredEntries as entry (entry.id)}
           <PackageEntryRow
             onClick={() => (selectedIndex = entry.id)}
+            {onWarningClick}
             {entry}
             warnings={warnings.get(entry.id)}
             active={selectedIndex === entry.id}

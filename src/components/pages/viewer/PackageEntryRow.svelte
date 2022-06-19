@@ -4,6 +4,7 @@
   import { getDisplayName, getTypeDisplay } from "../../../typescript/helpers";
 
   export let onClick: () => void;
+  export let onWarningClick: () => void;
   export let entry: ResourceKeyPair;
   export let active: boolean;
   export let warnings: string[];
@@ -19,7 +20,10 @@
       {formatResourceKey(entry.key)}
     </p>
     {#if warnings}
-      <div class="warning-img-wrapper flex-center drop-shadow">
+      <button
+        class="button-wrapper warning-img-wrapper flex-center drop-shadow"
+        on:click={onWarningClick}
+      >
         <img
           src="./assets/warning-outline.svg"
           class="is-svg dark-svg"
@@ -27,7 +31,7 @@
           title="This entry has warnings!"
         />
         <p class="my-0 monospace">{warnings.length}</p>
-      </div>
+      </button>
     {/if}
   </div>
 </button>
