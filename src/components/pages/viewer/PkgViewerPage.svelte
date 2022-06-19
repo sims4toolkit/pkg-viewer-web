@@ -45,26 +45,27 @@
   onMount(async () => {
     navbarTitleType.set("file");
 
-    const res = await fetch(
+    fetch(
       `${config.API_BASE}/discord/${params.server}/${params.message}/${params.filename}`
-    );
+    )
+      .then(async (res) => {
+        if (res.ok) {
+          const buffer = await res.arrayBuffer();
 
-    if (res.ok) {
-      try {
-        const buffer = await res.arrayBuffer();
-        pkg = await Package.fromAsync(Buffer.from(buffer), {
-          saveBuffer: true,
-        });
-        warnings = scanPackageForWarnings(pkg);
-      } catch (err) {
+          pkg = await Package.fromAsync(Buffer.from(buffer), {
+            saveBuffer: true,
+          });
+
+          warnings = scanPackageForWarnings(pkg);
+        } else {
+          throw "Non-200 response received.";
+        }
+      })
+      .catch((err) => {
         console.error(err);
         navbarTextStore.set("No Package Found");
         error = true;
-      }
-    } else {
-      navbarTextStore.set("No Package Found");
-      error = true;
-    }
+      });
   });
 
   $: {
