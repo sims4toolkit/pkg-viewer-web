@@ -10,6 +10,7 @@
   } from "../../../typescript/helpers";
   import type { Package as PackageType } from "@s4tk/models";
   import MovableWindow from "../../layout/MovableWindow.svelte";
+  import config from "../../../config";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -44,29 +45,26 @@
   onMount(async () => {
     navbarTitleType.set("file");
 
-    // FIXME: temporary
-    // const res = await fetch(
-    //   `http://localhost:3000/discord/${params.server}/${params.message}/${params.filename}`
-    // );
-    error = true;
-    return;
+    const res = await fetch(
+      `${config.API_BASE}/discord/${params.server}/${params.message}/${params.filename}`
+    );
 
-    // if (res.ok) {
-    //   try {
-    //     const buffer = await res.arrayBuffer();
-    //     pkg = await Package.fromAsync(Buffer.from(buffer), {
-    //       saveBuffer: true,
-    //     });
-    //     warnings = scanPackageForWarnings(pkg);
-    //   } catch (err) {
-    //     console.error(err);
-    //     navbarTextStore.set("No Package Found");
-    //     error = true;
-    //   }
-    // } else {
-    //   navbarTextStore.set("No Package Found");
-    //   error = true;
-    // }
+    if (res.ok) {
+      try {
+        const buffer = await res.arrayBuffer();
+        pkg = await Package.fromAsync(Buffer.from(buffer), {
+          saveBuffer: true,
+        });
+        warnings = scanPackageForWarnings(pkg);
+      } catch (err) {
+        console.error(err);
+        navbarTextStore.set("No Package Found");
+        error = true;
+      }
+    } else {
+      navbarTextStore.set("No Package Found");
+      error = true;
+    }
   });
 
   $: {
