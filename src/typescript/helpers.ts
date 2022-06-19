@@ -3,6 +3,7 @@ import type { ResourceKeyPair } from "@s4tk/models/types";
 
 const { BinaryResourceType, TuningResourceType, SimDataGroup, StringTableLocale, EncodingType } = window.S4TK.enums;
 const { formatAsHexString, formatResourceInstance, formatStringKey, formatResourceKey } = window.S4TK.formatting;
+const { fnv64 } = window.S4TK.hashing;
 
 const BIT32_CLASSES = new Set([
   'Preference',
@@ -32,12 +33,12 @@ export function getTypeDisplay(type: number, group?: number): string {
       ? `${useSpaces(SimDataGroup[group])} SimData`
       : "SimData";
   } else if (type in TuningResourceType) {
+    if (type === TuningResourceType.Tuning) return "Generic Tuning";
     return useSpaces(TuningResourceType[type]) + " Tuning";
+  } else if (type in BinaryResourceType) {
+    return useSpaces(BinaryResourceType[type]);
   } else {
-    return useSpaces(
-      BinaryResourceType[type] ??
-      "Type " + formatAsHexString(type, 8, true)
-    );
+    return "Type " + formatAsHexString(type, 8, false);
   }
 }
 
@@ -114,11 +115,18 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
       return;
     }
 
-    if (BIT32_CLASSES.has(xml.root.attributes.c) && (entry.key.instance > 0xFFFFFFFFn))
-      warnings.push(`The class "${xml.root.attributes.c}" is known to require a 32-bit instance, but this resource has a 64-bit instance. You might want to replace ${formatAsHexString(entry.key.instance, 16)} with ${formatAsHexString(entry.key.instance & 0xFFFFFFFFn, 8)}.`);
+    if (xml.root.tag === "I") {
+      if (BIT32_CLASSES.has(xml.root.attributes.c) && (entry.key.instance > 0xFFFFFFFFn))
+        warnings.push(`The class "${xml.root.attributes.c}" is known to require a 32-bit instance, but this resource has a 64-bit instance. You might want to replace ${formatAsHexString(entry.key.instance, 16)} with ${formatAsHexString(entry.key.instance & 0xFFFFFFFFn, 8)}.`);
 
-    if (TuningResourceType.parseAttr(xml.root.attributes.i) !== entry.key.type) {
-      warnings.push(`Type of "${TuningResourceType[entry.key.type]}" is incompatible with i="${xml.root.attributes.i}". Either the type should be "${TuningResourceType[TuningResourceType.parseAttr(xml.root.attributes.i)]}", or the i attribute should be "${TuningResourceType.getAttr(entry.key.type)}".`);
+      if (TuningResourceType.parseAttr(xml.root.attributes.i) !== entry.key.type) {
+        warnings.push(`Type of "${TuningResourceType[entry.key.type]}" is incompatible with i="${xml.root.attributes.i}". Either the type should be "${TuningResourceType[TuningResourceType.parseAttr(xml.root.attributes.i)]}", or the i attribute should be "${TuningResourceType.getAttr(entry.key.type)}".`);
+      }
+    } else if (xml.root.tag === "M") {
+      const expectedHash = fnv64(xml.root.name.replace(/\./g, "-"));
+      if (BigInt(xml.root.id as string) !== expectedHash) {
+        warnings.push(`Module instance does not match its name. It must be the FNV-64 hash of the filename with all '.' characters are replaced with '-', which is ${expectedHash}.`);
+      }
     }
 
     if (BigInt(xml.root.id as string) !== entry.key.instance) {
