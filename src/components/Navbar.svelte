@@ -6,7 +6,7 @@
   let navbarText = "";
   let navbarClass: "home" | "file" = "home";
 
-  $: settingsIcon = $location === "/settings" ? "settings" : "settings-outline";
+  // $: settingsIcon = $location === "/settings" ? "settings" : "settings-outline";
   $: homeIcon = $location === "/" ? "home" : "home-outline";
 
   navbarTextStore.subscribe((value) => {
@@ -37,7 +37,7 @@
         alt="Home"
       />
     </a>
-    <a
+    <!-- <a
       href="/settings"
       class:active={$location === "/settings"}
       use:link
@@ -48,7 +48,7 @@
         src="./assets/{settingsIcon}.svg"
         alt="Settings"
       />
-    </a>
+    </a> -->
     <ThemeToggler />
   </div>
 </nav>

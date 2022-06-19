@@ -4,13 +4,52 @@
   import PackageEntryRow from "./PackageEntryRow.svelte";
   import { isEncodingSupported } from "../../../typescript/helpers";
   import MovableWindow from "../../layout/MovableWindow.svelte";
+  import TextInput from "../../shared/TextInput.svelte";
+  import Select from "../../shared/Select.svelte";
+
+  const { BinaryResourceType, TuningResourceType, SimDataGroup } =
+    window.S4TK.enums;
 
   export let onClose: () => void;
   export let pkg: Package;
   export let selectedIndex: number;
 
   let showUnsupported = false;
-  let showFilterWindow = true; // FIXME:
+  let showFilterWindow = false;
+  let nameInputValue = "";
+  let instInputValue = "";
+
+  let selectedTypeOption = 0;
+  let typeOptions: { value: number; text: string }[] = [
+    { value: 0, text: "All" },
+    ...BinaryResourceType.all().map((type) => {
+      return {
+        value: type as number,
+        text: BinaryResourceType[type],
+      };
+    }),
+    ...TuningResourceType.all().map((type) => {
+      return {
+        value: type as number,
+        text: TuningResourceType[type],
+      };
+    }),
+  ].sort((a, b) => {
+    if (b.value === 0 || a.text > b.text) return 1;
+    if (a.text < b.text) return -1;
+    return 0;
+  });
+
+  let selectedSimDataGroup = 0;
+  let simdataGroupOptions: { value: number; text: string }[] = [
+    { value: 0, text: "All" },
+    ...SimDataGroup.all().map((type) => {
+      return {
+        value: type as number,
+        text: SimDataGroup[type],
+      };
+    }),
+  ];
 
   $: supportedEntries = pkg?.entries.filter((e) =>
     isEncodingSupported(e.key.type)
@@ -74,7 +113,43 @@
 </div>
 
 {#if showFilterWindow}
-  <MovableWindow title="Filter" onClose={() => (showFilterWindow = false)} />
+  <MovableWindow title="Filter" onClose={() => (showFilterWindow = false)}>
+    <div>
+      <Select
+        label="only files with type"
+        name="resource-type-filter"
+        bind:selected={selectedTypeOption}
+        options={typeOptions}
+        fillWidth={true}
+      />
+      <br />
+      {#if selectedTypeOption === BinaryResourceType.SimData}
+        <Select
+          label="only simdatas with group"
+          name="simdata-group-filter"
+          bind:selected={selectedSimDataGroup}
+          options={simdataGroupOptions}
+          fillWidth={true}
+        />
+        <br />
+      {/if}
+      <TextInput
+        label="only filenames containing"
+        name="filename-filter"
+        placeholder="Filename"
+        bind:value={nameInputValue}
+        fillWidth={true}
+      />
+      <br />
+      <TextInput
+        label="only instances containing"
+        name="instance-filter"
+        placeholder="Instance"
+        bind:value={instInputValue}
+        fillWidth={true}
+      />
+    </div>
+  </MovableWindow>
 {/if}
 
 <style lang="scss">
@@ -84,7 +159,7 @@
     min-width: 200px;
 
     img {
-      height: 1em;
+      height: 1.2em;
       width: auto;
     }
 

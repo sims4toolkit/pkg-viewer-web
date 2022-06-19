@@ -75,8 +75,8 @@
       <img src="./assets/x.svg" class="is-svg" alt="Close" />
     </button>
   </div>
-  <div class="p-half">
-    <p class="my-0">content</p>
+  <div class="p-half window-content">
+    <slot />
   </div>
 </div>
 
@@ -91,6 +91,10 @@
     background-color: var(--color-card);
     border: 1px solid var(--color-bg-secondary);
     border-radius: 4px;
+
+    .window-content {
+      overflow-y: auto;
+    }
 
     .movable-window-header {
       background-color: var(--color-card-secondary);
