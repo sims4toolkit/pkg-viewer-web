@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { fade } from "svelte/transition";
-
   export let title: string;
   export let onClose: () => void;
 
@@ -67,7 +65,7 @@
   onMount(enableDragging);
 </script>
 
-<div bind:this={movableWindow} class="movable-window drop-shadow" in:fade>
+<div bind:this={movableWindow} class="movable-window drop-shadow">
   <div
     bind:this={movableWindowHeader}
     class="movable-window-header flex-space-between flex-center-v p-half grabbable"
@@ -86,8 +84,8 @@
   .movable-window {
     z-index: 1024;
     position: fixed;
-    width: 320px;
-    height: 320px;
+    width: 360px;
+    height: 360px;
     right: 20px;
     bottom: 20px;
     background-color: var(--color-card);
