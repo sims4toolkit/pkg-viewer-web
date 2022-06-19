@@ -85,6 +85,10 @@
     <div class="error-display flex-center">
       <h3>No package was found at the provided address.</h3>
     </div>
+  {:else}
+    <div class="loading-display flex-center">
+      <h3>Loading...</h3>
+    </div>
   {/if}
 </section>
 
@@ -145,7 +149,8 @@
 {/if}
 
 <style lang="scss">
-  .error-display {
+  .error-display,
+  .loading-display {
     height: 85vh;
     width: 100%;
 
