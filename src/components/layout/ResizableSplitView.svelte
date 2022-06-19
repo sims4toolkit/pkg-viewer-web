@@ -91,10 +91,12 @@
   on:mouseleave={onMouseUp}
 >
   {#if leftIsCollapsed}
-    <div class="collapsed-left-panel" draggable="false">
-      <span class="unselectable" on:click={expandLeftPanel}
-        >{leftPanelName}</span
-      >
+    <div
+      class="collapsed-left-panel hoverable"
+      draggable="false"
+      on:click={expandLeftPanel}
+    >
+      <span>{leftPanelName}</span>
     </div>
   {/if}
   <div
@@ -136,10 +138,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-
-    .unselectable {
-      user-select: none;
-    }
 
     &.is-resizing {
       cursor: col-resize;
