@@ -94,6 +94,7 @@
         onClose={collapseFileExplorer}
         bind:selectedIndex
         {pkg}
+        {warnings}
       />
       <PrismWrapper slot="right" {entry} />
     </ResizableSplitView>

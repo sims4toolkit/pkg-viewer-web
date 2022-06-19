@@ -18,6 +18,7 @@
 
   export let onClose: () => void;
   export let pkg: Package;
+  export let warnings: Map<number, string[]>;
   export let selectedIndex: number;
 
   let showUnsupported = false;
@@ -215,6 +216,7 @@
           <PackageEntryRow
             onClick={() => (selectedIndex = entry.id)}
             {entry}
+            warnings={warnings.get(entry.id)}
             active={selectedIndex === entry.id}
           />
         {/each}
