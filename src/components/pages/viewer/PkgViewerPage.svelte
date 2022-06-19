@@ -44,26 +44,29 @@
   onMount(async () => {
     navbarTitleType.set("file");
 
-    const res = await fetch(
-      `http://localhost:3000/discord/${params.server}/${params.message}/${params.filename}`
-    );
+    // FIXME: temporary
+    // const res = await fetch(
+    //   `http://localhost:3000/discord/${params.server}/${params.message}/${params.filename}`
+    // );
+    error = true;
+    return;
 
-    if (res.ok) {
-      try {
-        const buffer = await res.arrayBuffer();
-        pkg = await Package.fromAsync(Buffer.from(buffer), {
-          saveBuffer: true,
-        });
-        warnings = scanPackageForWarnings(pkg);
-      } catch (err) {
-        console.error(err);
-        navbarTextStore.set("No Package Found");
-        error = true;
-      }
-    } else {
-      navbarTextStore.set("No Package Found");
-      error = true;
-    }
+    // if (res.ok) {
+    //   try {
+    //     const buffer = await res.arrayBuffer();
+    //     pkg = await Package.fromAsync(Buffer.from(buffer), {
+    //       saveBuffer: true,
+    //     });
+    //     warnings = scanPackageForWarnings(pkg);
+    //   } catch (err) {
+    //     console.error(err);
+    //     navbarTextStore.set("No Package Found");
+    //     error = true;
+    //   }
+    // } else {
+    //   navbarTextStore.set("No Package Found");
+    //   error = true;
+    // }
   });
 
   $: {
