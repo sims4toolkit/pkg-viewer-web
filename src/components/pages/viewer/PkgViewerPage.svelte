@@ -1,12 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { ResourceKey } from "@s4tk/models/lib/packages/types";
   import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import EntriesMenu from "./EntriesMenu.svelte";
   import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
-  import type { Package } from "@s4tk/models";
   import { getTypeDisplay } from "../../../typescript/helpers";
+  import type { Package as PackageType } from "@s4tk/models";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
@@ -19,7 +18,7 @@
   };
 
   let splitview: any;
-  let pkg: Package;
+  let pkg: PackageType;
   let selectedIndex = 0;
 
   $: entry = pkg?.get(selectedIndex);
