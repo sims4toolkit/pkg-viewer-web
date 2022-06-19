@@ -1,4 +1,7 @@
-const { BinaryResourceType, TuningResourceType, SimDataGroup } = window.S4TK.enums;
+import type { SimDataResource, XmlResource } from "@s4tk/models";
+import type { ResourceKeyPair } from "@s4tk/models/types";
+
+const { BinaryResourceType, TuningResourceType, SimDataGroup, StringTableLocale, EncodingType } = window.S4TK.enums;
 const { formatAsHexString } = window.S4TK.formatting;
 
 export function getTypeDisplay(type: number, group?: number): string {
@@ -13,6 +16,21 @@ export function getTypeDisplay(type: number, group?: number): string {
       BinaryResourceType[type] ??
       "Type " + formatAsHexString(type, 8, true)
     );
+  }
+}
+
+export function getDisplayName(entry: ResourceKeyPair): string {
+  switch (entry.value.encodingType) {
+    case EncodingType.XML:
+      return (entry.value as XmlResource).root.name;
+    case EncodingType.DATA:
+      return (entry.value as SimDataResource).instance.name;
+    case EncodingType.STBL:
+      const locale =
+        StringTableLocale[StringTableLocale.getLocale(entry.key.instance)];
+      return locale + " String Table";
+    default:
+      return "Unknown";
   }
 }
 

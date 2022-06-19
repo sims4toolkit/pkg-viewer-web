@@ -2,10 +2,15 @@
   import { onMount } from "svelte";
   import type { Package } from "@s4tk/models";
   import PackageEntryRow from "./PackageEntryRow.svelte";
-  import { isEncodingSupported } from "../../../typescript/helpers";
+  import {
+    getDisplayName,
+    isEncodingSupported,
+  } from "../../../typescript/helpers";
   import MovableWindow from "../../layout/MovableWindow.svelte";
   import TextInput from "../../shared/TextInput.svelte";
   import Select from "../../shared/Select.svelte";
+  import type { ResourceKeyPair } from "@s4tk/models/types";
+  import { formatResourceInstance } from "@s4tk/hashing/formatting";
 
   const { BinaryResourceType, TuningResourceType, SimDataGroup } =
     window.S4TK.enums;
@@ -18,6 +23,7 @@
   let showFilterWindow = false;
   let nameInputValue = "";
   let instInputValue = "";
+  let filteredEntries = [];
 
   let selectedTypeOption = 0;
   let typeOptions: { value: number; text: string }[] = [
@@ -60,9 +66,55 @@
     numHidden === 1 ? "entry uses" : "entries use"
   } unsupported encoding.`;
 
+  $: {
+    selectedTypeOption;
+    selectedSimDataGroup;
+    nameInputValue;
+    instInputValue;
+    
+    const isFiltered =
+      selectedTypeOption ||
+      selectedSimDataGroup ||
+      nameInputValue ||
+      instInputValue;
+
+    filteredEntries = isFiltered ? entries.filter(entryFilter) : entries;
+  }
+
   onMount(() => {
     selectedIndex = entries[0].id;
   });
+
+  function entryFilter(entry: ResourceKeyPair): boolean {
+    console.log("hi");
+
+    if (selectedTypeOption) {
+      if (entry.key.type !== selectedTypeOption) return false;
+
+      if (selectedTypeOption === BinaryResourceType.SimData) {
+        if (selectedSimDataGroup && selectedSimDataGroup !== entry.key.group)
+          return false;
+      }
+    }
+
+    if (
+      nameInputValue &&
+      !getDisplayName(entry)
+        .toLowerCase()
+        .includes(nameInputValue.toLowerCase())
+    )
+      return false;
+
+    if (
+      instInputValue &&
+      !formatResourceInstance(entry.key.instance).includes(
+        instInputValue.toUpperCase()
+      )
+    )
+      return false;
+
+    return true;
+  }
 </script>
 
 <div id="entries-menu" class="px-half">
@@ -101,7 +153,7 @@
           </button>
         </div>
       {/if}
-      {#each entries as entry (entry.id)}
+      {#each filteredEntries as entry (entry.id)}
         <PackageEntryRow
           onClick={() => (selectedIndex = entry.id)}
           {entry}

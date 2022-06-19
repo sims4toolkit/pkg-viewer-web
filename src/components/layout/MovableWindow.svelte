@@ -85,7 +85,7 @@
     z-index: 1024;
     position: fixed;
     width: 360px;
-    height: 360px;
+    height: 400px;
     right: 20px;
     bottom: 20px;
     background-color: var(--color-card);
@@ -94,7 +94,6 @@
 
     .window-content {
       overflow-y: auto;
-      max-height: 320px;
     }
 
     .movable-window-header {
