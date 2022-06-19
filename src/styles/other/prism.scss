@@ -188,7 +188,7 @@ pre[class*="language-"] {
     &.attr-value,
     &.regex,
     &.variable {
-      color: #1db858;
+      color: #26a055;
     }
 
     &.operator,
@@ -198,7 +198,7 @@ pre[class*="language-"] {
     }
 
     &.inserted {
-      color: green;
+      color: rgb(24, 144, 24);
     }
   }
 }
