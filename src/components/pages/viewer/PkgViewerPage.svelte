@@ -1,20 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { navbarTextStore, navbarTitleType } from "../../../typescript/stores";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import EntriesMenu from "./EntriesMenu.svelte";
   import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
-  import {
-    getTypeDisplay,
-    scanPackageForWarnings,
-  } from "../../../typescript/helpers";
+  import { scanPackageForWarnings } from "../../../typescript/helpers";
   import type { Package as PackageType } from "@s4tk/models";
   import MovableWindow from "../../layout/MovableWindow.svelte";
   import config from "../../../config";
 
   const { Package } = window.S4TK.models;
   const { Buffer } = window.S4TK.Node;
-  const { formatResourceInstance } = window.S4TK.formatting;
 
   export let params: {
     server: string;
@@ -43,8 +38,6 @@
   }
 
   onMount(async () => {
-    navbarTitleType.set("file");
-
     fetch(
       `${config.API_BASE}/discord/${params.server}/${params.message}/${params.filename}`
     )
@@ -63,21 +56,9 @@
       })
       .catch((err) => {
         console.error(err);
-        navbarTextStore.set("No Package Found");
         error = true;
       });
   });
-
-  $: {
-    if (entry?.key) {
-      navbarTextStore.set(
-        `${getTypeDisplay(
-          entry?.key.type,
-          entry?.key.group
-        )}, ${formatResourceInstance(entry?.key.instance)}`
-      );
-    }
-  }
 
   function collapseFileExplorer() {
     splitview.collapseLeftPanel();
