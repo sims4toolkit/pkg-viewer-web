@@ -11,6 +11,7 @@
   import Select from "../../shared/Select.svelte";
   import type { ResourceKeyPair } from "@s4tk/models/types";
   import { formatResourceInstance } from "@s4tk/hashing/formatting";
+  import { StringTableLocale } from "@s4tk/models/enums";
 
   const { BinaryResourceType, TuningResourceType, SimDataGroup } =
     window.S4TK.enums;
@@ -57,6 +58,21 @@
     }),
   ];
 
+  let selectedLocale = null;
+  let localeOptions: { value: number; text: string }[] = [
+    { value: null, text: "All" },
+    ...StringTableLocale.all().map((type) => {
+      return {
+        value: type as number,
+        text: StringTableLocale[type],
+      };
+    }),
+  ].sort((a, b) => {
+    if (b.value === null || a.text > b.text) return 1;
+    if (a.text < b.text) return -1;
+    return 0;
+  });
+
   $: supportedEntries = pkg?.entries.filter((e) =>
     isEncodingSupported(e.key.type)
   );
@@ -73,11 +89,13 @@
   $: {
     selectedTypeOption;
     selectedSimDataGroup;
+    selectedLocale;
     nameInputValue;
     instInputValue;
 
     const isFiltered =
       selectedTypeOption ||
+      selectedLocale ||
       selectedSimDataGroup ||
       nameInputValue ||
       instInputValue;
@@ -90,13 +108,19 @@
   });
 
   function entryFilter(entry: ResourceKeyPair): boolean {
-    console.log("hi");
-
     if (selectedTypeOption) {
       if (entry.key.type !== selectedTypeOption) return false;
 
       if (selectedTypeOption === BinaryResourceType.SimData) {
         if (selectedSimDataGroup && selectedSimDataGroup !== entry.key.group)
+          return false;
+      }
+
+      if (selectedTypeOption === BinaryResourceType.StringTable) {
+        if (
+          selectedLocale !== null &&
+          !(StringTableLocale.getLocale(entry.key.instance) === selectedLocale)
+        )
           return false;
       }
     }
@@ -214,6 +238,16 @@
           name="simdata-group-filter"
           bind:selected={selectedSimDataGroup}
           options={simdataGroupOptions}
+          fillWidth={true}
+        />
+        <br />
+      {/if}
+      {#if selectedTypeOption === BinaryResourceType.StringTable}
+        <Select
+          label="only stbls with locale"
+          name="stbl-locale-filter"
+          bind:selected={selectedLocale}
+          options={localeOptions}
           fillWidth={true}
         />
         <br />
