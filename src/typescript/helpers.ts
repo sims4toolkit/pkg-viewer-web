@@ -69,12 +69,32 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
   const allWarnings = new Map<number, string[]>;
   const seenKeys = new Set<string>();
 
+  const instToTypeMap = new Map<bigint, number>();
+
   pkg.entries.forEach(entry => {
     try {
+      if (entry.key.type in TuningResourceType)
+        instToTypeMap.set(entry.key.instance, entry.key.type);
       const warnings = scanEntryForWarnings(entry, seenKeys);
       if (warnings.length) allWarnings.set(entry.id, warnings);
     } catch (err) {
       allWarnings.set(entry.id, ["Something is wrong, but I honestly don't know what it is. Godspeed."]);
+    }
+  });
+
+  pkg.entries.forEach(entry => {
+    try {
+      if (entry.key.type === BinaryResourceType.SimData) {
+        if (instToTypeMap.has(entry.key.instance)) {
+          const expectedGroup = SimDataGroup.getForTuning(instToTypeMap.get(entry.key.instance));
+          if (expectedGroup !== entry.key.group) {
+            if (!allWarnings.has(entry.id)) allWarnings.set(entry.id, []);
+            allWarnings.get(entry.id).push(`Expected ${TuningResourceType[instToTypeMap.get(entry.key.instance)]} SimData to have a group of ${formatAsHexString(expectedGroup, 8)}, but got ${formatAsHexString(entry.key.group, 8)} instead.`);
+          }
+        }
+      }
+    } catch (e) {
+      // intentionally blank
     }
   });
 
@@ -116,11 +136,19 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
     }
 
     if (xml.root.tag === "I") {
-      if (BIT32_CLASSES.has(xml.root.attributes.c) && (entry.key.instance > 0xFFFFFFFFn))
-        warnings.push(`The class "${xml.root.attributes.c}" is known to require a 32-bit instance, but this resource has a 64-bit instance. You might want to replace ${formatAsHexString(entry.key.instance, 16)} with ${formatAsHexString(entry.key.instance & 0xFFFFFFFFn, 8)}.`);
+      if (entry.key.instance > 0xFFFFFFFFn) {
+        if (BIT32_CLASSES.has(xml.root.attributes.c)) {
+          warnings.push(`The class "${xml.root.attributes.c}" is known to require a 32-bit instance, but this resource has a 64-bit instance. You might want to replace ${formatAsHexString(entry.key.instance, 16)} with ${formatAsHexString(entry.key.instance & 0xFFFFFFFFn, 8)}.`);
+        }
+
+        if ((entry.key.type === TuningResourceType.Trait) && ((xml.root.findChild("trait_type").innerValue as string).trim() === "PERSONALITY")) {
+          warnings.push(`Personality traits are known to require a 32-bit instance, but this one has a 64-bit instance. You might want to replace ${formatAsHexString(entry.key.instance, 16)} with ${formatAsHexString(entry.key.instance & 0xFFFFFFFFn, 8)}.`);
+        }
+      }
 
       if (TuningResourceType.parseAttr(xml.root.attributes.i) !== entry.key.type) {
-        warnings.push(`Type of "${TuningResourceType[entry.key.type]}" is incompatible with i="${xml.root.attributes.i}". Either the type should be "${TuningResourceType[TuningResourceType.parseAttr(xml.root.attributes.i)]}", or the i attribute should be "${TuningResourceType.getAttr(entry.key.type)}".`);
+        const expectedType = TuningResourceType.parseAttr(xml.root.attributes.i);
+        warnings.push(`Type of ${TuningResourceType[entry.key.type]} (${formatAsHexString(entry.key.type, 8)}) is incompatible with i="${xml.root.attributes.i}". Either the type should be ${TuningResourceType[expectedType]} (${formatAsHexString(expectedType, 8)}), or the i attribute should be "${TuningResourceType.getAttr(entry.key.type)}".`);
       }
     } else if (xml.root.tag === "M") {
       const expectedHash = fnv64(xml.root.name.replace(/\./g, "-"));
@@ -130,7 +158,7 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
     }
 
     if (BigInt(xml.root.id as string) !== entry.key.instance) {
-      warnings.push(`Instance "${formatResourceInstance(entry.key.instance)}" does not match s="${xml.root.id}".`);
+      warnings.push(`Instance of ${formatResourceInstance(entry.key.instance)} does not match s="${xml.root.id}".`);
     }
   }
 
