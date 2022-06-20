@@ -19,12 +19,6 @@
         packages without downloading them. However, you can manually upload
         files as well.
       </p>
-      <p>
-        Note that this website can only render the resources that are
-        implemented in <a href="https://sims4toolkit.com" target="_blank"
-          >Sims 4 Toolkit</a
-        >. At present, this includes tuning, SimData, and string tables.
-      </p>
     </ContentArea>
     <ContentArea>
       <SectionHeader title="Experiencing issues?" />
