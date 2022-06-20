@@ -1,11 +1,17 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
+  import { numMovableWindowsStore } from "../../typescript/stores";
 
   export let title: string;
   export let onClose: () => void;
 
   let movableWindow: HTMLDivElement;
   let movableWindowHeader: HTMLDivElement;
+  let numWindows = 0;
+
+  const unsub = numMovableWindowsStore.subscribe((numWindowsOpen) => {
+    numWindows = numWindowsOpen;
+  });
 
   function enableDragging() {
     let pos1 = 0;
@@ -62,7 +68,22 @@
     }
   }
 
-  onMount(enableDragging);
+  onMount(() => {
+    enableDragging();
+
+    if (numWindows > 0) {
+      let offset = 40 + movableWindow.offsetWidth;
+      offset *= numWindows;
+      movableWindow.style.right = offset + "px";
+    }
+
+    numMovableWindowsStore.set(numWindows + 1);
+  });
+
+  onDestroy(() => {
+    unsub();
+    numMovableWindowsStore.set(numWindows - 1);
+  });
 </script>
 
 <div bind:this={movableWindow} class="movable-window drop-shadow">
