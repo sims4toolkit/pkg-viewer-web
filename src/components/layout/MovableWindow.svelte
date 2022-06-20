@@ -93,7 +93,10 @@
     bind:this={movableWindowHeader}
     class="movable-window-header flex-space-between flex-center-v p-half grabbable"
   >
-    <p class="my-0 small-title unselectable-text">{title}</p>
+    <div class="flex-center-v flex-gap-small">
+      <p class="my-0 small-title unselectable-text">{title}</p>
+      <p class="my-0 subtle-text">(Draggable)</p>
+    </div>
     <button class="button-wrapper" on:click={onClose}>
       <img src="./assets/x.svg" class="is-svg" alt="Close" />
     </button>
