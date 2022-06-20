@@ -3,18 +3,17 @@
   import type { Package } from "@s4tk/models";
   import PackageEntryRow from "./PackageEntryRow.svelte";
   import {
+    getDefaultFilters,
     getDisplayName,
     isEncodingSupported,
   } from "../../../typescript/helpers";
-  import MovableWindow from "../../layout/MovableWindow.svelte";
-  import TextInput from "../../shared/TextInput.svelte";
-  import Select from "../../shared/Select.svelte";
-  import type { ResourceKeyPair } from "@s4tk/models/types";
+  import type { ResourceEntry, ResourceKeyPair } from "@s4tk/models/types";
   import { formatResourceInstance } from "@s4tk/hashing/formatting";
   import { StringTableLocale } from "@s4tk/models/enums";
+  import FilterWindow from "./FilterWindow.svelte";
+  import type { EntryFilterSettings } from "../../../global";
 
-  const { BinaryResourceType, TuningResourceType, SimDataGroup } =
-    window.S4TK.enums;
+  const { BinaryResourceType } = window.S4TK.enums;
 
   export let onClose: () => void;
   export let onWarningClick: () => void;
@@ -22,121 +21,84 @@
   export let warnings: Map<number, string[]>;
   export let selectedIndex: number;
 
-  let showUnsupported = false;
   let showFilterWindow = false;
-  let nameInputValue = "";
-  let instInputValue = "";
   let filteredEntries = [];
+  let filterSettings: EntryFilterSettings = getDefaultFilters();
 
-  let selectedTypeOption = 0;
-  let typeOptions: { value: number; text: string }[] = [
-    { value: 0, text: "All" },
-    ...BinaryResourceType.all().map((type) => {
-      return {
-        value: type as number,
-        text: BinaryResourceType[type],
-      };
-    }),
-    ...TuningResourceType.all().map((type) => {
-      return {
-        value: type as number,
-        text: TuningResourceType[type],
-      };
-    }),
-  ].sort((a, b) => {
-    if (b.value === 0 || a.text > b.text) return 1;
-    if (a.text < b.text) return -1;
-    return 0;
-  });
-
-  let selectedSimDataGroup = 0;
-  let simdataGroupOptions: { value: number; text: string }[] = [
-    { value: 0, text: "All" },
-    ...SimDataGroup.all().map((type) => {
-      return {
-        value: type as number,
-        text: SimDataGroup[type],
-      };
-    }),
-  ];
-
-  let selectedLocale = null;
-  let localeOptions: { value: number; text: string }[] = [
-    { value: null, text: "All" },
-    ...StringTableLocale.all().map((type) => {
-      return {
-        value: type as number,
-        text: StringTableLocale[type],
-      };
-    }),
-  ].sort((a, b) => {
-    if (b.value === null || a.text > b.text) return 1;
-    if (a.text < b.text) return -1;
-    return 0;
-  });
-
-  $: supportedEntries = pkg?.entries.filter((e) => isEncodingSupported(e));
-  $: entries = showUnsupported ? pkg?.entries : supportedEntries;
-  $: numHidden = (pkg?.size ?? 0) - (supportedEntries?.length ?? 0);
-  $: hiddenText = `${numHidden} ${
-    numHidden === 1 ? "entry uses" : "entries use"
-  } unsupported encoding.`;
-
-  $: filteredText = `${entries.length - filteredEntries.length} ${
-    entries.length - filteredEntries.length === 1 ? "entry" : "entries"
-  } hidden by filters.`;
+  $: numFilteredOut = pkg.size - filteredEntries.length;
+  $: filteredText = `${numFilteredOut} ${
+    numFilteredOut === 1 ? "entry" : "entries"
+  } hidden by filters`;
 
   $: {
-    selectedTypeOption;
-    selectedSimDataGroup;
-    selectedLocale;
-    nameInputValue;
-    instInputValue;
+    filterSettings.fileType;
+    filterSettings.filename;
+    filterSettings.instanceHex;
+    filterSettings.showNonEnStbls;
+    filterSettings.showUnsupported;
+    filterSettings.simDataGroup;
+    filterSettings.stblLocale;
 
-    const isFiltered =
-      selectedTypeOption ||
-      selectedLocale ||
-      selectedSimDataGroup ||
-      nameInputValue ||
-      instInputValue;
-
-    filteredEntries = isFiltered ? entries.filter(entryFilter) : entries;
+    filteredEntries = pkg.entries.filter(entryFilter);
   }
 
   onMount(() => {
-    selectedIndex = entries[0].id;
+    selectedIndex = filteredEntries[0]?.id ?? 0; // FIXME:
   });
 
-  function entryFilter(entry: ResourceKeyPair): boolean {
-    if (selectedTypeOption) {
-      if (entry.key.type !== selectedTypeOption) return false;
+  function entryFilter(entry: ResourceEntry): boolean {
+    // FIXME: very ugly, very bad, hate hate hate
 
-      if (selectedTypeOption === BinaryResourceType.SimData) {
-        if (selectedSimDataGroup && selectedSimDataGroup !== entry.key.group)
+    if (!filterSettings.showUnsupported) {
+      if (!isEncodingSupported(entry)) return false;
+    }
+
+    if (!filterSettings.showNonEnStbls) {
+      if (
+        entry.key.type === BinaryResourceType.StringTable &&
+        !(
+          StringTableLocale.getLocale(entry.key.instance) ===
+          StringTableLocale.English
+        )
+      )
+        return false;
+    }
+
+    if (filterSettings.fileType) {
+      if (entry.key.type !== filterSettings.fileType) return false;
+
+      if (filterSettings.fileType === BinaryResourceType.SimData) {
+        if (
+          filterSettings.simDataGroup &&
+          filterSettings.simDataGroup !== entry.key.group
+        )
           return false;
       }
 
-      if (selectedTypeOption === BinaryResourceType.StringTable) {
+      if (filterSettings.fileType === BinaryResourceType.StringTable) {
         if (
-          selectedLocale !== null &&
-          !(StringTableLocale.getLocale(entry.key.instance) === selectedLocale)
+          filterSettings.stblLocale !== null &&
+          !(
+            StringTableLocale.getLocale(entry.key.instance) ===
+            filterSettings.stblLocale
+          )
         )
           return false;
       }
     }
 
     if (
-      nameInputValue &&
+      filterSettings.filename &&
       !getDisplayName(entry)
         .toLowerCase()
-        .includes(nameInputValue.toLowerCase())
+        .includes(filterSettings.filename.toLowerCase())
     )
       return false;
 
     if (
-      instInputValue &&
+      filterSettings.instanceHex &&
       !formatResourceInstance(entry.key.instance).includes(
-        instInputValue.toUpperCase()
+        filterSettings.instanceHex.toUpperCase()
       )
     )
       return false;
@@ -145,11 +107,9 @@
   }
 
   function clearFilters() {
-    selectedTypeOption = 0;
-    selectedSimDataGroup = 0;
-    nameInputValue = "";
-    instInputValue = "";
-    showFilterWindow = false;
+    filterSettings = getDefaultFilters();
+    filterSettings.showUnsupported = true;
+    filterSettings.showNonEnStbls = true;
   }
 </script>
 
@@ -177,27 +137,7 @@
   </div>
   <div class="entries-wrapper">
     {#if pkg != undefined}
-      {#if numHidden > 0}
-        <div class="flex-center-v flex-space-between mb-1 nowrap">
-          <div class="flex-center-v flex-gap-small">
-            <img
-              src="./assets/warning-outline.svg"
-              class="is-svg warning-svg"
-              alt="Warning"
-            />
-            <p class="subtle-text my-0">{hiddenText}</p>
-          </div>
-          <button
-            class="button-wrapper"
-            on:click={() => (showUnsupported = !showUnsupported)}
-          >
-            <p class="subtle-text my-0 underline accent-color-secondary">
-              {showUnsupported ? "HIDE" : "SHOW"}
-            </p>
-          </button>
-        </div>
-      {/if}
-      {#if filteredEntries && filteredEntries?.length !== entries?.length}
+      {#if filteredEntries && filteredEntries?.length !== pkg.size}
         <div class="flex-center-v flex-space-between mb-1 nowrap">
           <div class="flex-center-v flex-gap-small">
             <img
@@ -236,53 +176,10 @@
 </div>
 
 {#if showFilterWindow}
-  <MovableWindow title="Filter" onClose={() => (showFilterWindow = false)}>
-    <div>
-      <Select
-        label="only files with type"
-        name="resource-type-filter"
-        bind:selected={selectedTypeOption}
-        options={typeOptions}
-        fillWidth={true}
-      />
-      <br />
-      {#if selectedTypeOption === BinaryResourceType.SimData}
-        <Select
-          label="only simdatas with group"
-          name="simdata-group-filter"
-          bind:selected={selectedSimDataGroup}
-          options={simdataGroupOptions}
-          fillWidth={true}
-        />
-        <br />
-      {/if}
-      {#if selectedTypeOption === BinaryResourceType.StringTable}
-        <Select
-          label="only stbls with locale"
-          name="stbl-locale-filter"
-          bind:selected={selectedLocale}
-          options={localeOptions}
-          fillWidth={true}
-        />
-        <br />
-      {/if}
-      <TextInput
-        label="only filenames containing"
-        name="filename-filter"
-        placeholder="Filename"
-        bind:value={nameInputValue}
-        fillWidth={true}
-      />
-      <br />
-      <TextInput
-        label="only instances containing"
-        name="instance-filter"
-        placeholder="Instance"
-        bind:value={instInputValue}
-        fillWidth={true}
-      />
-    </div>
-  </MovableWindow>
+  <FilterWindow
+    bind:filterSettings
+    onClose={() => (showFilterWindow = false)}
+  />
 {/if}
 
 <style lang="scss">

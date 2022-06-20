@@ -1,5 +1,6 @@
 import type { Package, SimDataResource, StringTableResource, XmlResource } from "@s4tk/models";
 import type { ResourceEntry, ResourceKeyPair } from "@s4tk/models/types";
+import type { EntryFilterSettings } from "../global";
 
 const { BinaryResourceType, TuningResourceType, SimDataGroup, StringTableLocale, EncodingType } = window.S4TK.enums;
 const { formatAsHexString, formatResourceInstance, formatStringKey, formatResourceKey } = window.S4TK.formatting;
@@ -68,7 +69,21 @@ export function isEncodingSupported(entry: ResourceEntry): boolean {
   );
 }
 
+export function getDefaultFilters(): EntryFilterSettings {
+  return {
+    fileType: 0,
+    filename: "",
+    instanceHex: "",
+    showNonEnStbls: false,
+    showUnsupported: false,
+    simDataGroup: 0,
+    stblLocale: null,
+  };
+}
+
 export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
+  // FIXME: very ugly, very bad, hate hate hate
+
   const allWarnings = new Map<number, string[]>;
   const seenKeys = new Set<string>();
 

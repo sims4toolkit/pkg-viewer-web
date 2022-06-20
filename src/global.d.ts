@@ -9,6 +9,16 @@ interface UserSettings {
   isLightTheme: boolean;
 }
 
+interface EntryFilterSettings {
+  showUnsupported: boolean;
+  showNonEnStbls: boolean;
+  fileType: number;
+  simDataGroup: number;
+  stblLocale: number;
+  filename: string;
+  instanceHex: string;
+}
+
 declare global {
   interface Window {
     S4TK: {
