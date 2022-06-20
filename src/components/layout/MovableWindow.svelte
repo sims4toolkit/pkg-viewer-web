@@ -74,7 +74,9 @@
     if (numWindows > 0) {
       let offset = 40 + movableWindow.offsetWidth;
       offset *= numWindows;
-      movableWindow.style.right = offset + "px";
+      if (window.innerWidth >= offset + 40 + movableWindow.offsetWidth)
+        movableWindow.style.right = offset + "px";
+      movableWindow.style.zIndex = (1024 + numWindows).toString();
     }
 
     numMovableWindowsStore.set(numWindows + 1);
