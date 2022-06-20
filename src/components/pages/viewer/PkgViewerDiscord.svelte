@@ -1,10 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import PrismWrapper from "../../layout/PrismWrapper.svelte";
-  import EntriesMenu from "./EntriesMenu.svelte";
-  import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
   import type { Package as PackageType } from "@s4tk/models";
-  import MovableWindow from "../../layout/MovableWindow.svelte";
   import config from "../../../config";
   import PkgViewer from "./PkgViewer.svelte";
 
