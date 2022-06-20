@@ -1,3 +1,4 @@
+import type { Package } from "@s4tk/models";
 import { Writable, writable } from "svelte/store";
 import { Settings } from "./storage";
 
@@ -12,3 +13,5 @@ function createSettingStore<T>(name: string): Writable<T> {
 }
 
 export const isLightThemeStore = createSettingStore<boolean>("isLightTheme");
+
+export const uploadedPackageStore = writable<Package>(null);

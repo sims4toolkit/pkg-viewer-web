@@ -1,8 +1,36 @@
 <script lang="ts">
+  import { uploadedPackageStore } from "../../../typescript/stores";
   import Footer from "../../Footer.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
   import FileInput from "../../shared/FileInput.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
+
+  const { Package } = window.S4TK.models;
+  const { Buffer } = window.S4TK.Node;
+
+  let files: FileList;
+  let filesInvalid = false;
+  let fileError: string = null;
+
+  $: {
+    if (files?.length) {
+      const file = files[0];
+      filesInvalid = false;
+      fileError = null;
+      parsePackage(file);
+    }
+  }
+
+  async function parsePackage(file: File) {
+    try {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const pkg = await Package.fromAsync(buffer);
+      uploadedPackageStore.set(pkg);
+    } catch (err) {
+      filesInvalid = true;
+      fileError = "Could not parse package.";
+    }
+  }
 </script>
 
 <svelte:head>
@@ -20,7 +48,13 @@
         that a lack of warnings does not mean that everything is working - it
         only checks for common issues.
       </p>
-      <FileInput accept=".package" label="choose a package" />
+      <FileInput
+        accept=".package"
+        bind:files
+        bind:filesInvalid
+        errorMessage={fileError}
+        label="choose a package"
+      />
     </ContentArea>
   </div>
   <Footer />
