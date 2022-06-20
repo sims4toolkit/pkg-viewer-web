@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { link } from "svelte-spa-router";
   import Footer from "../../Footer.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
@@ -13,11 +14,12 @@
     <ContentArea banded={true}>
       <SectionHeader title="What is this website for?" />
       <p>
-        This website renders Sims 4 package files and displays common issues
-        that they contain. It is primarily intended for use with the S4TK
-        Discord bot, which sends links to this website so that you can view
-        packages without downloading them. However, you can manually upload
-        files as well.
+        This website renders Sims 4 package files and scans them for common
+        issues. It is primarily intended for use with the S4TK Discord bot,
+        which sends links to this website so that you can view packages without
+        downloading them. However, you can <a href="/view" use:link
+          >manually upload files</a
+        > as well.
       </p>
     </ContentArea>
     <ContentArea>
