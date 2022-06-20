@@ -12,9 +12,15 @@
 <section id="home-section" class="flex-col flex-space-between">
   <div>
     <ContentArea>
-      <SectionHeader title="View a package" />
-      <p>Upload a Sims 4 package file to view it and scan it for issues.</p>
-      <FileInput accept=".package" label="choose a package file" />
+      <SectionHeader title="Scan Package for Issues" />
+      <p class="my-2">
+        Upload a TS4 package file, and you will be brought to a page that shows
+        its contents. If any issues are detected (e.g. mismatched IDs, incorrect
+        file types, etc.), they will be shown in the bottom-right corner. Note
+        that a lack of warnings does not mean that everything is working - it
+        only checks for common issues.
+      </p>
+      <FileInput accept=".package" label="choose a package" />
     </ContentArea>
   </div>
   <Footer />

@@ -13,14 +13,17 @@
     <ContentArea banded={true}>
       <SectionHeader title="What is this website for?" />
       <p>
-        This website renders Sims 4 package files that are hosted on Discord's
-        CDN. This allows you to view a package without downloading it.
+        This website renders Sims 4 package files and displays common issues
+        that they contain. It is primarily intended for use with the S4TK
+        Discord bot, which sends links to this website so that you can view
+        packages without downloading them. However, you can manually upload
+        files as well.
       </p>
       <p>
         Note that this website can only render the resources that are
         implemented in <a href="https://sims4toolkit.com" target="_blank"
           >Sims 4 Toolkit</a
-        >. At present, this includes all tuning, SimData, and string tables.
+        >. At present, this includes tuning, SimData, and string tables.
       </p>
     </ContentArea>
     <ContentArea>
