@@ -27,15 +27,20 @@
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
       pkg = await Package.fromAsync(buffer);
+
+      if (!(pkg && pkg.size > 0)) {
+        filesInvalid = true;
+        fileError = "Package is empty";
+      }
     } catch (err) {
       filesInvalid = true;
-      fileError = "Could not parse package.";
+      fileError = "Could not parse package";
     }
   }
 </script>
 
 <svelte:head>
-  <title>Upload Package</title>
+  <title>View Package</title>
 </svelte:head>
 
 <section id="discord-pkg-viewer" class="flex-col flex-space-between">
@@ -45,7 +50,7 @@
     <ContentArea>
       <SectionHeader title="Scan Package for Issues" />
       <p class="mt-2">
-        Upload a TS4 package file, and its contents will be shown. If any issues
+        Select a TS4 package file, and its contents will be shown. If any issues
         are detected (e.g. mismatched IDs, incorrect file types, etc.), they
         will be shown in the bottom-right corner. Note that a lack of warnings
         does not mean that everything is working - it only checks for common

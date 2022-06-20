@@ -13,5 +13,3 @@ function createSettingStore<T>(name: string): Writable<T> {
 }
 
 export const isLightThemeStore = createSettingStore<boolean>("isLightTheme");
-
-export const uploadedPackageStore = writable<Package>(null);
