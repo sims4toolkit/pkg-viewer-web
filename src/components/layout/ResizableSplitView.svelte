@@ -91,13 +91,13 @@
   on:mouseleave={onMouseUp}
 >
   {#if leftIsCollapsed}
-    <div
-      class="collapsed-left-panel hoverable"
+    <button
+      class="button-wrapper collapsed-left-panel hoverable"
       draggable="false"
       on:click={expandLeftPanel}
     >
       <span>{leftPanelName}</span>
-    </div>
+    </button>
   {/if}
   <div
     class="left-panel h-100"
