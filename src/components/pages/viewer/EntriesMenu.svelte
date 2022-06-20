@@ -155,17 +155,23 @@
 
 <div id="entries-menu" class="px-half">
   <div class="w-100 flex-space-between">
-    <p class="small-title">File Explorer</p>
+    <p class="small-title">Files</p>
     <div class="flex flex-gap">
       <button
-        class="button-wrapper"
+        class="button-wrapper flex-center-v flex-gap-small"
         on:click={() => (showFilterWindow = !showFilterWindow)}
         title="Filter"
       >
         <img src="./assets/filter.svg" class="is-svg" alt="Filter" />
+        <p class="my-0 subtle-text">Filter</p>
       </button>
-      <button class="button-wrapper" on:click={onClose} title="Close">
+      <button
+        class="button-wrapper flex-center-v flex-gap-small"
+        on:click={onClose}
+        title="Close"
+      >
         <img src="./assets/x.svg" class="is-svg" alt="Close" />
+        <p class="my-0 subtle-text">Close</p>
       </button>
     </div>
   </div>
