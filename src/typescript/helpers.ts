@@ -81,7 +81,7 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
       const warnings = scanEntryForWarnings(entry, seenKeys);
       if (warnings.length) allWarnings.set(entry.id, warnings);
     } catch (err) {
-      allWarnings.set(entry.id, ["Something is wrong, but I honestly don't know what it is. Godspeed."]);
+      allWarnings.set(entry.id, ["Exception was thrown while parsing this file. This does not necessarily mean that there is something wrong with it."]);
     }
   });
 

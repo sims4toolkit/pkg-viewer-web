@@ -37,7 +37,7 @@
         }
       default:
         language = "xml";
-        return "Unsupported encoding.";
+        return entry.value.getBuffer().toString();
     }
   }
 </script>
