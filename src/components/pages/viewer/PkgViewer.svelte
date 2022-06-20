@@ -14,16 +14,17 @@
   let numWarnings = 0;
   let selectedIndex = 0;
   let showWarnings = false;
-  let allWarnings: string[];
+  let otherWarnings: { entryId: number; text: string }[];
 
   $: entry = pkg?.get(selectedIndex);
 
   $: {
     numWarnings = 0;
-    allWarnings = [];
-    warnings?.forEach((entryWarnings) => {
+    otherWarnings = [];
+    warnings?.forEach((entryWarnings, entryId) => {
       numWarnings += entryWarnings.length;
-      allWarnings.push(...entryWarnings);
+      if (entryId !== selectedIndex)
+        otherWarnings.push(...entryWarnings.map((text) => ({ entryId, text })));
     });
   }
 
@@ -64,20 +65,27 @@
       {:else}
         <p class="small-title mb-0">no warnings in current file</p>
       {/if}
-      <hr class="my-1" />
-      <p class="small-title my-0">
-        all files ({numWarnings})
-      </p>
-      {#each allWarnings as warning, key (key)}
-        <div class="flex flex-gap-small mt-half">
-          <img
-            src="./assets/warning-outline.svg"
-            class="is-svg warning-svg text-height"
-            alt="Warning"
-          />
-          <p class="my-0">{warning}</p>
-        </div>
-      {/each}
+      {#if otherWarnings && otherWarnings.length > 0}
+        <hr class="my-1" />
+        <p class="small-title my-0">
+          other files ({otherWarnings.length})
+        </p>
+        {#each otherWarnings as warning, key (key)}
+          <div class="mt-half">
+            <button
+              class="button-wrapper flex flex-gap-small text-left"
+              on:click={() => (selectedIndex = warning.entryId)}
+            >
+              <img
+                src="./assets/warning-outline.svg"
+                class="is-svg warning-svg text-height"
+                alt="Warning"
+              />
+              <p class="my-0">{warning.text}</p>
+            </button>
+          </div>
+        {/each}
+      {/if}
     </div>
   </MovableWindow>
 {:else if numWarnings > 0}
