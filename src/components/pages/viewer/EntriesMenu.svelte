@@ -75,9 +75,7 @@
     return 0;
   });
 
-  $: supportedEntries = pkg?.entries.filter((e) =>
-    isEncodingSupported(e.key.type)
-  );
+  $: supportedEntries = pkg?.entries.filter((e) => isEncodingSupported(e));
   $: entries = showUnsupported ? pkg?.entries : supportedEntries;
   $: numHidden = (pkg?.size ?? 0) - (supportedEntries?.length ?? 0);
   $: hiddenText = `${numHidden} ${

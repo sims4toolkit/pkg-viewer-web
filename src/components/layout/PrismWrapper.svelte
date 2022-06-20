@@ -30,6 +30,11 @@
       case EncodingType.STBL:
         language = "js";
         return JSON.stringify(entry.value.toJsonObject(), null, 2);
+      case EncodingType.Unknown:
+        if (entry.value.isXml()) {
+          language = "xml";
+          return entry.value.buffer.toString();
+        }
       default:
         language = "xml";
         return "Unsupported encoding.";

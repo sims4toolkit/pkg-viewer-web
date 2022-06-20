@@ -22,7 +22,7 @@
   let warnings: Map<number, string[]>;
   let numWarnings = 0;
   let selectedIndex = 0;
-  let error = false;
+  let error = "";
   let showWarnings = false;
   let allWarnings: string[];
 
@@ -49,14 +49,18 @@
             saveBuffer: true,
           });
 
-          warnings = scanPackageForWarnings(pkg);
+          if (pkg.size === 0) {
+            error = "This package has no entries.";
+          } else {
+            warnings = scanPackageForWarnings(pkg);
+          }
         } else {
-          throw "Non-200 response received.";
+          error = "Package could not be fetched.";
         }
       })
       .catch((err) => {
         console.error(err);
-        error = true;
+        error = "No package was found at the provided address.";
       });
   });
 
@@ -70,7 +74,7 @@
 </svelte:head>
 
 <section id="viewer-section">
-  {#if pkg != undefined}
+  {#if pkg != undefined && pkg.size > 0}
     <ResizableSplitView leftPanelName="File Explorer" bind:this={splitview}>
       <EntriesMenu
         slot="left"
@@ -84,7 +88,7 @@
     </ResizableSplitView>
   {:else if error}
     <div class="error-display flex-center">
-      <h3>No package was found at the provided address.</h3>
+      <h3>{error}</h3>
     </div>
   {:else}
     <div class="loading-display flex-center">
