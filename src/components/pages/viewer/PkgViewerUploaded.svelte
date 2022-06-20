@@ -40,7 +40,7 @@
 </script>
 
 <svelte:head>
-  <title>View Package</title>
+  <title>Package Viewer</title>
 </svelte:head>
 
 <section id="discord-pkg-viewer" class="flex-col flex-space-between">
@@ -48,7 +48,7 @@
     <PkgViewer {pkg} />
   {:else}
     <ContentArea>
-      <SectionHeader title="Scan Package for Issues" />
+      <SectionHeader title="Scan package for issues" />
       <p class="mt-2">
         Select a TS4 package file, and its contents will be shown. If any issues
         are detected (e.g. mismatched IDs, incorrect file types, etc.), they

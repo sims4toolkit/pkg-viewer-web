@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { link } from "svelte-spa-router";
   import Footer from "../../Footer.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
@@ -11,13 +12,15 @@
 <section id="home-section" class="flex-col flex-space-between">
   <div>
     <ContentArea>
-      <SectionHeader title="Scan Package for Issues" />
+      <SectionHeader title="Welcome" />
+      <p class="mt-2">
+        This website is for viewing Sims 4 package files. Unless you were
+        directed here by the S4TK Discord bot, you probably don't need to be
+        here.
+      </p>
       <p>
-        Upload a TS4 package file, and its contents will be shown. If any issues
-        are detected (e.g. mismatched IDs, incorrect file types, etc.), they
-        will be shown in the bottom-right corner. Note that a lack of warnings
-        does not mean that everything is working - it only checks for common
-        issues.
+        Though, you can <a href="/view" use:link>upload a package</a> for funsies
+        if you want.
       </p>
     </ContentArea>
   </div>
