@@ -127,7 +127,7 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
     if (stbl.hasValue("")) {
       warnings.push("At least one string is empty.");
     }
-  } else if (entry.key.type in TuningResourceType) {
+  } else if (entry.value.isXml()) {
     const xml = entry.value as XmlResource;
 
     try {
