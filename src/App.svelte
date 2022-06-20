@@ -4,9 +4,11 @@
   import HomePage from "./components/pages/home/HomePage.svelte";
   import PkgViewerPage from "./components/pages/viewer/PkgViewerPage.svelte";
   import NotFoundPage from "./components/pages/NotFoundPage.svelte";
+  import HelpPage from "./components/pages/help/HelpPage.svelte";
 
   const routes = {
     "/": HomePage,
+    "/help": HelpPage,
     "/discord/:server/:message/:filename": PkgViewerPage,
     "*": NotFoundPage,
   };

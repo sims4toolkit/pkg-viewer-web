@@ -2,7 +2,8 @@
   import { link, location } from "svelte-spa-router";
   import ThemeToggler from "./shared/ThemeToggler.svelte";
 
-  $: helpIcon = $location === "/" ? "help-circle" : "help-circle-outline";
+  $: homeIcon = $location === "/" ? "home" : "home-outline";
+  $: helpIcon = $location === "/help" ? "help-circle" : "help-circle-outline";
 </script>
 
 <nav class="flex-center-v flex-space-between bottom-shadow">
@@ -13,7 +14,10 @@
     </div>
   </div>
   <div class="right flex-center-v flex-space-between">
-    <a href="/" class:active={$location === "/"} use:link title="Help">
+    <a href="/" class:active={$location === "/"} use:link title="Home">
+      <img class="is-svg smaller" src="./assets/{homeIcon}.svg" alt="Home" />
+    </a>
+    <a href="/help" class:active={$location === "/help"} use:link title="Help">
       <img class="is-svg" src="./assets/{helpIcon}.svg" alt="Help" />
     </a>
     <ThemeToggler />
@@ -51,6 +55,10 @@
         height: 24px;
         width: auto;
         margin-top: 4px;
+
+        &.smaller {
+          height: 20px;
+        }
       }
     }
 
