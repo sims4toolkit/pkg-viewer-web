@@ -86,13 +86,35 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 
   const allWarnings = new Map<number, string[]>;
   const seenKeys = new Set<string>();
-
   const instToTypeMap = new Map<bigint, number>();
+  const instCounts = new Map<bigint, { simdata: boolean; tuning: boolean; otherTuning: boolean; otherSimData: boolean; }>();
 
   pkg.entries.forEach(entry => {
     try {
-      if (entry.key.type in TuningResourceType)
+      const isTuning = entry.key.type in TuningResourceType;
+      const isSimdata = entry.key.type === BinaryResourceType.SimData;
+
+      if (isTuning) {
         instToTypeMap.set(entry.key.instance, entry.key.type);
+      }
+
+      if (!instCounts.has(entry.key.instance)) {
+        instCounts.set(entry.key.instance, {
+          simdata: isSimdata,
+          tuning: isTuning,
+          otherTuning: false,
+          otherSimData: false,
+        });
+      } else if (isTuning) {
+        const data = instCounts.get(entry.key.instance);
+        if (data.tuning) data.otherTuning = true;
+        else data.tuning = true;
+      } else if (isSimdata) {
+        const data = instCounts.get(entry.key.instance);
+        if (data.simdata) data.otherSimData = true;
+        else data.simdata = true;
+      }
+
       const warnings = scanEntryForWarnings(entry, seenKeys);
       if (warnings.length) allWarnings.set(entry.id, warnings);
     } catch (err) {
@@ -102,13 +124,25 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 
   pkg.entries.forEach(entry => {
     try {
+      const safeGetWarnings = () => {
+        if (!allWarnings.has(entry.id)) allWarnings.set(entry.id, []);
+        return allWarnings.get(entry.id)
+      };
+
       if (entry.key.type === BinaryResourceType.SimData) {
         if (instToTypeMap.has(entry.key.instance)) {
           const expectedGroup = SimDataGroup.getForTuning(instToTypeMap.get(entry.key.instance));
           if (expectedGroup !== entry.key.group) {
-            if (!allWarnings.has(entry.id)) allWarnings.set(entry.id, []);
-            allWarnings.get(entry.id).push(`Expected ${TuningResourceType[instToTypeMap.get(entry.key.instance)]} SimData to have a group of ${formatAsHexString(expectedGroup, 8)}, but got ${formatAsHexString(entry.key.group, 8)} instead.`);
+            safeGetWarnings().push(`Expected ${TuningResourceType[instToTypeMap.get(entry.key.instance)]} SimData to have a group of ${formatAsHexString(expectedGroup, 8)}, but got ${formatAsHexString(entry.key.group, 8)} instead.`);
           }
+        }
+
+        if (instCounts.get(entry.key.instance).otherSimData) {
+          safeGetWarnings().push("At least one other SimData resource has the same instance as this one. The only resources that should have the same instance are tuning/SimData pairs.");
+        }
+      } else if (entry.key.type in TuningResourceType) {
+        if (instCounts.get(entry.key.instance).otherTuning) {
+          safeGetWarnings().push("At least one other tuning resource has the same instance as this one. The only resources that should have the same instance are tuning/SimData pairs.");
         }
       }
     } catch (e) {
@@ -120,6 +154,8 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 }
 
 function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): string[] {
+  // FIXME: very ugly, very bad, hate hate hate
+
   const warnings: string[] = [];
 
   const formattedKey = formatResourceKey(entry.key, "-");
