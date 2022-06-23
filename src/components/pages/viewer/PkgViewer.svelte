@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import type { Package } from "@s4tk/models";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import EntriesMenu from "./EntriesMenu.svelte";
   import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
   import { scanPackageForWarnings } from "../../../typescript/helpers";
   import MovableWindow from "../../layout/MovableWindow.svelte";
-  import type { Package } from "@s4tk/models";
+  import EntryView from "./EntryView.svelte";
 
   export let pkg: Package;
 
@@ -42,7 +42,7 @@
     {pkg}
     {warnings}
   />
-  <PrismWrapper slot="right" {entry} />
+  <EntryView slot="right" {entry} />
 </ResizableSplitView>
 
 {#if showWarnings}

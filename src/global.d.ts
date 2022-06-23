@@ -21,6 +21,7 @@ interface EntryFilterSettings {
 
 declare global {
   interface Window {
+    Prism: any,
     S4TK: {
       enums: {
         StringTableLocale: typeof StringTableLocale;
@@ -54,3 +55,4 @@ declare global {
 }
 
 window.S4TK = window.S4TK || {};
+window.Prism = window.Prism || {};
