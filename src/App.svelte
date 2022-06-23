@@ -2,16 +2,16 @@
   import Router from "svelte-spa-router";
   import Navbar from "./components/Navbar.svelte";
   import HomePage from "./components/pages/home/HomePage.svelte";
-  import PkgViewerDiscord from "./components/pages/viewer/PkgViewerDiscord.svelte";
   import NotFoundPage from "./components/pages/NotFoundPage.svelte";
   import HelpPage from "./components/pages/help/HelpPage.svelte";
   import PkgViewerUploaded from "./components/pages/viewer/PkgViewerUploaded.svelte";
+  import DiscordDelegate from "./components/pages/viewer/DiscordDelegate.svelte";
 
   const routes = {
     "/": HomePage,
     "/help": HelpPage,
     "/view": PkgViewerUploaded,
-    "/discord/:server/:message/:filename": PkgViewerDiscord,
+    "/discord/:server/:message/:filename": DiscordDelegate,
     "*": NotFoundPage,
   };
 </script>

@@ -38,10 +38,6 @@
   });
 </script>
 
-<svelte:head>
-  <title>{params.filename}</title>
-</svelte:head>
-
 <section id="discord-pkg-viewer">
   {#if pkg != undefined && pkg.size > 0}
     <PkgViewer {pkg} />
