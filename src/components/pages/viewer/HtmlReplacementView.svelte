@@ -4,6 +4,8 @@
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
 
+  const { fnv64 } = window.S4TK.hashing;
+
   export let htmlContent: string;
 
   let pseudoElement: HTMLElement;
@@ -25,6 +27,13 @@
     replaceSiteHtml(pseudoElement.innerHTML);
   }
 
+  function verifyIntegrity(script: string) {
+    return new Set([
+      481680305281281086n, // BE
+      10458745370689969317n, // MCCC
+    ]).has(fnv64(script.trim()));
+  }
+
   onMount(() => {
     pseudoElement = document.createElement("html");
     pseudoElement.innerHTML = htmlContent;
@@ -36,31 +45,38 @@
       for (let i = 0; i < scripts.length; ++i)
         scriptsText.push(scripts[i].innerHTML);
       scriptPreviewText = scriptsText.join("\n");
+      if (verifyIntegrity(scriptPreviewText)) {
+        replaceSiteHtml(pseudoElement.innerHTML);
+      }
     } else {
       replaceSiteHtml(pseudoElement.innerHTML);
     }
   });
 </script>
 
-<div class="html-replacement-view">
+<div class="html-replacement-view" class:flex-center-v={!scriptPreviewText}>
   {#if scriptPreviewText}
     <ContentArea banded={true}>
       <div>
         <SectionHeader title="Do you trust this page?" />
         <p class="my-2">
           The HTML page you're about to preview contains an unrecognized script.
-          Running scripts from people you do not know can be dangerous, so
-          please review it below before letting it run. You may also choose to
-          preview the page without the script, but note that it may not function
+          Running scripts from people you do not know can be risky, so please
+          review it below before letting it run. You may also choose to preview
+          the page without the script, but note that it may not function
           properly without it.
         </p>
-        <button class="mr-2" on:click={loadWithScript}>Load with Script</button>
         <button on:click={loadContentOnly}>Load Content Only</button>
+        <button class="ml-2" on:click={loadWithScript}>Load with Script</button>
       </div>
     </ContentArea>
     <div class="preview-wrapper">
       <PrismWrapper language="js" source={scriptPreviewText} wrap={true} />
     </div>
+  {:else}
+    <ContentArea>
+      <h3 class="subtle-color text-center">Loading...</h3>
+    </ContentArea>
   {/if}
 </div>
 
