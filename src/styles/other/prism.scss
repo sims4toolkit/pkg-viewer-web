@@ -26,6 +26,10 @@ pre[class*="language-"] {
   -moz-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
+
+  span {
+    font-family: $font-roboto-mono, Consolas, Monaco, monospace;
+  }
 }
 
 pre[class*="language-"] {
