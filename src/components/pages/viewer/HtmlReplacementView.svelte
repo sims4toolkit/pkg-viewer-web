@@ -6,6 +6,7 @@
 
   export let htmlContent: string;
 
+  let pseudoElement: HTMLElement;
   let scripts: HTMLCollectionOf<HTMLScriptElement>;
   let scriptPreviewText: string;
 
@@ -15,8 +16,17 @@
     document.close();
   }
 
+  function loadWithScript() {
+    replaceSiteHtml(htmlContent);
+  }
+
+  function loadContentOnly() {
+    for (let i = 0; i < scripts.length; ++i) scripts[i].remove();
+    replaceSiteHtml(pseudoElement.innerHTML);
+  }
+
   onMount(() => {
-    const pseudoElement = document.createElement("html");
+    pseudoElement = document.createElement("html");
     pseudoElement.innerHTML = htmlContent;
 
     scripts = pseudoElement.getElementsByTagName("script");
@@ -44,8 +54,8 @@
           preview the page without the script, but note that it may not function
           properly without it.
         </p>
-        <button class="mr-2">Load with Script</button>
-        <button>Load Content Only</button>
+        <button class="mr-2" on:click={loadWithScript}>Load with Script</button>
+        <button on:click={loadContentOnly}>Load Content Only</button>
       </div>
     </ContentArea>
     <div class="preview-wrapper">
