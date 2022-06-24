@@ -18,9 +18,27 @@
   let error: string;
   let errorStatus: number;
 
+  $: language = extension && getLanguageCode();
+
   $: errorStatusDollars = errorStatus
     ? `$${(errorStatus / 100).toFixed(2)}`
     : "";
+
+  function getLanguageCode() {
+    switch (extension) {
+      case "xml":
+      case "py":
+      case "json":
+      case "html":
+      case "js":
+      case "ts":
+        return extension;
+      case "cjs":
+        return "js";
+      default:
+        return "none";
+    }
+  }
 
   onMount(async () => {
     fetch(
@@ -46,7 +64,7 @@
 
 <section id="discord-plaintext-viewer" class:flex-center-v={!fileContent}>
   {#if fileContent}
-    <PrismWrapper language={extension} source={fileContent} />
+    <PrismWrapper {language} source={fileContent} />
   {:else}
     <ContentArea>
       {#if error}
