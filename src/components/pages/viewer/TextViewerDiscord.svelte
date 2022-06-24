@@ -4,6 +4,7 @@
   import ContentArea from "../../layout/ContentArea.svelte";
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
+  import HtmlReplacementView from "./HtmlReplacementView.svelte";
 
   const { Buffer } = window.S4TK.Node;
 
@@ -17,6 +18,7 @@
   let fileContent: string;
   let error: string;
   let errorStatus: number;
+  let htmlContent: string;
 
   $: language = extension && getLanguageCode();
 
@@ -29,7 +31,6 @@
       case "xml":
       case "py":
       case "json":
-      case "html":
       case "js":
       case "ts":
         return extension;
@@ -48,7 +49,13 @@
         if (res.ok) {
           const arrBuff = await res.arrayBuffer();
           const buffer = Buffer.from(arrBuff);
-          fileContent = buffer.toString();
+          const content = buffer.toString();
+
+          if (extension !== "html") {
+            fileContent = content;
+          } else {
+            htmlContent = content;
+          }
         } else {
           errorStatus = res.status;
           error = await res.text();
@@ -62,9 +69,14 @@
   });
 </script>
 
-<section id="discord-plaintext-viewer" class:flex-center-v={!fileContent}>
+<section
+  id="discord-plaintext-viewer"
+  class:flex-center-v={!(fileContent || htmlContent)}
+>
   {#if fileContent}
     <PrismWrapper {language} source={fileContent} />
+  {:else if htmlContent}
+    <HtmlReplacementView {htmlContent} />
   {:else}
     <ContentArea>
       {#if error}
