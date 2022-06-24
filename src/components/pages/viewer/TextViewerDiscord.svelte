@@ -72,6 +72,7 @@
 <section
   id="discord-plaintext-viewer"
   class:flex-center-v={!(fileContent || htmlContent)}
+  class:html-content={htmlContent}
 >
   {#if fileContent}
     <PrismWrapper {language} source={fileContent} />
@@ -93,5 +94,9 @@
 <style lang="scss">
   #discord-plaintext-viewer {
     height: 100vh;
+
+    &.html-content {
+      padding-top: 0;
+    }
   }
 </style>

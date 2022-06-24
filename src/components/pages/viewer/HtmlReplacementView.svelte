@@ -49,13 +49,18 @@
       </div>
     </ContentArea>
     <div class="preview-wrapper">
-      <PrismWrapper language="js" source={scriptPreviewText} />
+      <PrismWrapper language="js" source={scriptPreviewText} wrap={true} />
     </div>
   {/if}
 </div>
 
 <style lang="scss">
   .html-replacement-view {
+    max-height: 100vh;
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+
     button {
       background-color: transparent;
       border-radius: 4px;
@@ -68,6 +73,12 @@
         color: var(--color-bg);
         cursor: pointer;
       }
+    }
+
+    .preview-wrapper {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
     }
   }
 </style>
