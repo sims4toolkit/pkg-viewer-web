@@ -806,6 +806,8 @@ pre[class*=language-] {
 pre[class*=language-] {
   padding: 0.5em 1em;
   margin: 0;
+}
+pre[class*=language-]:not(.wrap) {
   overflow: auto;
   height: 100%;
 }
