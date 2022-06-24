@@ -6,34 +6,15 @@
 
   let formattedCode: string;
   $: source && highlightCode();
-  $: languageCode = getLanguageCode();
 
   function highlightCode() {
-    const grammar = prism.languages[languageCode];
+    const grammar = prism.languages[language];
     formattedCode =
-      languageCode === "none"
-        ? source
-        : prism.highlight(source, grammar, languageCode);
-  }
-
-  function getLanguageCode() {
-    switch (language) {
-      case "xml":
-      case "py":
-      case "json":
-      case "html":
-      case "js":
-      case "ts":
-        return language;
-      case "cjs":
-        return "js";
-      default:
-        return "none";
-    }
+      language === "none" ? source : prism.highlight(source, grammar, language);
   }
 </script>
 
-<pre class="language-{languageCode}" command-line data-output="2-17"><code
-    class="language-{languageCode}"
-    >{#if languageCode === "none"}{formattedCode}{:else}{@html formattedCode}{/if}</code
+<pre class="language-{language}" command-line data-output="2-17"><code
+    class="language-{language}"
+    >{#if language === "none"}{formattedCode}{:else}{@html formattedCode}{/if}</code
   ></pre>
