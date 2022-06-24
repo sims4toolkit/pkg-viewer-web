@@ -802,6 +802,10 @@ pre[class*=language-] {
   -ms-hyphens: none;
   hyphens: none;
 }
+code[class*=language-] span,
+pre[class*=language-] span {
+  font-family: "Roboto Mono", Consolas, Monaco, monospace;
+}
 
 pre[class*=language-] {
   padding: 0.5em 1em;
