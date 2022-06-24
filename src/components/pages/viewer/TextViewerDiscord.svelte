@@ -79,5 +79,7 @@
 </section>
 
 <style lang="scss">
-  // intentionally blank
+  #discord-plaintext-viewer {
+    height: 100vh;
+  }
 </style>
