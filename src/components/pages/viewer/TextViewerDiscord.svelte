@@ -30,11 +30,11 @@
     switch (extension) {
       case "xml":
       case "py":
-      case "json":
       case "js":
       case "ts":
         return extension;
       case "cjs":
+      case "json":
         return "js";
       default:
         return "none";
@@ -75,7 +75,11 @@
   class:html-content={htmlContent}
 >
   {#if fileContent}
-    <PrismWrapper {language} source={fileContent} />
+    <PrismWrapper
+      {language}
+      source={fileContent}
+      grammarSelect={language === "none"}
+    />
   {:else if htmlContent}
     <HtmlReplacementView {htmlContent} />
   {:else}
