@@ -2,6 +2,7 @@
   import MovableWindow from "../../layout/MovableWindow.svelte";
   import Select from "../../shared/Select.svelte";
   import type { EntryViewSettings } from "../../../global";
+  import Button from "../../shared/Button.svelte";
 
   export let onClose: () => void;
   export let viewSettings: EntryViewSettings;
@@ -18,13 +19,18 @@
   ];
 </script>
 
-<MovableWindow title="Filter" {onClose}>
-  <div>
+<MovableWindow title="View Options" {onClose}>
+  <div class="flex-col flex-gap">
     <Select
       label="resource key format"
       name="resource-key-format-view"
       bind:selected={viewSettings.resourceKeyFormat}
       options={resourceKeyFormatOptions}
+      fillWidth={true}
+    />
+    <Button
+      text="Restore Comments & Format XML"
+      onClick={() => console.log("click")}
       fillWidth={true}
     />
   </div>
