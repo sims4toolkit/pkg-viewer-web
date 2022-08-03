@@ -19,6 +19,10 @@ interface EntryFilterSettings {
   instanceHex: string;
 }
 
+interface EntryViewSettings {
+  resourceKeyFormat: number;
+}
+
 declare global {
   interface Window {
     Prism: any,

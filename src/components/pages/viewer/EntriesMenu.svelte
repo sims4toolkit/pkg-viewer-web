@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { Package } from "@s4tk/models";
-  import Select from "../../shared/Select.svelte";
   import PackageEntryRow from "./PackageEntryRow.svelte";
   import {
     getDefaultFilters,
@@ -12,8 +11,9 @@
   import { formatResourceInstance } from "@s4tk/hashing/formatting";
   import { StringTableLocale } from "@s4tk/models/enums";
   import FilterWindow from "./FilterWindow.svelte";
-  import type { EntryFilterSettings } from "../../../global";
+  import type { EntryFilterSettings, EntryViewSettings } from "../../../global";
   import EntriesDownloadBar from "./EntriesDownloadBar.svelte";
+  import ViewOptionsWindow from "./ViewOptionsWindow.svelte";
 
   const { BinaryResourceType } = window.S4TK.enums;
 
@@ -24,9 +24,13 @@
   export let warnings: Map<number, string[]>;
   export let selectedIndex: number;
 
+  let showViewWindow = false;
   let showFilterWindow = false;
   let filteredEntries = [];
   let filterSettings: EntryFilterSettings = getDefaultFilters();
+  let viewSettings: EntryViewSettings = {
+    resourceKeyFormat: 0,
+  };
 
   $: numFilteredOut = pkg.size - filteredEntries.length;
   $: filteredText = `${numFilteredOut} ${
@@ -98,13 +102,15 @@
     )
       return false;
 
-    if (
-      filterSettings.instanceHex &&
-      !formatResourceInstance(entry.key.instance).includes(
-        filterSettings.instanceHex.toUpperCase()
-      )
-    )
-      return false;
+    if (filterSettings.instanceHex) {
+      const inst =
+        viewSettings.resourceKeyFormat === 0
+          ? formatResourceInstance(entry.key.instance)
+          : entry.key.instance.toString();
+
+      if (!inst.includes(filterSettings.instanceHex.toUpperCase()))
+        return false;
+    }
 
     return true;
   }
@@ -120,6 +126,14 @@
   <div class="w-100 flex-space-between">
     <p class="small-title">Files</p>
     <div class="flex flex-gap">
+      <button
+        class="button-wrapper flex-center-v flex-gap-small"
+        on:click={() => (showViewWindow = !showViewWindow)}
+        title="View"
+      >
+        <img src="./assets/eye-outline.svg" class="is-svg" alt="View" />
+        <p class="my-0 subtle-text">View</p>
+      </button>
       <button
         class="button-wrapper flex-center-v flex-gap-small"
         on:click={() => (showFilterWindow = !showFilterWindow)}
@@ -165,6 +179,7 @@
             onClick={() => (selectedIndex = entry.id)}
             {onWarningClick}
             {entry}
+            {viewSettings}
             warnings={warnings.get(entry.id)}
             active={selectedIndex === entry.id}
           />
@@ -183,6 +198,13 @@
   <FilterWindow
     bind:filterSettings
     onClose={() => (showFilterWindow = false)}
+  />
+{/if}
+
+{#if showViewWindow}
+  <ViewOptionsWindow
+    bind:viewSettings
+    onClose={() => (showViewWindow = false)}
   />
 {/if}
 

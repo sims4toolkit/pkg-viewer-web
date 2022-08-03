@@ -1,6 +1,7 @@
 <script lang="ts">
   import { formatResourceKey } from "@s4tk/hashing/formatting";
   import type { ResourceKeyPair } from "@s4tk/models/types";
+  import type { EntryViewSettings } from "../../../global";
   import { getDisplayName, getTypeDisplay } from "../../../typescript/helpers";
 
   export let onClick: () => void;
@@ -8,6 +9,12 @@
   export let entry: ResourceKeyPair;
   export let active: boolean;
   export let warnings: string[];
+  export let viewSettings: EntryViewSettings;
+
+  $: resourceKey =
+    viewSettings.resourceKeyFormat === 0
+      ? formatResourceKey(entry.key)
+      : entry.key.instance;
 </script>
 
 <button class="button-wrapper w-100 text-left" on:click={onClick}>
@@ -17,7 +24,7 @@
       {getTypeDisplay(entry.key.type, entry.key.group)}
     </p>
     <p class="small-title monospace my-0 nowrap">
-      {formatResourceKey(entry.key)}
+      {resourceKey}
     </p>
     {#if warnings}
       <button

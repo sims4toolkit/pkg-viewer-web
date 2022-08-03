@@ -112,7 +112,7 @@
     {/if}
     <br />
     <TextInput
-      label="hex instance substring"
+      label="instance substring"
       name="instance-filter"
       placeholder="Instance"
       bind:value={filterSettings.instanceHex}
