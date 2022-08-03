@@ -199,7 +199,7 @@
 
     .entries-wrapper {
       overflow-y: auto;
-      max-height: 88%;
+      height: 88%;
     }
 
     .no-entries-container {
