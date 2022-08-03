@@ -1,7 +1,13 @@
 <script lang="ts">
   import JSZip from "jszip";
   import { saveAs } from "file-saver";
-  import type { Package, SimDataResource, XmlResource } from "@s4tk/models";
+  import type {
+    DdsImageResource,
+    Package,
+    SimDataResource,
+    StringTableResource,
+    XmlResource,
+  } from "@s4tk/models";
   import type { ResourceEntry } from "@s4tk/models/types";
   import Select from "../../shared/Select.svelte";
   const { EncodingType, StringTableLocale } = window.S4TK.enums;
@@ -22,13 +28,23 @@
     },
     {
       value: 1,
-      text: "ZIP",
-      download: downloadZip,
+      text: "ZIP (Rendered)",
+      download: () => downloadZip(false),
     },
     {
       value: 2,
-      text: "Current File",
-      download: downloadCurrentFile,
+      text: "ZIP (Raw)",
+      download: () => downloadZip(true),
+    },
+    {
+      value: 3,
+      text: "Current File (Rendered)",
+      download: () => downloadCurrentFile(false),
+    },
+    {
+      value: 4,
+      text: "Current File (Raw)",
+      download: () => downloadCurrentFile(true),
     },
   ];
 
@@ -49,31 +65,46 @@
     saveAs(new Blob([pkg.getBuffer()]), pkgName);
   }
 
-  async function downloadZip() {
+  async function downloadZip(raw: boolean) {
     const zip = new JSZip();
 
-    pkg.entries.forEach((entry) => {
-      const filename = getFilename(entry);
-      const content = getFileContent(entry);
+    for (let i = 0; i < pkg.size; ++i) {
+      const entry = pkg.entries[i];
+      const filename = getFilename(entry, raw);
+      const content = await getFileContent(entry, raw);
       zip.file(filename, content);
-    });
+    }
 
     const blob = await zip.generateAsync({ type: "blob" });
     saveAs(blob, pkgName.replaceAll(".package", "") + ".zip");
   }
 
-  async function downloadCurrentFile() {
+  async function downloadCurrentFile(raw: boolean) {
     const entry = pkg.entries[selectedIndex];
-    const filename = getFilename(entry);
-    const content = getFileContent(entry);
+    const filename = getFilename(entry, raw);
+    const content = await getFileContent(entry, raw);
     saveAs(new Blob([content]), filename);
   }
 
-  function getFileContent(entry: ResourceEntry): string | Buffer {
+  async function getFileContent(
+    entry: ResourceEntry,
+    raw: boolean
+  ): Promise<string | Buffer> {
     try {
+      if (raw) return entry.value.getBuffer();
+
       switch (entry.value.encodingType) {
         case EncodingType.DATA:
+          // DATA as XML
           return (entry.value as SimDataResource).toXmlDocument().toXml();
+        case EncodingType.STBL:
+          // STBL as JSON
+          const stbl = (entry.value as StringTableResource).toJsonObject();
+          return JSON.stringify(stbl, null, 2);
+        case EncodingType.DDS:
+          // DDS as PNG
+          const image = (entry.value as DdsImageResource).image.toJimp();
+          return await image.getBufferAsync("image/png");
         default:
           return entry.value.getBuffer();
       }
@@ -83,11 +114,11 @@
     }
   }
 
-  function getFilename(entry: ResourceEntry): string {
+  function getFilename(entry: ResourceEntry, raw: boolean): string {
     const parts = [formatResourceKey(entry.key, "!")];
     const name = getResourceName(entry);
     if (name) parts.push(name);
-    parts.push(getExtension(entry));
+    parts.push(getExtension(entry, raw));
     return parts.join(".");
   }
 
@@ -111,16 +142,16 @@
     }
   }
 
-  function getExtension(entry: ResourceEntry) {
+  function getExtension(entry: ResourceEntry, raw: boolean) {
     switch (entry.value.encodingType) {
       case EncodingType.DATA:
-        return "SimData.xml";
-      case EncodingType.Unknown:
-        return "binary";
+        return raw ? "simdata" : "SimData.xml";
+      case EncodingType.STBL:
+        return raw ? "stbl" : "json";
+      case EncodingType.DDS:
+        return raw ? "dds" : "png";
       default:
-        return (
-          EncodingType[entry.value.encodingType]?.toLowerCase() ?? "unknown"
-        );
+        return entry.value.isXml() ? "xml" : "binary";
     }
   }
 
