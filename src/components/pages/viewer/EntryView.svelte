@@ -10,6 +10,8 @@
   let displayType: "code" | "image" | "none" = "code";
   let showContent = true;
   let imageSrc: string;
+  let imageWidth: number;
+  let imageHeight: number;
 
   $: {
     if (entry != null) refreshEntry();
@@ -38,7 +40,7 @@
         return (source = JSON.stringify(entry.value.toJsonObject(), null, 2));
       case EncodingType.DDS:
         displayType = "image";
-        return (imageSrc = await getImageSrc());
+        return await setImageSrc();
       default:
         if (entry.value.isXml()) {
           displayType = "code";
@@ -52,24 +54,28 @@
     }
   }
 
-  async function getImageSrc(): Promise<string> {
-    const buffer = await (entry.value as DdsImageResource).image
-      .toJimp()
-      .getBufferAsync("image/png");
-
-    return "data:image/png;base64," + buffer.toString("base64");
+  async function setImageSrc() {
+    const image = (entry.value as DdsImageResource).image;
+    const jimpImage = image.toJimp();
+    imageWidth = jimpImage.getWidth();
+    imageHeight = jimpImage.getHeight();
+    const buffer = await jimpImage.getBufferAsync("image/png");
+    imageSrc = "data:image/png;base64," + buffer.toString("base64");
   }
 </script>
 
 <div class="prism-wrapper" class:flex-center={displayType !== "code"}>
   {#if showContent}
-    <!-- Wrapped b/c load order -->
     {#if displayType === "code"}
       <PrismWrapper {language} {source} />
     {:else if displayType === "image"}
       {#if imageSrc}
-        <!-- Wrapped b/c load order -->
-        <img src={imageSrc} alt="DDS Preview" />
+        <div class="flex-center-h flex-col flex-gap-small">
+          <img src={imageSrc} alt="DDS Preview" />
+          <p class="my-0 subtle-text text-center">
+            {imageWidth} x {imageHeight}
+          </p>
+        </div>
       {/if}
     {:else}
       <p>none</p>
@@ -83,5 +89,9 @@
     height: 100%;
     overflow-x: auto;
     overflow-y: auto;
+
+    img {
+      border: 1px solid var(--color-text);
+    }
   }
 </style>
