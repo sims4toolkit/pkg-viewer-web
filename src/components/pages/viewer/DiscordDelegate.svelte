@@ -8,7 +8,9 @@
     filename: string;
   };
 
-  const extension = params.filename?.split(".").at(-1);
+  // don't use `at()` because Safari is dumb
+  const lastItem = (arr: any[]) => arr[arr.length - 1];
+  const extension = lastItem(params.filename?.split("."));
 </script>
 
 <svelte:head>
