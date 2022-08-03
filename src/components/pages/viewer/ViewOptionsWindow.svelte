@@ -49,6 +49,7 @@
     />
     <Button
       text="Format XML"
+      disabledText="XML Already Formatted"
       disabled={viewSettings.formattedXml}
       onClick={formatXml}
       fillWidth={true}

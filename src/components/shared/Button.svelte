@@ -1,11 +1,14 @@
 <script lang="ts">
   export let text: string;
+  export let disabledText: string = text;
   export let onClick: () => void;
   export let fillWidth = false;
   export let disabled = false;
 </script>
 
-<button on:click={onClick} class:w-100={fillWidth} {disabled}>{text}</button>
+<button on:click={onClick} class:w-100={fillWidth} {disabled}
+  >{disabled ? disabledText : text}</button
+>
 
 <style lang="scss">
   button {
