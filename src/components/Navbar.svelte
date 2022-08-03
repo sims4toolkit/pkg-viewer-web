@@ -2,7 +2,7 @@
   import { link, location } from "svelte-spa-router";
   import ThemeToggler from "./shared/ThemeToggler.svelte";
 
-  $: viewIcon = $location === "/view" ? "eye" : "eye-outline";
+  $: viewIcon = $location === "/view" ? "home" : "home-outline";
   $: helpIcon = $location === "/help" ? "help-circle" : "help-circle-outline";
 </script>
 
@@ -15,7 +15,7 @@
   </div>
   <div class="right flex-center-v flex-space-between">
     <a href="/view" class:active={$location === "/view"} use:link title="View">
-      <img class="is-svg" src="./assets/{viewIcon}.svg" alt="View" />
+      <img class="is-svg smaller" src="./assets/{viewIcon}.svg" alt="View" />
     </a>
     <a href="/help" class:active={$location === "/help"} use:link title="Help">
       <img class="is-svg" src="./assets/{helpIcon}.svg" alt="Help" />
@@ -56,9 +56,9 @@
         width: auto;
         margin-top: 4px;
 
-        // &.smaller {
-        //   height: 20px;
-        // }
+        &.smaller {
+          height: 20px;
+        }
       }
     }
 
