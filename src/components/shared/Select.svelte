@@ -3,6 +3,7 @@
   export let name: string;
   export let selected: number;
   export let fillWidth = false;
+  export let small = false;
   export let options: {
     value: number;
     text: string;
@@ -11,7 +12,7 @@
 
 <div class="select-with-label" class:w-100={fillWidth}>
   {#if Boolean(label)}
-    <label class="small-title" for={name}>{label}</label>
+    <label class="small-title" class:small for={name}>{label}</label>
   {/if}
   <select
     {name}
@@ -19,6 +20,7 @@
     bind:value={selected}
     class:mt-half={Boolean(label)}
     class:w-100={fillWidth}
+    class:small
   >
     {#each options as option, key (key)}
       <option value={option.value}>
@@ -35,6 +37,12 @@
       // TODO: Fixes appearance on safari
       // -webkit-appearance: none;
 
+      &.small {
+        height: 28px;
+        font-size: 0.8em;
+        padding: 0.15em;
+      }
+
       option {
         background-color: var(--color-bg);
       }
@@ -43,6 +51,10 @@
     label,
     select {
       display: block;
+    }
+
+    label.small {
+      font-size: 0.6em;
     }
   }
 </style>

@@ -49,7 +49,7 @@
 
 <section id="discord-pkg-viewer" class:flex-center-v={!pkg}>
   {#if pkg != undefined && pkg.size > 0}
-    <PkgViewer {pkg} />
+    <PkgViewer {pkg} pkgName={params.filename} />
   {:else}
     <ContentArea>
       {#if error}

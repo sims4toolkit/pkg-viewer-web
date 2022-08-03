@@ -10,6 +10,7 @@
   const { Buffer } = window.S4TK.Node;
 
   let pkg: Package;
+  let pkgName: string;
   let files: FileList;
   let filesInvalid = false;
   let fileError: string = null;
@@ -17,6 +18,7 @@
   $: {
     if (files?.length) {
       const file = files[0];
+      pkgName = file.name;
       filesInvalid = false;
       fileError = null;
       parsePackage(file);
@@ -45,7 +47,7 @@
 
 <section id="discord-pkg-viewer" class="flex-col flex-space-between">
   {#if pkg != undefined && pkg.size > 0}
-    <PkgViewer {pkg} />
+    <PkgViewer {pkg} {pkgName} />
   {:else}
     <ContentArea>
       <SectionHeader title="Scan package for issues" />

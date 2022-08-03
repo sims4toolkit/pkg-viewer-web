@@ -7,6 +7,7 @@
   import MovableWindow from "../../layout/MovableWindow.svelte";
   import EntryView from "./EntryView.svelte";
 
+  export let pkgName: string;
   export let pkg: Package;
 
   const warnings = scanPackageForWarnings(pkg);
@@ -40,6 +41,7 @@
     onWarningClick={() => (showWarnings = true)}
     bind:selectedIndex
     {pkg}
+    {pkgName}
     {warnings}
   />
   <EntryView slot="right" {entry} />

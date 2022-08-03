@@ -1,22 +1,25 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { Package } from "@s4tk/models";
+  import Select from "../../shared/Select.svelte";
   import PackageEntryRow from "./PackageEntryRow.svelte";
   import {
     getDefaultFilters,
     getDisplayName,
     isEncodingSupported,
   } from "../../../typescript/helpers";
-  import type { ResourceEntry, ResourceKeyPair } from "@s4tk/models/types";
+  import type { ResourceEntry } from "@s4tk/models/types";
   import { formatResourceInstance } from "@s4tk/hashing/formatting";
   import { StringTableLocale } from "@s4tk/models/enums";
   import FilterWindow from "./FilterWindow.svelte";
   import type { EntryFilterSettings } from "../../../global";
+  import EntriesDownloadBar from "./EntriesDownloadBar.svelte";
 
   const { BinaryResourceType } = window.S4TK.enums;
 
   export let onClose: () => void;
   export let onWarningClick: () => void;
+  export let pkgName: string;
   export let pkg: Package;
   export let warnings: Map<number, string[]>;
   export let selectedIndex: number;
@@ -173,6 +176,7 @@
       {/if}
     {/if}
   </div>
+  <EntriesDownloadBar {pkg} {pkgName} bind:selectedIndex />
 </div>
 
 {#if showFilterWindow}
@@ -195,7 +199,7 @@
 
     .entries-wrapper {
       overflow-y: auto;
-      max-height: 92%;
+      max-height: 88%;
     }
 
     .no-entries-container {
