@@ -97,6 +97,8 @@
 
     img {
       border: 1px solid var(--color-text);
+      max-width: 256px;
+      max-height: 256px;
     }
   }
 </style>
