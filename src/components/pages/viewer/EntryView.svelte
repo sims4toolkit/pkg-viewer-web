@@ -9,7 +9,6 @@
 
   let displayType: "code" | "image" | "none" = "code";
   let showContent = true;
-  let imageElement: HTMLImageElement;
   let imageSrc: string;
 
   $: {
@@ -64,11 +63,13 @@
 
 <div class="prism-wrapper" class:flex-center={displayType !== "code"}>
   {#if showContent}
+    <!-- Wrapped b/c load order -->
     {#if displayType === "code"}
       <PrismWrapper {language} {source} />
     {:else if displayType === "image"}
       {#if imageSrc}
-        <img bind:this={imageElement} src={imageSrc} alt="DDS Preview" />
+        <!-- Wrapped b/c load order -->
+        <img src={imageSrc} alt="DDS Preview" />
       {/if}
     {:else}
       <p>none</p>

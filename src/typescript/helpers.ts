@@ -54,7 +54,10 @@ export function getDisplayName(entry: ResourceKeyPair): string {
         StringTableLocale[StringTableLocale.getLocale(entry.key.instance)];
       return locale + " String Table";
     case EncodingType.DDS:
-      return "Image";
+      return (entry.key.type === BinaryResourceType.DdsImage
+        ? "DDS"
+        : "DST"
+      ) + " Image";
     case EncodingType.Unknown:
       return entry.value.isXml() ? "Unnamed XML" : "Unnamed";
     default:
