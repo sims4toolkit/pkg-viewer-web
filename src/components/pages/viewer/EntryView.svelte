@@ -7,7 +7,7 @@
   export let language = "xml";
   export let source = "";
 
-  let displayType: "code" | "image" | "none" = "code";
+  let displayType: "code" | "image" = "code";
   let showContent = true;
   let imageSrc: string;
   let imageWidth: number;
@@ -39,7 +39,6 @@
         language = "js";
         return (source = JSON.stringify(entry.value.toJsonObject(), null, 2));
       case EncodingType.DDS:
-        displayType = "image";
         return await setImageSrc();
       default:
         if (entry.value.isXml()) {
@@ -47,7 +46,7 @@
           language = "xml";
           return (source = entry.value.buffer.toString());
         } else {
-          displayType = "none";
+          displayType = "code";
           language = "none";
           return (source = entry.value.getBuffer().toString());
         }
@@ -55,12 +54,20 @@
   }
 
   async function setImageSrc() {
-    const image = (entry.value as DdsImageResource).image;
-    const jimpImage = image.toJimp();
-    imageWidth = jimpImage.getWidth();
-    imageHeight = jimpImage.getHeight();
-    const buffer = await jimpImage.getBufferAsync("image/png");
-    imageSrc = "data:image/png;base64," + buffer.toString("base64");
+    try {
+      displayType = "image";
+      const image = (entry.value as DdsImageResource).image;
+      const jimpImage = image.toJimp();
+      imageWidth = jimpImage.getWidth();
+      imageHeight = jimpImage.getHeight();
+      const buffer = await jimpImage.getBufferAsync("image/png");
+      imageSrc = "data:image/png;base64," + buffer.toString("base64");
+    } catch (e) {
+      console.error(e);
+      displayType = "code";
+      language = "none";
+      source = "Error: Could not parse DDS image.";
+    }
   }
 </script>
 
@@ -77,8 +84,6 @@
           </p>
         </div>
       {/if}
-    {:else}
-      <p>none</p>
     {/if}
   {/if}
 </div>
