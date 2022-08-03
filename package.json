@@ -21,7 +21,7 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
     "@s4tk/hashing": "^0.2.1",
-    "@s4tk/models": "^0.4.0",
+    "@s4tk/models": "^0.6.4",
     "@tsconfig/svelte": "^2.0.0",
     "@types/file-saver": "^2.0.5",
     "browserify": "^17.0.0",
