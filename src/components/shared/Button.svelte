@@ -2,9 +2,10 @@
   export let text: string;
   export let onClick: () => void;
   export let fillWidth = false;
+  export let disabled = false;
 </script>
 
-<button on:click={onClick} class:w-100={fillWidth}>{text}</button>
+<button on:click={onClick} class:w-100={fillWidth} {disabled}>{text}</button>
 
 <style lang="scss">
   button {
@@ -16,7 +17,12 @@
     padding: 0.8em;
     color: var(--color-text);
 
-    &:hover {
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
+    &:not(:disabled):hover {
       cursor: pointer;
       background-color: var(--color-bg-secondary);
     }

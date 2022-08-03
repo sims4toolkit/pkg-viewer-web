@@ -30,6 +30,7 @@
   let filterSettings: EntryFilterSettings = getDefaultFilters();
   let viewSettings: EntryViewSettings = {
     resourceKeyFormat: 0,
+    formattedXml: false,
   };
 
   $: numFilteredOut = pkg.size - filteredEntries.length;
@@ -203,6 +204,7 @@
 
 {#if showViewWindow}
   <ViewOptionsWindow
+    bind:pkg
     bind:viewSettings
     onClose={() => (showViewWindow = false)}
   />

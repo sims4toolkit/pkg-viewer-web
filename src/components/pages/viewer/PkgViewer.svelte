@@ -40,7 +40,7 @@
     onClose={collapseFileExplorer}
     onWarningClick={() => (showWarnings = true)}
     bind:selectedIndex
-    {pkg}
+    bind:pkg
     {pkgName}
     {warnings}
   />

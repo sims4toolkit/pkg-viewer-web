@@ -21,6 +21,7 @@ interface EntryFilterSettings {
 
 interface EntryViewSettings {
   resourceKeyFormat: number;
+  formattedXml: boolean;
 }
 
 declare global {
