@@ -53,6 +53,8 @@ export function getDisplayName(entry: ResourceKeyPair): string {
       const locale =
         StringTableLocale[StringTableLocale.getLocale(entry.key.instance)];
       return locale + " String Table";
+    case EncodingType.DDS:
+      return "Image";
     case EncodingType.Unknown:
       return entry.value.isXml() ? "Unnamed XML" : "Unnamed";
     default:
@@ -60,11 +62,16 @@ export function getDisplayName(entry: ResourceKeyPair): string {
   }
 }
 
+const SUPPORTED_ENCODINGS = new Set([
+  EncodingType.XML,
+  EncodingType.STBL,
+  EncodingType.DATA,
+  EncodingType.DDS,
+]);
+
 export function isEncodingSupported(entry: ResourceEntry): boolean {
   return (
-    entry.key.type === BinaryResourceType.StringTable ||
-    entry.key.type === BinaryResourceType.SimData ||
-    entry.key.type in TuningResourceType ||
+    SUPPORTED_ENCODINGS.has(entry.value.encodingType) ||
     entry.value.isXml()
   );
 }
