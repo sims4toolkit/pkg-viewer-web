@@ -6,6 +6,7 @@
   import { scanPackageForWarnings } from "../../../typescript/helpers";
   import MovableWindow from "../../layout/MovableWindow.svelte";
   import EntryView from "./EntryView.svelte";
+  import { TuningResourceType } from "@s4tk/models/enums";
 
   export let pkgName: string;
   export let pkg: Package;
@@ -32,6 +33,23 @@
   function collapseFileExplorer() {
     splitview.collapseLeftPanel();
   }
+
+  function goToFile(instance: bigint) {
+    const index = getIndexOfInstance(instance);
+    if (index >= 0) selectedIndex = index;
+  }
+
+  function pkgHasInstance(instance: bigint): boolean {
+    const index = getIndexOfInstance(instance);
+    return index !== selectedIndex && index >= 0;
+  }
+
+  function getIndexOfInstance(instance: bigint): number {
+    return pkg.entries.findIndex(
+      (entry) =>
+        entry.key.type in TuningResourceType && entry.key.instance === instance
+    );
+  }
 </script>
 
 <ResizableSplitView leftPanelName="File Explorer" bind:this={splitview}>
@@ -44,7 +62,7 @@
     {pkgName}
     {warnings}
   />
-  <EntryView slot="right" {entry} />
+  <EntryView slot="right" {entry} {goToFile} {pkgHasInstance} />
 </ResizableSplitView>
 
 {#if showWarnings}

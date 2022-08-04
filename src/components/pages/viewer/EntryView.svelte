@@ -3,6 +3,8 @@
   import PrismWrapper from "../../layout/PrismWrapper.svelte";
   const { EncodingType } = window.S4TK.enums;
 
+  export let pkgHasInstance: (instance: bigint) => boolean;
+  export let goToFile: (instance: bigint) => void;
   export let entry = null;
   export let language = "xml";
   export let source = "";
@@ -12,6 +14,9 @@
   let imageSrc: string;
   let imageWidth: number;
   let imageHeight: number;
+  let showGoToFileButton = false;
+  let goToFileButton: HTMLButtonElement;
+  let goToFileAction: () => void;
 
   $: {
     if (entry != null) refreshEntry();
@@ -69,9 +74,45 @@
       source = "Error: Could not parse DDS image.";
     }
   }
+
+  function getSelectionText() {
+    var text = "";
+    if (window.getSelection) {
+      text = window.getSelection().toString();
+      //@ts-ignore
+    } else if (document.selection && document.selection.type != "Control") {
+      //@ts-ignore
+      text = document.selection.createRange().text;
+    }
+    return text;
+  }
+
+  function handleMouseUp(e: MouseEvent) {
+    try {
+      const text = getSelectionText();
+      const instance = BigInt(text);
+      if (pkgHasInstance(instance)) {
+        showGoToFileButton = true;
+        goToFileButton.style.left = e.pageX + "px";
+        goToFileButton.style.top = e.pageY + 15 + "px";
+        goToFileAction = () => {
+          showGoToFileButton = false;
+          goToFile(instance);
+        };
+      } else {
+        showGoToFileButton = false;
+      }
+    } catch (_) {
+      showGoToFileButton = false;
+    }
+  }
 </script>
 
-<div class="prism-wrapper" class:flex-center={displayType !== "code"}>
+<div
+  class="prism-wrapper"
+  class:flex-center={displayType !== "code"}
+  on:mouseup={handleMouseUp}
+>
   {#if showContent}
     {#if displayType === "code"}
       <PrismWrapper {language} {source} />
@@ -88,6 +129,13 @@
   {/if}
 </div>
 
+<button
+  id="go-to-file-button"
+  hidden={!showGoToFileButton}
+  bind:this={goToFileButton}
+  on:click={goToFileAction}>Go to File</button
+>
+
 <style lang="scss">
   .prism-wrapper {
     max-width: 100%;
@@ -99,6 +147,22 @@
       border: 1px solid var(--color-text);
       max-width: 256px;
       max-height: 256px;
+    }
+  }
+
+  button#go-to-file-button {
+    position: fixed;
+    z-index: 5000;
+    background: none;
+    border: 1px solid var(--color-bg-secondary);
+    background-color: var(--color-card-secondary);
+    border-radius: 4px;
+    padding: 0.25em;
+    color: var(--color-text);
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--color-bg-secondary);
     }
   }
 </style>
