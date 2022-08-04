@@ -20,6 +20,25 @@
     },
   ];
 
+  const sortOrderOptions = [
+    {
+      value: 0,
+      text: "Chronological",
+    },
+    {
+      value: 1,
+      text: "Alphanumeric",
+    },
+    {
+      value: 2,
+      text: "Reverse Alphanumeric",
+    },
+    {
+      value: 3,
+      text: "Tuning ID",
+    },
+  ];
+
   async function formatXml() {
     try {
       // format XML
@@ -42,9 +61,16 @@
   <div class="flex-col flex-gap">
     <Select
       label="resource key format"
-      name="resource-key-format-view"
+      name="resource-key-format-select"
       bind:selected={viewSettings.resourceKeyFormat}
       options={resourceKeyFormatOptions}
+      fillWidth={true}
+    />
+    <Select
+      label="sort order"
+      name="sort-order-select"
+      bind:selected={viewSettings.sortOrder}
+      options={sortOrderOptions}
       fillWidth={true}
     />
     <Button

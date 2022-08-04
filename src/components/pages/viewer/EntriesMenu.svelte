@@ -30,6 +30,7 @@
   let filterSettings: EntryFilterSettings = getDefaultFilters();
   let viewSettings: EntryViewSettings = {
     resourceKeyFormat: 0,
+    sortOrder: 0,
     formattedXml: false,
   };
 
@@ -46,8 +47,11 @@
     filterSettings.showUnsupported;
     filterSettings.simDataGroup;
     filterSettings.stblLocale;
+    viewSettings.sortOrder;
 
-    filteredEntries = pkg.entries.filter(entryFilter);
+    filteredEntries = pkg.entries
+      .filter(entryFilter)
+      .sort(getEntrySorter(viewSettings.sortOrder));
   }
 
   onMount(() => {
@@ -114,6 +118,39 @@
     }
 
     return true;
+  }
+
+  function getEntrySorter(
+    sortOrder: number
+  ): (a: ResourceEntry, b: ResourceEntry) => number {
+    switch (sortOrder) {
+      case 0: // chronological
+        return (a: ResourceEntry, b: ResourceEntry) => {
+          return a.id - b.id;
+        };
+      case 1: // alphanumeric
+        return (a: ResourceEntry, b: ResourceEntry) => {
+          const aName = getDisplayName(a);
+          const bName = getDisplayName(b);
+          if (aName > bName) return 1;
+          if (aName < bName) return -1;
+          return 0;
+        };
+      case 2: // reverse alphanumeric
+        const alphanumericSorter = getEntrySorter(1);
+        return (a: ResourceEntry, b: ResourceEntry) => {
+          return -alphanumericSorter(a, b);
+        };
+      case 3: // tuning ID
+        return (a: ResourceEntry, b: ResourceEntry) => {
+          const diff = a.key.instance - b.key.instance;
+          if (diff > 0) return 1;
+          if (diff < 0) return -1;
+          return 0;
+        };
+      default:
+        return getEntrySorter(0);
+    }
   }
 
   function clearFilters() {
