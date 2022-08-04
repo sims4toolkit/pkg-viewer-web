@@ -87,11 +87,19 @@
     return text;
   }
 
+  function parseBigInt(text: string, forceHex = false): bigint {
+    try {
+      return BigInt(forceHex ? "0x" + text : text);
+    } catch (e) {
+      return forceHex ? null : parseBigInt(text, true);
+    }
+  }
+
   function handleMouseUp(e: MouseEvent) {
     try {
       const text = getSelectionText();
-      const instance = BigInt(text);
-      if (pkgHasInstance(instance)) {
+      const instance = parseBigInt(text);
+      if (instance && pkgHasInstance(instance)) {
         showGoToFileButton = true;
         goToFileButton.style.left = e.pageX + "px";
         goToFileButton.style.top = e.pageY + 15 + "px";

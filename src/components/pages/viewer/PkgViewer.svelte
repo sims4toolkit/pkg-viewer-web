@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { Package } from "@s4tk/models";
-  import PrismWrapper from "../../layout/PrismWrapper.svelte";
   import EntriesMenu from "./EntriesMenu.svelte";
   import ResizableSplitView from "../../layout/ResizableSplitView.svelte";
   import { scanPackageForWarnings } from "../../../typescript/helpers";
   import MovableWindow from "../../layout/MovableWindow.svelte";
   import EntryView from "./EntryView.svelte";
-  import { TuningResourceType } from "@s4tk/models/enums";
+  import type { ResourceEntry } from "@s4tk/models/types";
+
+  const { EncodingType, TuningResourceType } = window.S4TK.enums;
 
   export let pkgName: string;
   export let pkg: Package;
@@ -35,19 +36,29 @@
   }
 
   function goToFile(instance: bigint) {
-    const index = getIndexOfInstance(instance);
-    if (index >= 0) selectedIndex = index;
+    const id = getIdOfInstance(instance);
+    if (id >= 0) selectedIndex = id;
   }
 
   function pkgHasInstance(instance: bigint): boolean {
-    const index = getIndexOfInstance(instance);
-    return index !== selectedIndex && index >= 0;
+    const id = getIdOfInstance(instance);
+    return id !== selectedIndex && id >= 0;
   }
 
-  function getIndexOfInstance(instance: bigint): number {
-    return pkg.entries.findIndex(
-      (entry) =>
-        entry.key.type in TuningResourceType && entry.key.instance === instance
+  function getIdOfInstance(instance: bigint): number {
+    for (let i = 0; i < pkg.size; ++i) {
+      const entry = pkg.entries[i];
+      if (canJumpToEntry(entry) && entry.key.instance === instance)
+        return entry.id;
+    }
+
+    return -1;
+  }
+
+  function canJumpToEntry(entry: ResourceEntry): boolean {
+    return (
+      entry.key.type in TuningResourceType ||
+      entry.value.encodingType === EncodingType.DDS
     );
   }
 </script>
