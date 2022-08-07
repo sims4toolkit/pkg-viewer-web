@@ -44,24 +44,29 @@ export function getTypeDisplay(type: number, group?: number): string {
 }
 
 export function getDisplayName(entry: ResourceKeyPair): string {
-  switch (entry.value.encodingType) {
-    case EncodingType.XML:
-      return (entry.value as XmlResource).root.name;
-    case EncodingType.DATA:
-      return (entry.value as SimDataResource).instance.name;
-    case EncodingType.STBL:
-      const locale =
-        StringTableLocale[StringTableLocale.getLocale(entry.key.instance)];
-      return locale + " String Table";
-    case EncodingType.DDS:
-      return (entry.key.type === BinaryResourceType.DdsImage
-        ? "DDS"
-        : "DST"
-      ) + " Image";
-    case EncodingType.Unknown:
-      return entry.value.isXml() ? "Unnamed XML" : "Unnamed";
-    default:
-      return "Unnamed";
+  try {
+    switch (entry.value.encodingType) {
+      case EncodingType.XML:
+        return (entry.value as XmlResource).root.name;
+      case EncodingType.DATA:
+        return (entry.value as SimDataResource).instance.name;
+      case EncodingType.STBL:
+        const locale =
+          StringTableLocale[StringTableLocale.getLocale(entry.key.instance)];
+        return locale + " String Table";
+      case EncodingType.DDS:
+        return (entry.key.type === BinaryResourceType.DdsImage
+          ? "DDS"
+          : "DST"
+        ) + " Image";
+      case EncodingType.Unknown:
+        return entry.value.isXml() ? "Unnamed XML" : "Unnamed";
+      default:
+        return "Unnamed";
+    }
+  } catch (e) {
+    console.error(e);
+    return "Syntax Error";
   }
 }
 
