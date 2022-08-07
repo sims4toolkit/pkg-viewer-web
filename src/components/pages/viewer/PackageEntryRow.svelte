@@ -10,14 +10,39 @@
   export let active: boolean;
   export let warnings: string[];
   export let viewSettings: EntryViewSettings;
+  export let entriesMenuElement: HTMLDivElement;
+
+  let rowButton: HTMLButtonElement;
 
   $: resourceKey =
     viewSettings.resourceKeyFormat === 0
       ? formatResourceKey(entry.key)
       : entry.key.instance;
+
+  $: {
+    if (active && rowButton && entriesMenuElement) scrollToElement();
+  }
+
+  async function scrollToElement() {
+    const menuRect = entriesMenuElement.getBoundingClientRect();
+    const rowRect = rowButton.getBoundingClientRect();
+
+    const topBound = menuRect.y;
+    const bottomBound = menuRect.y + menuRect.height;
+    const topPixel = rowRect.y;
+    const bottomPixel = rowRect.y + rowRect.height;
+
+    if (topPixel < topBound || bottomPixel > bottomBound) {
+      rowButton.scrollIntoView();
+    }
+  }
 </script>
 
-<button class="button-wrapper w-100 text-left" on:click={onClick}>
+<button
+  bind:this={rowButton}
+  class="button-wrapper w-100 text-left"
+  on:click={onClick}
+>
   <div class="entry-row p-half mb-half mr-half" class:active>
     <p class="mt-0 mb-half nowrap">{getDisplayName(entry)}</p>
     <p class="small-title my-0 nowrap">

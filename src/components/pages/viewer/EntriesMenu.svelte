@@ -24,6 +24,7 @@
   export let warnings: Map<number, string[]>;
   export let selectedIndex: number;
 
+  let entriesMenuElement: HTMLDivElement;
   let showViewWindow = false;
   let showFilterWindow = false;
   let filteredEntries = [];
@@ -160,7 +161,7 @@
   }
 </script>
 
-<div id="entries-menu" class="px-half">
+<div bind:this={entriesMenuElement} id="entries-menu" class="px-half">
   <div class="w-100 flex-space-between">
     <p class="small-title">Files</p>
     <div class="flex flex-gap">
@@ -215,6 +216,7 @@
         {#each filteredEntries as entry (entry.id)}
           <PackageEntryRow
             onClick={() => (selectedIndex = entry.id)}
+            {entriesMenuElement}
             {onWarningClick}
             {entry}
             {viewSettings}

@@ -37,7 +37,7 @@
 
   function goToFile(instance: bigint) {
     const id = getIdOfInstance(instance);
-    if (id >= 0) selectedIndex = id;
+    if (id >= 0) setId(id);
   }
 
   function pkgHasInstance(instance: bigint): boolean {
@@ -60,6 +60,10 @@
       entry.key.type in TuningResourceType ||
       entry.value.encodingType === EncodingType.DDS
     );
+  }
+
+  function setId(id: number) {
+    selectedIndex = id;
   }
 </script>
 
@@ -105,7 +109,7 @@
           <div class="mt-half">
             <button
               class="button-wrapper flex flex-gap-small text-left"
-              on:click={() => (selectedIndex = warning.entryId)}
+              on:click={() => setId(warning.entryId)}
             >
               <img
                 src="./assets/warning-outline.svg"
