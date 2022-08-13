@@ -6,21 +6,26 @@
   import AddOnManualKey from "./AddOnManualKey.svelte";
   import AddOnSimData from "./AddOnSimData.svelte";
   import AddOnTemplateId from "./AddOnTemplateId.svelte";
-  import type {
-    GeneratedFileData,
-    GlobalSettings,
-    XmlFileTemplateData,
-  } from "./types";
+  import type { GeneratedFileData, GlobalSettings } from "./types";
   const { fnv32, fnv64 } = window.S4TK.hashing;
   const { TuningResourceType } = window.S4TK.enums;
 
-  export let templateData: XmlFileTemplateData;
   export let globalSettings: GlobalSettings;
+  export let nextEntryId: number;
   export let fileData: GeneratedFileData[];
   export let entry: GeneratedFileData;
 
   let hasManualKey = entry.manualKey != undefined;
   let useCustomTemplate = entry.templateId !== 0;
+
+  const typeOptions = [
+    ...TuningResourceType.all().map((type) => {
+      return {
+        value: type,
+        text: TuningResourceType[type],
+      };
+    }),
+  ];
 
   $: {
     if (hasManualKey) {
@@ -45,21 +50,22 @@
     }
   }
 
-  const typeOptions = [
-    ...TuningResourceType.all().map((type) => {
-      return {
-        value: type,
-        text: TuningResourceType[type],
-      };
-    }),
-  ];
-
   function deleteEntry() {
     const index = fileData.findIndex((e) => e === entry);
     if (index >= 0) {
       fileData.splice(index, 1);
       fileData = fileData;
     }
+  }
+
+  function duplicateEntry() {
+    const newEntry: Partial<GeneratedFileData> = {};
+    for (const key in entry) newEntry[key] = entry[key];
+    newEntry.id = nextEntryId++;
+    newEntry.filename = "";
+    delete newEntry.manualKey;
+    fileData.push(newEntry as GeneratedFileData);
+    fileData = fileData;
   }
 </script>
 
@@ -100,14 +106,23 @@
     <div class="flex-col flex-gap-small">
       <Checkbox label="Template" bind:checked={useCustomTemplate} />
     </div>
-    <IconButton
-      title="Delete"
-      icon="trash"
-      small={true}
-      onClick={deleteEntry}
-      danger={true}
-      round={false}
-    />
+    <div class="flex flex-gap-small">
+      <IconButton
+        title="Duplicate"
+        icon="copy"
+        small={true}
+        onClick={duplicateEntry}
+        round={false}
+      />
+      <IconButton
+        title="Delete"
+        icon="trash"
+        small={true}
+        onClick={deleteEntry}
+        danger={true}
+        round={false}
+      />
+    </div>
   </div>
   {#if entry.manualKey}
     <div class="linked-entry">
@@ -116,7 +131,7 @@
   {/if}
   {#if useCustomTemplate}
     <div class="linked-entry">
-      <AddOnTemplateId bind:templateData bind:entry />
+      <AddOnTemplateId bind:globalSettings bind:entry />
     </div>
   {/if}
   {#if entry.hasSimData}

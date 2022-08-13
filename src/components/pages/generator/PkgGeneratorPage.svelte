@@ -12,11 +12,7 @@
   import TextInput from "../../shared/TextInput.svelte";
   import GeneratedFileEntry from "./GeneratedFileEntry.svelte";
   import TemplatesEditor from "./TemplatesEditor.svelte";
-  import type {
-    GeneratedFileData,
-    GlobalSettings,
-    XmlFileTemplateData,
-  } from "./types";
+  import type { GeneratedFileData, GlobalSettings } from "./types";
   import defaultTemplateData from "../../../data/default-templates.json";
   const { TuningResourceType } = window.S4TK.enums;
 
@@ -24,12 +20,12 @@
     filenamePrefix: "",
     all32bit: false,
     allHighBit: false,
+    templateData: defaultTemplateData,
   };
 
   let fileData: GeneratedFileData[] = [];
   let nextEntryId = 0;
   let editingTemplates = false;
-  let templateData: XmlFileTemplateData = defaultTemplateData;
 
   const defaultType = TuningResourceType.all()[0];
   const keySubscriptions = [
@@ -72,8 +68,6 @@
     fileData.push(entry as GeneratedFileData);
     fileData = fileData;
   }
-
-  // addResource(); // FIXME: temp
 </script>
 
 <svelte:head>
@@ -122,7 +116,7 @@
       <div class="flex-col-reverse flex-gap">
         {#each fileData as entry (entry.id)}
           <GeneratedFileEntry
-            bind:templateData
+            bind:nextEntryId
             bind:fileData
             bind:globalSettings
             bind:entry
@@ -169,7 +163,7 @@
 
 {#if editingTemplates}
   <BlurOverlay onClose={() => (editingTemplates = false)}>
-    <TemplatesEditor bind:templateData />
+    <TemplatesEditor bind:globalSettings />
   </BlurOverlay>
 {/if}
 

@@ -5,6 +5,7 @@ export interface GlobalSettings {
   filenamePrefix: string;
   all32bit: boolean;
   allHighBit: boolean;
+  templateData: XmlFileTemplateData;
 }
 
 export interface GeneratedFileData {

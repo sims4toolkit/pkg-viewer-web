@@ -1,11 +1,11 @@
 <script lang="ts">
   import Select from "../../shared/Select.svelte";
-  import type { GeneratedFileData, XmlFileTemplateData } from "./types";
+  import type { GeneratedFileData, GlobalSettings } from "./types";
 
-  export let templateData: XmlFileTemplateData;
+  export let globalSettings: GlobalSettings;
   export let entry: GeneratedFileData;
 
-  $: templateOptions = templateData.templates.map((template) => {
+  $: templateOptions = globalSettings.templateData.templates.map((template) => {
     return {
       value: template.id,
       text: template.name,
