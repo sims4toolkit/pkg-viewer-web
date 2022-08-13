@@ -215,7 +215,7 @@
     border-radius: 8px;
     padding: 8px;
     width: 100%;
-    height: 300px;
+    height: 350px;
     overflow-y: auto;
     overflow-x: auto;
     white-space: pre;
