@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
+  import type { Package } from "@s4tk/models";
   import { subscribeToKey } from "../../../typescript/keybindings";
   import Footer from "../../Footer.svelte";
   import BlurOverlay from "../../layout/BlurOverlay.svelte";
@@ -14,7 +15,8 @@
   import TemplatesEditor from "./TemplatesEditor.svelte";
   import type { GeneratedFileData, GlobalSettings } from "./types";
   import defaultTemplateData from "../../../data/default-templates.json";
-  const { TuningResourceType } = window.S4TK.enums;
+  import type { ResourceKey } from "@s4tk/models/types";
+  const { models, xml, enums, hashing } = window.S4TK;
 
   let globalSettings: GlobalSettings = {
     filenamePrefix: "",
@@ -27,7 +29,7 @@
   let nextEntryId = 0;
   let editingTemplates = false;
 
-  const defaultType = TuningResourceType.all()[0];
+  const defaultType = enums.TuningResourceType.all()[0];
   const keySubscriptions = [
     subscribeToKey("n", addResource, {
       ctrlOrMeta: true,
@@ -67,6 +69,64 @@
     delete entry.manualKey;
     fileData.push(entry as GeneratedFileData);
     fileData = fileData;
+  }
+
+  function getKey(
+    file: GeneratedFileData,
+    kind: "tuning" | "simdata"
+  ): ResourceKey {
+    const type = file.manualKey?.type ?? file.type;
+    const instance =
+      file.manualKey?.instance ??
+      BigInt(
+        (file.use32bit ? hashing.fnv32 : hashing.fnv64)(
+          globalSettings.filenamePrefix + file.filename,
+          file.useHighBit
+        )
+      );
+
+    if (kind === "tuning") {
+      return (
+        file.manualKey ?? {
+          type,
+          group: 0,
+          instance,
+        }
+      );
+    } else {
+      return {
+        type: enums.BinaryResourceType.SimData,
+        group: enums.SimDataGroup.getForTuning(type),
+        instance,
+      };
+    }
+  }
+
+  function buildPackage(): Package {
+    try {
+      const pkg = new models.Package();
+
+      fileData.forEach((file) => {
+        const template = globalSettings.templateData.templates.find(
+          (t) => t.id === file.templateId
+        );
+
+        const tuning = new models.XmlResource(template.tuning);
+        tuning.root.name = file.filename;
+        tuning.root.id = file.id;
+        pkg.add(getKey(file, "tuning"), tuning);
+
+        if (file.hasSimData) {
+          const simdata = models.SimDataResource.fromXml(template.simdata);
+          simdata.instance.name = file.filename;
+          pkg.add(getKey(file, "simdata"), simdata);
+        }
+      });
+
+      return pkg;
+    } catch (e) {
+      console.log("Could not generate package:", e);
+    }
   }
 </script>
 
