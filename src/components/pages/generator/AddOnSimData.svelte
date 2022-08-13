@@ -26,10 +26,6 @@
       + {tuningName} SimData (<span class="monospace">{simDataGroup}</span>)
     </p>
   {/if}
-  <span
-    class="clickable-text small-text"
-    on:click={() => (entry.hasSimData = false)}>REMOVE</span
-  >
 </div>
 
 <style lang="scss">

@@ -86,7 +86,7 @@
     </p>
     <div class="mt-2">
       <p class="small-title mb-half mt-0">Global settings</p>
-      <div class="flex-center-v flex-gap">
+      <div class="flex-center-v flex-gap flex-wrap">
         <TextInput
           name="filename-prefix-input"
           placeholder="Prefix file names with..."

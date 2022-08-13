@@ -16,7 +16,7 @@
   });
 </script>
 
-<div class="text-input" class:w-100={fillWidth}>
+<div class="text-input" class:fill-width={fillWidth}>
   {#if Boolean(label)}
     <div class="flex-center-v">
       <label class="small-title mb-half" for={name}>{label}</label>
@@ -38,6 +38,10 @@
 
 <style lang="scss">
   .text-input {
+    &.fill-width {
+      flex-grow: 1;
+    }
+
     input,
     label {
       display: block;

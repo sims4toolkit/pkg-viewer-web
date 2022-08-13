@@ -1,25 +1,35 @@
 <script lang="ts">
   import TextInput from "../../shared/TextInput.svelte";
-  import type { GeneratedFileData, GlobalSettings } from "./types";
-  const { fnv32, fnv64 } = window.S4TK.hashing;
+  import type { GeneratedFileData } from "./types";
   const { formatAsHexString } = window.S4TK.formatting;
 
-  export let globalSettings: GlobalSettings;
   export let entry: GeneratedFileData;
 
-  const initialInstance = (entry.use32bit ? fnv32 : fnv64)(
-    globalSettings.filenamePrefix + entry.filename,
-    entry.useHighBit
-  );
+  let manualType = formatAsHexString(entry.manualKey.type, 8, false);
+  let manualGroup = formatAsHexString(entry.manualKey.group, 8, false);
+  let manualInst = formatAsHexString(entry.manualKey.instance, 16, false);
 
-  let manualType = formatAsHexString(entry.type, 8, false);
-  let manualGroup = formatAsHexString(0, 8, false);
-  let manualInst = formatAsHexString(initialInstance, 16, false);
+  function isValidHex(value: string, digits: number): boolean {
+    const regex = new RegExp(`[0-9A-Fa-f]{${digits}}`, "g");
+    return regex.test(value);
+  }
+
+  $: {
+    if (
+      isValidHex(manualType, 8) &&
+      isValidHex(manualGroup, 8) &&
+      isValidHex(manualInst, 16)
+    ) {
+      console.log("valid");
+    } else {
+      console.log("invalid");
+    }
+  }
 </script>
 
 <div class="flex-space-between flex-center-v">
-  <div class="flex-center-v flex-gap">
-    <p class="my-0 small-title">+ Manual Key</p>
+  <p class="my-0 small-title nowrap">+ Manual Key</p>
+  <div class="flex-center-v flex-end-h flex-gap flex-wrap">
     <TextInput
       name="manual-type-input-{entry.id}"
       placeholder="Type"
@@ -39,10 +49,6 @@
       bind:value={manualInst}
     />
   </div>
-  <span
-    class="clickable-text small-text"
-    on:click={() => (entry.manualKey = undefined)}>REMOVE</span
-  >
 </div>
 
 <style lang="scss">

@@ -1,5 +1,6 @@
 <script lang="ts">
   export let label: string;
+  export let disabled = false;
 
   // only need one or the other, not both
   export let checked = undefined;
@@ -10,11 +11,11 @@
 
 <div class="checkbox">
   <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label>
+  <label {disabled}>
     {#if checkable}
-      <input type="checkbox" bind:checked={checkable.checked} />
+      <input type="checkbox" bind:checked={checkable.checked} {disabled} />
     {:else}
-      <input type="checkbox" bind:checked />
+      <input type="checkbox" bind:checked {disabled} />
     {/if}
     {label}
   </label>
@@ -24,9 +25,16 @@
   .checkbox {
     white-space: nowrap;
 
-    input:hover,
-    label:hover {
-      cursor: pointer;
+    input,
+    label {
+      &:hover:not(:disabled) {
+        cursor: pointer;
+      }
+
+      &:disabled {
+        opacity: 0.65;
+        pointer-events: none;
+      }
     }
   }
 </style>

@@ -3,7 +3,9 @@
   export let name: string;
   export let selected: number;
   export let fillWidth = false;
+
   export let small = false;
+  export let disabled = false;
   export let options: {
     value: number;
     text: string;
@@ -20,6 +22,7 @@
     bind:value={selected}
     class:w-100={fillWidth}
     class:small
+    {disabled}
   >
     {#each options as option, key (key)}
       <option value={option.value}>
@@ -44,6 +47,10 @@
 
       option {
         background-color: var(--color-bg);
+      }
+
+      &:disabled {
+        opacity: 0.65;
       }
     }
 

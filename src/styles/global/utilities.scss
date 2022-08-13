@@ -39,6 +39,11 @@
   align-items: center;
 }
 
+.flex-end-h {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .flex-col {
   display: flex;
   flex-direction: column;
