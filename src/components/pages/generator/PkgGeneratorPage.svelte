@@ -3,6 +3,7 @@
   import { subscribeToKey } from "../../../typescript/keybindings";
   import Footer from "../../Footer.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
+  import Button from "../../shared/Button.svelte";
   import Checkbox from "../../shared/Checkbox.svelte";
   import IconButton from "../../shared/IconButton.svelte";
   import InlineImage from "../../shared/InlineImage.svelte";
@@ -74,10 +75,12 @@
     <SectionHeader title="Package Generator" />
     <p>
       This tool generates tuning/SimData files in a package, so you do not need
-      to manually create them with S4S. All generated resources will be blank
-      unless you provide content for them. This is a temporary solution while
-      the actual Sims 4 Toolkit tuning and SimData generators are under
-      construction.
+      to manually create them with S4S. All files will be created with
+      bare-bones XML only (including their name and tuning ID) unless you use
+      custom templates. <span class="error-color"
+        >This is an <span class="bold underline error-color">experimental</span>
+        tool while the actual S4TK tuning/SimData generator is being worked on.</span
+      >
     </p>
     <div class="mt-2">
       <p class="small-title mb-half mt-0">Global settings</p>
@@ -95,6 +98,10 @@
         <Checkbox
           label="High bit by default"
           bind:checked={globalSettings.allHighBit}
+        />
+        <Button
+          text="Edit Templates"
+          onClick={() => console.log("templates")}
         />
       </div>
     </div>

@@ -27,7 +27,8 @@
 
     &:not(:disabled):hover {
       cursor: pointer;
-      background-color: var(--color-bg-secondary);
+      background-color: var(--color-accent-secondary);
+      color: var(--color-bg);
     }
   }
 </style>
