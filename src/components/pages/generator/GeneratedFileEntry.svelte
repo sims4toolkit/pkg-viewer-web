@@ -109,15 +109,15 @@
     <div class="flex flex-gap-small">
       <IconButton
         title="Duplicate"
-        icon="copy"
-        small={true}
+        icon="duplicate"
+        noBorder={true}
         onClick={duplicateEntry}
         round={false}
       />
       <IconButton
         title="Delete"
         icon="trash"
-        small={true}
+        noBorder={true}
         onClick={deleteEntry}
         danger={true}
         round={false}

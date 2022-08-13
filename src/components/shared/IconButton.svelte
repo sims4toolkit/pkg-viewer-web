@@ -84,10 +84,8 @@
         border-color: var(--color-error);
       }
 
-      &:not(.danger-bg) {
-        img {
-          filter: var(--filter-svg-invert);
-        }
+      img {
+        filter: var(--filter-svg-invert);
       }
     }
 

@@ -128,7 +128,7 @@
         </p>
         <p class="subtle-color text-center">
           The most recent entry can be cloned with the <InlineImage
-            src="copy"
+            src="duplicate"
           /> button, or by pressing <mark class="key">ctrl/cmd</mark>
           +
           <mark class="key">m</mark>.
@@ -139,9 +139,14 @@
 </section>
 <div class="new-resource-btn flex flex-gap-small">
   <IconButton
-    icon="copy"
-    small={true}
-    noBorder={false}
+    icon="trash"
+    title="Delete All"
+    onClick={copyLastResource}
+    danger={true}
+    useBg={true}
+  />
+  <IconButton
+    icon="duplicate"
     title="Duplicate Last"
     onClick={copyLastResource}
     useBg={true}
