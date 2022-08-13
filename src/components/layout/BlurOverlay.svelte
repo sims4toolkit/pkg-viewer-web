@@ -78,7 +78,7 @@
 
 <style lang="scss">
   .overlay {
-    z-index: 2048;
+    z-index: 4096;
     position: fixed;
     top: 0;
     left: 0;

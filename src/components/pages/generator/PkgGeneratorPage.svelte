@@ -1,11 +1,13 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import type { Package } from "@s4tk/models";
   import type { ResourceKey } from "@s4tk/models/types";
   import type { GeneratedFileData, GlobalSettings } from "./types";
   import defaultTemplateData from "../../../data/default-templates.json";
   import PkgBuilderView from "./PkgBuilderView.svelte";
   import PkgViewer from "../viewer/PkgViewer.svelte";
-  import IconButton from "../../shared/IconButton.svelte";
+  import IconTextButton from "../../shared/IconTextButton.svelte";
+  import { subscribeToKey } from "../../../typescript/keybindings";
   const { models, enums, hashing } = window.S4TK;
 
   let isViewingPackage = false;
@@ -18,6 +20,17 @@
     allHighBit: false,
     templateData: defaultTemplateData,
   };
+
+  const keySubscriptions = [
+    subscribeToKey("b", togglePkgView, {
+      ctrlOrMeta: true,
+      preventDefault: true,
+    }),
+  ];
+
+  onDestroy(() => {
+    keySubscriptions.forEach((unsub) => unsub());
+  });
 
   function getKey(
     file: GeneratedFileData,
@@ -94,25 +107,26 @@
   <title>Package Generator</title>
 </svelte:head>
 
-{#if isViewingPackage}
-  <PkgViewer pkgName="GeneratedTuning.package" {pkg} />
-{:else}
-  <PkgBuilderView bind:fileData bind:nextEntryId bind:globalSettings />
-{/if}
-
 <div class="toggle-pkg-view-btn">
-  <IconButton
-    icon="eye"
-    title="View Package"
+  <IconTextButton
+    icon={isViewingPackage ? "pencil" : "hammer"}
+    text={isViewingPackage ? "Edit" : "Build"}
     onClick={togglePkgView}
     useBg={true}
   />
 </div>
 
+{#if isViewingPackage}
+  <PkgViewer pkgName="Generated.package" {pkg} />
+{:else}
+  <PkgBuilderView bind:fileData bind:nextEntryId bind:globalSettings />
+{/if}
+
 <style lang="scss">
   .toggle-pkg-view-btn {
+    z-index: 1024;
     position: fixed;
-    bottom: 25px;
-    left: 25px;
+    top: 75px;
+    right: 25px;
   }
 </style>
