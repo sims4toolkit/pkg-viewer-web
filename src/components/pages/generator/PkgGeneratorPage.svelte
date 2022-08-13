@@ -12,22 +12,54 @@
   import PkgViewer from "../viewer/PkgViewer.svelte";
   import IconTextButton from "../../shared/IconTextButton.svelte";
   import { subscribeToKey } from "../../../typescript/keybindings";
+  import {
+    fetchGeneratorData,
+    saveGeneratorData,
+  } from "../../../typescript/generator";
   const { models, enums, hashing } = window.S4TK;
 
   let isViewingPackage = false;
   let pkg: Package;
+  let fileData: GeneratedFilesData;
+  let globalSettings: GlobalSettings;
+  $: dataLoaded = fileData && globalSettings;
 
-  let fileData: GeneratedFilesData = {
-    nextId: 0,
-    entries: [],
-  };
+  function createDefaultData() {
+    fileData = {
+      nextId: 0,
+      entries: [],
+    };
 
-  let globalSettings: GlobalSettings = {
-    filenamePrefix: "",
-    all32bit: false,
-    allHighBit: false,
-    templateData: defaultTemplateData,
-  };
+    globalSettings = {
+      filenamePrefix: "",
+      all32bit: false,
+      allHighBit: false,
+      templateData: defaultTemplateData,
+    };
+  }
+
+  fetchGeneratorData()
+    .then((data) => {
+      if (data) {
+        fileData = data.fileData;
+        globalSettings = data.globalSettings;
+      } else {
+        createDefaultData();
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      createDefaultData();
+    });
+
+  $: {
+    if (fileData && globalSettings) {
+      saveGeneratorData({
+        fileData,
+        globalSettings,
+      });
+    }
+  }
 
   //#region Lifecycle
 
@@ -128,19 +160,23 @@
   <title>Package Generator</title>
 </svelte:head>
 
-<div class="toggle-pkg-view-btn">
-  <IconTextButton
-    icon={isViewingPackage ? "pencil" : "hammer"}
-    text={isViewingPackage ? "Edit" : "Build"}
-    onClick={togglePkgView}
-    useBg={true}
-  />
-</div>
+{#if dataLoaded}
+  <div class="toggle-pkg-view-btn">
+    <IconTextButton
+      icon={isViewingPackage ? "pencil" : "hammer"}
+      text={isViewingPackage ? "Edit" : "Build"}
+      onClick={togglePkgView}
+      useBg={true}
+    />
+  </div>
 
-{#if isViewingPackage}
-  <PkgViewer pkgName="Generated.package" {pkg} />
+  {#if isViewingPackage}
+    <PkgViewer pkgName="Generated.package" {pkg} />
+  {:else}
+    <PkgBuilderView bind:fileData bind:globalSettings />
+  {/if}
 {:else}
-  <PkgBuilderView bind:fileData bind:globalSettings />
+  <p>Loading...</p>
 {/if}
 
 <style lang="scss">

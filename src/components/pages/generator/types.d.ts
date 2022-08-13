@@ -1,6 +1,11 @@
 import type { TuningResourceType } from "@s4tk/models/enums";
 import type { ResourceKey } from "@s4tk/models/types";
 
+export interface StoredGeneratorData {
+  globalSettings: GlobalSettings;
+  fileData: GeneratedFilesData;
+}
+
 export interface GlobalSettings {
   filenamePrefix: string;
   all32bit: boolean;
