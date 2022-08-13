@@ -1,0 +1,12 @@
+{
+  "nextId": 1,
+  "templates": [
+    {
+      "id": 0,
+      "name": "Default",
+      "tuning": "<I c=\"\" i=\"\" m=\"\" n=\"\" s=\"\"><T n=\"placeholder\">placeholder</T></I>",
+      "simdata": "<SimData version=\"0x00000101\" u=\"0x00000000\"><Instances><I name=\"\" type=\"Object\"><T name=\"placeholder\">placeholder</T></I></Instances><Schemas><Schema name=\"Placeholder\" schema_hash=\"0x00000000\"><Columns><Column name=\"placeholder\" type=\"String\" flags=\"0x00000000\"/></Columns></Schema></Schemas></SimData>",
+      "locked": true
+    }
+  ]
+}

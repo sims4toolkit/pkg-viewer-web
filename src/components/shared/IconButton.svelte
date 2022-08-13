@@ -92,8 +92,11 @@
     }
 
     &:not(.active) {
-      background-color: var(--color-card);
-      border-color: var(--color-divider);
+      opacity: 0.65;
+
+      &:hover {
+        cursor: not-allowed;
+      }
     }
   }
 </style>

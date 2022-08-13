@@ -16,3 +16,16 @@ export interface GeneratedFileData {
   use32bit: boolean;
   useHighBit: boolean;
 }
+
+export interface XmlFileTemplateData {
+  nextId: number;
+  templates: XmlFileTemplate[];
+}
+
+export interface XmlFileTemplate {
+  id: number;
+  name: string;
+  tuning: string;
+  simdata: string;
+  locked: boolean;
+}

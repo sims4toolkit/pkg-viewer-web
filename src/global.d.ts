@@ -1,6 +1,7 @@
 /// <reference types="svelte" />
 
 import type { fnv32, fnv64 } from "@s4tk/hashing";
+import type * as xml from "@s4tk/xml-dom";
 import type { formatAsHexString, formatResourceKey, formatStringKey, formatResourceInstance } from "@s4tk/hashing/formatting";
 import type { Package, StringTableResource, XmlResource, SimDataResource, RawResource } from "@s4tk/models";
 import type { StringTableLocale, BinaryResourceType, TuningResourceType, SimDataGroup, EncodingType } from "@s4tk/models/enums";
@@ -53,6 +54,7 @@ declare global {
         SimDataResource: typeof SimDataResource;
         RawResource: typeof RawResource;
       },
+      xml: typeof xml,
       Node: {
         Buffer: typeof Buffer;
       }

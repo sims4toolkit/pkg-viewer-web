@@ -2,6 +2,7 @@
   import { onDestroy } from "svelte";
   import { subscribeToKey } from "../../../typescript/keybindings";
   import Footer from "../../Footer.svelte";
+  import BlurOverlay from "../../layout/BlurOverlay.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
   import Button from "../../shared/Button.svelte";
   import Checkbox from "../../shared/Checkbox.svelte";
@@ -10,7 +11,13 @@
   import SectionHeader from "../../shared/SectionHeader.svelte";
   import TextInput from "../../shared/TextInput.svelte";
   import GeneratedFileEntry from "./GeneratedFileEntry.svelte";
-  import type { GeneratedFileData, GlobalSettings } from "./types";
+  import TemplatesEditor from "./TemplatesEditor.svelte";
+  import type {
+    GeneratedFileData,
+    GlobalSettings,
+    XmlFileTemplateData,
+  } from "./types";
+  import defaultTemplateData from "../../../data/default-templates.json";
   const { TuningResourceType } = window.S4TK.enums;
 
   let globalSettings: GlobalSettings = {
@@ -21,6 +28,8 @@
 
   let fileData: GeneratedFileData[] = [];
   let nextEntryId = 0;
+  let editingTemplates = false;
+  let templateData: XmlFileTemplateData = defaultTemplateData;
 
   const defaultType = TuningResourceType.all()[0];
   const keySubscriptions = [
@@ -77,10 +86,11 @@
       This tool generates tuning/SimData files in a package, so you do not need
       to manually create them with S4S. All files will be created with
       bare-bones XML only (including their name and tuning ID) unless you use
-      custom templates. <span class="error-color"
-        >This is an <span class="bold underline error-color">experimental</span>
-        tool while the actual S4TK tuning/SimData generator is being worked on.</span
+      custom templates. This is an <span class="bold underline error-color"
+        >experimental, incomplete, and temporary</span
       >
+      tool while the actual S4TK tuning/SimData generator is being developed - its
+      output will likely need some manual polishing.
     </p>
     <div class="mt-2">
       <p class="small-title mb-half mt-0">Global settings</p>
@@ -101,7 +111,7 @@
         />
         <Button
           text="Edit Templates"
-          onClick={() => console.log("templates")}
+          onClick={() => (editingTemplates = true)}
         />
       </div>
     </div>
@@ -150,6 +160,12 @@
   />
 </div>
 <Footer />
+
+{#if editingTemplates}
+  <BlurOverlay onClose={() => (editingTemplates = false)}>
+    <TemplatesEditor bind:templateData />
+  </BlurOverlay>
+{/if}
 
 <style lang="scss">
   .new-resource-btn {
