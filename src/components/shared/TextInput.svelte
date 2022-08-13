@@ -8,6 +8,7 @@
   export let value: string = "";
   export let fillWidth = false;
   export let focusOnMount = false;
+  export let isValid = true;
 
   let input: HTMLInputElement;
 
@@ -30,6 +31,7 @@
     class:monospace
     class:w-100={fillWidth}
     class="input-height"
+    class:invalid={!isValid}
     bind:value
     {placeholder}
     autocomplete="off"
@@ -45,6 +47,10 @@
     input,
     label {
       display: block;
+    }
+
+    input.invalid {
+      border-color: var(--color-error);
     }
   }
 </style>

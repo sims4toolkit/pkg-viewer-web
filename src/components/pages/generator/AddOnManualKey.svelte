@@ -14,10 +14,10 @@
     return regex.test(value);
   }
 
-  $: entriesAreValid =
-    isValidHex(manualType, 8) &&
-    isValidHex(manualGroup, 8) &&
-    isValidHex(manualInst, 16);
+  $: typeIsValid = isValidHex(manualType, 8);
+  $: groupIsValid = isValidHex(manualGroup, 8);
+  $: instIsValid = isValidHex(manualInst, 16);
+  $: entriesAreValid = typeIsValid && groupIsValid && instIsValid;
 </script>
 
 <div class="flex-space-between flex-center-v">
@@ -33,18 +33,21 @@
       placeholder="Type"
       monospace={true}
       bind:value={manualType}
+      bind:isValid={typeIsValid}
     />
     <TextInput
       name="manual-group-input-{entry.id}"
       placeholder="Group"
       monospace={true}
       bind:value={manualGroup}
+      bind:isValid={groupIsValid}
     />
     <TextInput
       name="manual-inst-input-{entry.id}"
       placeholder="Instance"
       monospace={true}
       bind:value={manualInst}
+      bind:isValid={instIsValid}
     />
   </div>
 </div>
