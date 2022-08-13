@@ -101,6 +101,8 @@
     if (verifyNameAllowed(name)) {
       currentTemplate.name = name;
     }
+
+    globalSettings = globalSettings;
   }
 
   function createNewTemplate() {
