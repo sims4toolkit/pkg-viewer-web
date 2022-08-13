@@ -10,7 +10,7 @@
   <div class="left flex-center-v flex-space-between">
     <div class="flex-center-v flex-space-between">
       <img src="../assets/s4tk-transparent.png" alt="Sims 4 Toolkit Icon" />
-      <h3 class="m-0">S4TK Package Viewer</h3>
+      <h3 class="m-0">S4TK Packages</h3>
     </div>
   </div>
   <div class="right flex-center-v flex-space-between">

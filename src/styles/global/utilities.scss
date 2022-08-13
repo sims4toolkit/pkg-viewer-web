@@ -44,6 +44,11 @@
   flex-direction: column;
 }
 
+.flex-col-reverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .flex-space-between {
   display: flex;
   justify-content: space-between;

@@ -12,13 +12,12 @@
 
 <div class="select-with-label" class:w-100={fillWidth}>
   {#if Boolean(label)}
-    <label class="small-title" class:small for={name}>{label}</label>
+    <label class="small-title mb-half" class:small for={name}>{label}</label>
   {/if}
   <select
     {name}
     id={name}
     bind:value={selected}
-    class:mt-half={Boolean(label)}
     class:w-100={fillWidth}
     class:small
   >

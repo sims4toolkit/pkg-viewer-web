@@ -37,6 +37,20 @@
   font-weight: bold;
 }
 
+.clickable-text {
+  color: var(--color-accent-secondary);
+  text-decoration: underline;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: none;
+  }
+}
+
+.small-text {
+  font-size: 0.8em;
+}
+
 .default-gradient-text {
   @include gradient-bg(var(--color-accent), var(--color-accent-secondary));
   background-clip: text;

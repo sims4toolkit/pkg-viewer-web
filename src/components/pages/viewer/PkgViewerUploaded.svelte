@@ -45,7 +45,7 @@
   <title>Package Viewer</title>
 </svelte:head>
 
-<section id="discord-pkg-viewer" class="flex-col flex-space-between">
+<section id="uploaded-pkg-viewer" class="flex-col flex-space-between">
   {#if pkg != undefined && pkg.size > 0}
     <PkgViewer {pkg} {pkgName} />
   {:else}
