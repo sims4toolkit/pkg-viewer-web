@@ -10,25 +10,23 @@
   let manualInst = formatAsHexString(entry.manualKey.instance, 16, false);
 
   function isValidHex(value: string, digits: number): boolean {
-    const regex = new RegExp(`[0-9A-Fa-f]{${digits}}`, "g");
+    const regex = new RegExp(`^[0-9A-Fa-f]{${digits}}$`);
     return regex.test(value);
   }
 
-  $: {
-    if (
-      isValidHex(manualType, 8) &&
-      isValidHex(manualGroup, 8) &&
-      isValidHex(manualInst, 16)
-    ) {
-      console.log("valid");
-    } else {
-      console.log("invalid");
-    }
-  }
+  $: entriesAreValid =
+    isValidHex(manualType, 8) &&
+    isValidHex(manualGroup, 8) &&
+    isValidHex(manualInst, 16);
 </script>
 
 <div class="flex-space-between flex-center-v">
-  <p class="my-0 small-title nowrap">+ Manual Key</p>
+  <p class="my-0 small-title nowrap">
+    + Manual Key
+    {#if !entriesAreValid}
+      <span class="error-color">• Key is invalid</span>
+    {/if}
+  </p>
   <div class="flex-center-v flex-end-h flex-gap flex-wrap">
     <TextInput
       name="manual-type-input-{entry.id}"
