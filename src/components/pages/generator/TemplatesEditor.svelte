@@ -54,7 +54,7 @@
       () =>
         XmlDocumentNode.from(xml, {
           recycleNodes: true,
-        }).toXml(),
+        }).toXml({ writeXmlDeclaration: false }),
       xml
     );
 
@@ -66,7 +66,7 @@
       () =>
         XmlDocumentNode.from(textareaValue, {
           recycleNodes: true,
-        }).toXml({ minify: true }),
+        }).toXml({ minify: true, writeXmlDeclaration: false }),
       textareaValue
     );
 
@@ -187,6 +187,9 @@
       bind:value={textareaValue}
       on:blur={updateTemplate}
       disabled={currentTemplate.locked}
+      placeholder={selectedContentOption === 0
+        ? "Enter tuning XML"
+        : "Enter SimData XML"}
     />
     <p class="my-0 subtle-text">
       {#if currentTemplate.locked}
@@ -194,9 +197,7 @@
       {:else}
         Paste in the XML content to use.
         {#if selectedContentOption === 0}
-          Tuning must use an <span class="monospace">I</span> tag with
-          <span class="monospace">n</span>
-          and <span class="monospace">s</span> attributes.
+          Tuning must have a root node, or the site might go boom boom.
         {:else}
           SimData structure must be valid, or the site might go boom boom.
         {/if}
