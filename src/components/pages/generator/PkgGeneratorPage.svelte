@@ -90,6 +90,9 @@
       return pkg;
     } catch (e) {
       console.log("Could not generate package:", e);
+      alert(
+        "An exception was thrown while building your package. There is most likely a syntax error in one of your templates. Check the console for the full call stack."
+      );
     }
   }
 
