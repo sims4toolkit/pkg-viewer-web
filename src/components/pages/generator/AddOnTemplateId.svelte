@@ -1,9 +1,9 @@
 <script lang="ts">
   import Select from "../../shared/Select.svelte";
-  import type { GeneratedFileEntry, GlobalSettings } from "./types";
+  import type { GeneratedFileEntryData, GlobalSettings } from "./types";
 
   export let globalSettings: GlobalSettings;
-  export let entry: GeneratedFileEntry;
+  export let entry: GeneratedFileEntryData;
 
   $: templateOptions = globalSettings.templateData.templates.map((template) => {
     return {

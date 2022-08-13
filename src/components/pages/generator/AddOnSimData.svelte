@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { GeneratedFileEntry } from "./types";
+  import type { GeneratedFileEntryData } from "./types";
   const { TuningResourceType, SimDataGroup } = window.S4TK.enums;
   const { formatAsHexString } = window.S4TK.formatting;
 
-  export let entry: GeneratedFileEntry;
+  export let entry: GeneratedFileEntryData;
 
   $: tuningName = TuningResourceType[entry.type];
 

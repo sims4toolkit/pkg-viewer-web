@@ -2,7 +2,11 @@
   import { onDestroy } from "svelte";
   import type { Package } from "@s4tk/models";
   import type { ResourceKey } from "@s4tk/models/types";
-  import type { GeneratedFileEntry, GlobalSettings } from "./types";
+  import type {
+    GeneratedFileEntryData,
+    GeneratedFilesData,
+    GlobalSettings,
+  } from "./types";
   import defaultTemplateData from "../../../data/default-templates.json";
   import PkgBuilderView from "./PkgBuilderView.svelte";
   import PkgViewer from "../viewer/PkgViewer.svelte";
@@ -12,8 +16,12 @@
 
   let isViewingPackage = false;
   let pkg: Package;
-  let fileData: GeneratedFileEntry[] = [];
-  let nextEntryId = 0;
+
+  let fileData: GeneratedFilesData = {
+    nextId: 0,
+    entries: [],
+  };
+
   let globalSettings: GlobalSettings = {
     filenamePrefix: "",
     all32bit: false,
@@ -39,7 +47,7 @@
   //#region Functions
 
   function getKey(
-    file: GeneratedFileEntry,
+    file: GeneratedFileEntryData,
     kind: "tuning" | "simdata"
   ): ResourceKey {
     const type = file.manualKey?.type ?? file.type;
@@ -73,22 +81,24 @@
     try {
       const pkg = new models.Package();
 
-      fileData.forEach((file) => {
+      fileData.entries.forEach((file) => {
         const template = globalSettings.templateData.templates.find(
           (t) => t.id === file.templateId
         );
 
+        const filename = globalSettings.filenamePrefix + file.filename;
+
         const tuningKey = getKey(file, "tuning");
         const tuning = new models.XmlResource(template.tuning);
         tuning.updateRoot((root) => {
-          root.name = file.filename;
+          root.name = filename;
           root.id = tuningKey.instance.toString();
         });
         pkg.add(tuningKey, tuning);
 
         if (file.hasSimData) {
           const simdata = models.SimDataResource.fromXml(template.simdata);
-          simdata.instance.name = file.filename;
+          simdata.instance.name = filename;
           pkg.add(getKey(file, "simdata"), simdata);
         }
       });
@@ -130,7 +140,7 @@
 {#if isViewingPackage}
   <PkgViewer pkgName="Generated.package" {pkg} />
 {:else}
-  <PkgBuilderView bind:fileData bind:nextEntryId bind:globalSettings />
+  <PkgBuilderView bind:fileData bind:globalSettings />
 {/if}
 
 <style lang="scss">

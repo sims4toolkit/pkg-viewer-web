@@ -12,12 +12,15 @@
   import TextInput from "../../shared/TextInput.svelte";
   import GeneratedFileEntry from "./GeneratedFileEntry.svelte";
   import TemplatesEditor from "./TemplatesEditor.svelte";
-  import type { GeneratedFileEntry, GlobalSettings } from "./types";
+  import type {
+    GeneratedFileEntryData,
+    GeneratedFilesData,
+    GlobalSettings,
+  } from "./types";
   const { enums } = window.S4TK;
 
   export let globalSettings: GlobalSettings;
-  export let fileData: GeneratedFileEntry[] = [];
-  export let nextEntryId = 0;
+  export let fileData: GeneratedFilesData;
 
   let editingTemplates = false;
 
@@ -38,8 +41,8 @@
   });
 
   function addResource() {
-    fileData.push({
-      id: nextEntryId++,
+    fileData.entries.push({
+      id: fileData.nextId++,
       filename: "",
       hasSimData: false,
       type: defaultType,
@@ -52,14 +55,14 @@
   }
 
   function copyLastResource() {
-    if (fileData.length === 0) return;
+    if (fileData.entries.length === 0) return;
     const entry: Partial<GeneratedFileEntry> = {};
-    const lastEntry = fileData[fileData.length - 1];
+    const lastEntry = fileData.entries[fileData.entries.length - 1];
     for (const key in lastEntry) entry[key] = lastEntry[key];
-    entry.id = nextEntryId++;
+    entry.id = fileData.nextId++;
     entry.filename = "";
     delete entry.manualKey;
-    fileData.push(entry as GeneratedFileEntry);
+    fileData.entries.push(entry as GeneratedFileEntryData);
     fileData = fileData;
   }
 
@@ -69,7 +72,7 @@
         "This will delete all of the entries you've made for this package. This cannot be undone. Are you sure you want to continue?"
       )
     ) {
-      fileData.splice(0, fileData.length);
+      fileData.entries.splice(0, fileData.entries.length);
       fileData = fileData;
     }
   }
@@ -117,15 +120,10 @@
     </div>
   </ContentArea>
   <ContentArea>
-    {#if fileData?.length > 0}
+    {#if fileData?.entries.length > 0}
       <div class="flex-col-reverse flex-gap">
-        {#each fileData as entry (entry.id)}
-          <GeneratedFileEntry
-            bind:nextEntryId
-            bind:fileData
-            bind:globalSettings
-            bind:entry
-          />
+        {#each fileData.entries as entry (entry.id)}
+          <GeneratedFileEntry bind:fileData bind:globalSettings bind:entry />
         {/each}
       </div>
     {:else}
@@ -162,14 +160,14 @@
     onClick={deleteAllResources}
     danger={true}
     useBg={true}
-    active={fileData.length > 0}
+    active={fileData.entries.length > 0}
   />
   <IconButton
     icon="duplicate"
     title="Duplicate Last"
     onClick={copyLastResource}
     useBg={true}
-    active={fileData.length > 0}
+    active={fileData.entries.length > 0}
   />
   <IconButton
     icon="plus"

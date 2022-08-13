@@ -6,14 +6,17 @@
   import AddOnManualKey from "./AddOnManualKey.svelte";
   import AddOnSimData from "./AddOnSimData.svelte";
   import AddOnTemplateId from "./AddOnTemplateId.svelte";
-  import type { GeneratedFileEntry, GlobalSettings } from "./types";
+  import type {
+    GeneratedFileEntryData,
+    GeneratedFilesData,
+    GlobalSettings,
+  } from "./types";
   const { fnv32, fnv64 } = window.S4TK.hashing;
   const { TuningResourceType } = window.S4TK.enums;
 
   export let globalSettings: GlobalSettings;
-  export let nextEntryId: number;
-  export let fileData: GeneratedFileEntry[];
-  export let entry: GeneratedFileEntry;
+  export let fileData: GeneratedFilesData;
+  export let entry: GeneratedFileEntryData;
 
   let hasManualKey = entry.manualKey != undefined;
   let useCustomTemplate = entry.templateId !== 0;
@@ -51,20 +54,20 @@
   }
 
   function deleteEntry() {
-    const index = fileData.findIndex((e) => e === entry);
+    const index = fileData.entries.findIndex((e) => e === entry);
     if (index >= 0) {
-      fileData.splice(index, 1);
+      fileData.entries.splice(index, 1);
       fileData = fileData;
     }
   }
 
   function duplicateEntry() {
-    const newEntry: Partial<GeneratedFileEntry> = {};
+    const newEntry: Partial<GeneratedFileEntryData> = {};
     for (const key in entry) newEntry[key] = entry[key];
-    newEntry.id = nextEntryId++;
+    newEntry.id = fileData.nextId++;
     newEntry.filename = "";
     delete newEntry.manualKey;
-    fileData.push(newEntry as GeneratedFileEntry);
+    fileData.entries.push(newEntry as GeneratedFileEntryData);
     fileData = fileData;
   }
 </script>
