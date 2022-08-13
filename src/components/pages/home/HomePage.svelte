@@ -18,7 +18,7 @@
         link="view"
       />
       <ToolView
-        name="File Generator"
+        name="Tuning Generator"
         description="Mass generate tuning and SimData files with custom templates."
         link="generate"
       />

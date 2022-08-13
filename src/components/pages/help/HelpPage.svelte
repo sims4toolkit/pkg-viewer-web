@@ -15,11 +15,9 @@
       <SectionHeader title="What is this website for?" />
       <p>
         This website renders Sims 4 package files and scans them for common
-        issues. It is primarily intended for use with the S4TK Discord bot,
-        which sends links to this website so that you can view packages without
-        downloading them. However, you can <a href="/view" use:link
-          >manually upload files</a
-        > as well.
+        issues. It is primarily intended for use with the S4TK Discord bot, but
+        you can <a href="/view" use:link>manually upload files</a> and
+        <a href="/generate" use:link>mass generate tuning</a> as well.
       </p>
     </ContentArea>
     <ContentArea>

@@ -157,7 +157,7 @@
 </script>
 
 <svelte:head>
-  <title>Package Generator</title>
+  <title>Tuning Generator</title>
 </svelte:head>
 
 {#if dataLoaded}

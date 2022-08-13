@@ -84,7 +84,7 @@
 
 <section id="pkg-builder-viewer" class="flex-col">
   <ContentArea banded={true} bottomShadow={true}>
-    <SectionHeader title="Package Generator" />
+    <SectionHeader title="Tuning Generator" />
     <p>
       This tool generates tuning/SimData files in a package, so you do not need
       to manually create them with S4S. All files will be created with
