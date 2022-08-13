@@ -15,6 +15,7 @@ export interface GeneratedFileData {
   type: TuningResourceType;
   use32bit: boolean;
   useHighBit: boolean;
+  templateId: number;
 }
 
 export interface XmlFileTemplateData {

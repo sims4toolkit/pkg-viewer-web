@@ -5,15 +5,22 @@
   import TextInput from "../../shared/TextInput.svelte";
   import AddOnManualKey from "./AddOnManualKey.svelte";
   import AddOnSimData from "./AddOnSimData.svelte";
-  import type { GeneratedFileData, GlobalSettings } from "./types";
+  import AddOnTemplateId from "./AddOnTemplateId.svelte";
+  import type {
+    GeneratedFileData,
+    GlobalSettings,
+    XmlFileTemplateData,
+  } from "./types";
   const { fnv32, fnv64 } = window.S4TK.hashing;
   const { TuningResourceType } = window.S4TK.enums;
 
+  export let templateData: XmlFileTemplateData;
   export let globalSettings: GlobalSettings;
   export let fileData: GeneratedFileData[];
   export let entry: GeneratedFileData;
 
   let hasManualKey = entry.manualKey != undefined;
+  let useCustomTemplate = entry.templateId !== 0;
 
   $: {
     if (hasManualKey) {
@@ -29,6 +36,12 @@
       };
     } else {
       delete entry.manualKey;
+    }
+  }
+
+  $: {
+    if (!useCustomTemplate) {
+      entry.templateId = 0;
     }
   }
 
@@ -84,6 +97,9 @@
       <Checkbox label="Manual key" bind:checked={hasManualKey} />
       <Checkbox label="SimData" bind:checked={entry.hasSimData} />
     </div>
+    <div class="flex-col flex-gap-small">
+      <Checkbox label="Template" bind:checked={useCustomTemplate} />
+    </div>
     <IconButton
       title="Delete"
       icon="trash"
@@ -96,6 +112,11 @@
   {#if entry.manualKey}
     <div class="linked-entry">
       <AddOnManualKey bind:entry />
+    </div>
+  {/if}
+  {#if useCustomTemplate}
+    <div class="linked-entry">
+      <AddOnTemplateId bind:templateData bind:entry />
     </div>
   {/if}
   {#if entry.hasSimData}

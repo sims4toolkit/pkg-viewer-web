@@ -55,6 +55,7 @@
       type: defaultType,
       use32bit: globalSettings.all32bit,
       useHighBit: globalSettings.allHighBit,
+      templateId: 0,
     });
 
     fileData = fileData;
@@ -120,7 +121,12 @@
     {#if fileData?.length > 0}
       <div class="flex-col-reverse flex-gap">
         {#each fileData as entry (entry.id)}
-          <GeneratedFileEntry bind:fileData bind:globalSettings bind:entry />
+          <GeneratedFileEntry
+            bind:templateData
+            bind:fileData
+            bind:globalSettings
+            bind:entry
+          />
         {/each}
       </div>
     {:else}

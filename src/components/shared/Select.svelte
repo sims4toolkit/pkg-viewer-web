@@ -3,7 +3,6 @@
   export let name: string;
   export let selected: number;
   export let fillWidth = false;
-
   export let small = false;
   export let disabled = false;
   export let options: {

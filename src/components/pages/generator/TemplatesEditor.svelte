@@ -105,8 +105,8 @@
     } else if (templateData.templates.some((t) => t.name === name)) {
       alert(`Name "${name}" is already in use.`);
       return false;
-    } else if (name.length > 30) {
-      alert(`Name "${name}" is too long (must be <= 30 characters).`);
+    } else if (name.length > 50) {
+      alert(`Name "${name}" is too long (must be <= 50 characters).`);
       return false;
     } else {
       return true;
@@ -154,8 +154,8 @@
     </div>
     <textarea
       class="drop-shadow monospace"
-      bind:value={formattedContent}
-      on:input={updateTemplate}
+      value={formattedContent}
+      on:blur={updateTemplate}
     />
   </div>
 {/if}
