@@ -186,7 +186,22 @@
       class="drop-shadow monospace"
       bind:value={textareaValue}
       on:blur={updateTemplate}
+      disabled={currentTemplate.locked}
     />
+    <p class="my-0 subtle-text">
+      {#if currentTemplate.locked}
+        This template is not editable.
+      {:else}
+        Paste in the XML content to use.
+        {#if selectedContentOption === 0}
+          Tuning must use an <span class="monospace">I</span> tag with
+          <span class="monospace">n</span>
+          and <span class="monospace">s</span> attributes.
+        {:else}
+          SimData structure must be valid, or the site might go boom boom.
+        {/if}
+      {/if}
+    </p>
   </div>
 {/if}
 
@@ -200,6 +215,6 @@
     height: 300px;
     overflow-y: auto;
     overflow-x: auto;
-    white-space: pre-wrap;
+    white-space: pre;
   }
 </style>
