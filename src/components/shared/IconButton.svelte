@@ -6,6 +6,8 @@
   export let small = false;
   export let noBorder = small;
   export let useBg = false;
+  export let danger = false;
+  export let round = true;
 
   let button: HTMLButtonElement;
 
@@ -28,6 +30,8 @@
   class:no-border={noBorder}
   class:use-bg={useBg}
   on:click={onButtonClick}
+  class:danger-bg={danger}
+  class:round
   {title}
   tabindex={active ? 0 : -1}
 >
@@ -38,8 +42,12 @@
   button {
     background: none;
     border: 1px solid var(--color-divider);
-    border-radius: 50%;
     padding: 0.5em;
+    border-radius: 4px;
+
+    &.round {
+      border-radius: 50%;
+    }
 
     &.use-bg {
       background-color: var(--color-bg);
@@ -71,8 +79,15 @@
       background-color: var(--color-accent-secondary);
       border-color: var(--color-accent-secondary);
 
-      img {
-        filter: var(--filter-svg-invert);
+      &.danger-bg {
+        background-color: var(--color-error);
+        border-color: var(--color-error);
+      }
+
+      &:not(.danger-bg) {
+        img {
+          filter: var(--filter-svg-invert);
+        }
       }
     }
 

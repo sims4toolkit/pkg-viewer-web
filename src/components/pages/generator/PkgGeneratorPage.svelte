@@ -41,13 +41,7 @@
     fileData.push({
       id: nextEntryId++,
       filename: "",
-      hasSimData: true, // FIXME:
-      manualKey: {
-        // FIXME:
-        type: 12345,
-        group: 0,
-        instance: 12345n,
-      },
+      hasSimData: false,
       type: defaultType,
       use32bit: globalSettings.all32bit,
       useHighBit: globalSettings.allHighBit,
@@ -108,8 +102,8 @@
   <ContentArea>
     {#if fileData?.length > 0}
       <div class="flex-col-reverse flex-gap">
-        {#each fileData as entry, key (key)}
-          <GeneratedFileEntry bind:globalSettings bind:entry />
+        {#each fileData as entry (entry.id)}
+          <GeneratedFileEntry bind:fileData bind:globalSettings bind:entry />
         {/each}
       </div>
     {:else}

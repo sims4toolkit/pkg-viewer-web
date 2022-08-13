@@ -1,5 +1,6 @@
 <script lang="ts">
   import Checkbox from "../../shared/Checkbox.svelte";
+  import IconButton from "../../shared/IconButton.svelte";
   import Select from "../../shared/Select.svelte";
   import TextInput from "../../shared/TextInput.svelte";
   import AddOnManualKey from "./AddOnManualKey.svelte";
@@ -9,6 +10,7 @@
   const { TuningResourceType } = window.S4TK.enums;
 
   export let globalSettings: GlobalSettings;
+  export let fileData: GeneratedFileData[];
   export let entry: GeneratedFileData;
 
   let hasManualKey = entry.manualKey != undefined;
@@ -38,6 +40,14 @@
       };
     }),
   ];
+
+  function deleteEntry() {
+    const index = fileData.findIndex((e) => e === entry);
+    if (index >= 0) {
+      fileData.splice(index, 1);
+      fileData = fileData;
+    }
+  }
 </script>
 
 <div class="w-100">
@@ -74,6 +84,14 @@
       <Checkbox label="Manual key" bind:checked={hasManualKey} />
       <Checkbox label="SimData" bind:checked={entry.hasSimData} />
     </div>
+    <IconButton
+      title="Delete"
+      icon="trash"
+      small={true}
+      onClick={deleteEntry}
+      danger={true}
+      round={false}
+    />
   </div>
   {#if entry.manualKey}
     <div class="linked-entry">
