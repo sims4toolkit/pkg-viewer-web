@@ -5,6 +5,7 @@
   import ContentArea from "../../layout/ContentArea.svelte";
   import Checkbox from "../../shared/Checkbox.svelte";
   import IconButton from "../../shared/IconButton.svelte";
+  import InlineImage from "../../shared/InlineImage.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
   import TextInput from "../../shared/TextInput.svelte";
   import GeneratedFileEntry from "./GeneratedFileEntry.svelte";
@@ -67,7 +68,7 @@
     fileData = fileData;
   }
 
-  addResource(); // FIXME: temp
+  // addResource(); // FIXME: temp
 </script>
 
 <svelte:head>
@@ -105,11 +106,30 @@
     </div>
   </ContentArea>
   <ContentArea>
-    <div class="flex-col-reverse flex-gap">
-      {#each fileData as entry, key (key)}
-        <GeneratedFileEntry bind:globalSettings bind:entry />
-      {/each}
-    </div>
+    {#if fileData?.length > 0}
+      <div class="flex-col-reverse flex-gap">
+        {#each fileData as entry, key (key)}
+          <GeneratedFileEntry bind:globalSettings bind:entry />
+        {/each}
+      </div>
+    {:else}
+      <div class="flex-center0h">
+        <h2 class="subtle-color text-center">This package is empty</h2>
+        <p class="subtle-color text-center">
+          Add an entry by clicking the <InlineImage src="plus" /> button, or by pressing
+          <mark class="key">ctrl/command</mark>
+          +
+          <mark class="key">n</mark>.
+        </p>
+        <p class="subtle-color text-center">
+          The most recent entry can be cloned with the <InlineImage
+            src="copy"
+          /> button, or by pressing <mark class="key">ctrl/command</mark>
+          +
+          <mark class="key">m</mark>.
+        </p>
+      </div>
+    {/if}
   </ContentArea>
 </section>
 <div class="new-resource-btn flex flex-gap-small">
