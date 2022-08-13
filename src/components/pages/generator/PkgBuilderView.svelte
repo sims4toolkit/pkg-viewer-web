@@ -52,7 +52,7 @@
   }
 
   function copyLastResource() {
-    if (fileData.length === 0) return addResource();
+    if (fileData.length === 0) return;
     const entry: Partial<GeneratedFileData> = {};
     const lastEntry = fileData[fileData.length - 1];
     for (const key in lastEntry) entry[key] = lastEntry[key];
@@ -61,6 +61,17 @@
     delete entry.manualKey;
     fileData.push(entry as GeneratedFileData);
     fileData = fileData;
+  }
+
+  function deleteAllResources() {
+    if (
+      confirm(
+        "This will delete all of the entries you've made for this package. This cannot be undone. Are you sure you want to continue?"
+      )
+    ) {
+      fileData.splice(0, fileData.length);
+      fileData = fileData;
+    }
   }
 </script>
 
@@ -119,19 +130,26 @@
       </div>
     {:else}
       <div class="flex-center0h">
-        <h2 class="subtle-color text-center">This package is empty</h2>
+        <h2 class="text-center text-shadow">This package is empty</h2>
         <p class="subtle-color text-center">
-          Add an entry by clicking the <InlineImage src="plus" /> button, or by pressing
+          Add an entry with the <InlineImage src="plus" /> button or
           <mark class="key">ctrl/cmd</mark>
           +
           <mark class="key">n</mark>.
         </p>
         <p class="subtle-color text-center">
-          The most recent entry can be cloned with the <InlineImage
-            src="duplicate"
-          /> button, or by pressing <mark class="key">ctrl/cmd</mark>
+          Clone the last entry with the <InlineImage src="duplicate" /> button or
+          <mark class="key">ctrl/cmd</mark>
           +
           <mark class="key">m</mark>.
+        </p>
+        <p class="subtle-color text-center">
+          Build the package with the <span class="monospace small-text"
+            ><InlineImage src="hammer" />Build</span
+          >
+          button or <mark class="key">ctrl/cmd</mark>
+          +
+          <mark class="key">b</mark>.
         </p>
       </div>
     {/if}
@@ -141,15 +159,17 @@
   <IconButton
     icon="trash"
     title="Delete All"
-    onClick={copyLastResource}
+    onClick={deleteAllResources}
     danger={true}
     useBg={true}
+    active={fileData.length > 0}
   />
   <IconButton
     icon="duplicate"
     title="Duplicate Last"
     onClick={copyLastResource}
     useBg={true}
+    active={fileData.length > 0}
   />
   <IconButton
     icon="plus"
