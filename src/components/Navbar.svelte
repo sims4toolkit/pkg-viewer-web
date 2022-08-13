@@ -2,20 +2,20 @@
   import { link, location } from "svelte-spa-router";
   import ThemeToggler from "./shared/ThemeToggler.svelte";
 
-  $: viewIcon = $location === "/view" ? "home" : "home-outline";
+  $: homeIcon = $location === "/" ? "home" : "home-outline";
   $: helpIcon = $location === "/help" ? "help-circle" : "help-circle-outline";
 </script>
 
 <nav class="flex-center-v flex-space-between bottom-shadow">
   <div class="left flex-center-v flex-space-between">
-    <div class="flex-center-v flex-space-between">
-      <img src="../assets/s4tk-transparent.png" alt="Sims 4 Toolkit Icon" />
+    <a href="/" use:link class="flex-center-v flex-space-between">
+      <img src="../assets/s4tk-transparent.png" alt="S4TK" />
       <h3 class="m-0">S4TK Packages</h3>
-    </div>
+    </a>
   </div>
   <div class="right flex-center-v flex-space-between">
-    <a href="/view" class:active={$location === "/view"} use:link title="View">
-      <img class="is-svg smaller" src="./assets/{viewIcon}.svg" alt="View" />
+    <a href="/" class:active={$location === "/"} use:link title="Home">
+      <img class="is-svg smaller" src="./assets/{homeIcon}.svg" alt="Home" />
     </a>
     <a href="/help" class:active={$location === "/help"} use:link title="Help">
       <img class="is-svg" src="./assets/{helpIcon}.svg" alt="Help" />
