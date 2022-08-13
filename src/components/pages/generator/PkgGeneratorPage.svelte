@@ -188,14 +188,14 @@
         <h2 class="subtle-color text-center">This package is empty</h2>
         <p class="subtle-color text-center">
           Add an entry by clicking the <InlineImage src="plus" /> button, or by pressing
-          <mark class="key">ctrl/command</mark>
+          <mark class="key">ctrl/cmd</mark>
           +
           <mark class="key">n</mark>.
         </p>
         <p class="subtle-color text-center">
           The most recent entry can be cloned with the <InlineImage
             src="copy"
-          /> button, or by pressing <mark class="key">ctrl/command</mark>
+          /> button, or by pressing <mark class="key">ctrl/cmd</mark>
           +
           <mark class="key">m</mark>.
         </p>

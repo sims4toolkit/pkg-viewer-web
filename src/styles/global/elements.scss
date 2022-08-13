@@ -61,6 +61,9 @@ mark.key {
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-divider);
   border-radius: 2px;
+  text-transform: uppercase;
+  font-family: $font-roboto-mono, monospace;
+  font-size: 0.8em;
   padding: {
     left: 0.35em;
     right: 0.35em;
