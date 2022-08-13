@@ -5,10 +5,9 @@
   const { XmlDocumentNode } = window.S4TK.xml;
 
   export let globalSettings: GlobalSettings;
-  let selectedId = 0;
-  let selectedContentOption = 0;
-  let formattedContent = "";
+  let textareaValue = "";
 
+  let selectedId = 0;
   $: templateOptions = globalSettings.templateData.templates.map((template) => {
     return {
       value: template.id,
@@ -16,6 +15,7 @@
     };
   });
 
+  let selectedContentOption = 0;
   const contentOptions = [
     {
       value: 0,
@@ -32,23 +32,49 @@
   );
 
   $: {
-    if (currentTemplate) {
-      formattedContent = formatXml(
-        selectedContentOption === 0
-          ? currentTemplate.tuning
-          : currentTemplate.simdata
-      );
+    selectedContentOption;
+    if (currentTemplate) refreshContent();
+  }
+
+  function tryDefault<T>(fn: () => T, def: T): T {
+    try {
+      return fn();
+    } catch (e) {
+      return def;
     }
   }
 
-  function formatXml(xml: string): string {
-    return XmlDocumentNode.from(xml, {
-      recycleNodes: true,
-    }).toXml();
+  function refreshContent() {
+    const xml =
+      selectedContentOption === 0
+        ? currentTemplate.tuning
+        : currentTemplate.simdata;
+
+    const formatted = tryDefault(
+      () =>
+        XmlDocumentNode.from(xml, {
+          recycleNodes: true,
+        }).toXml(),
+      xml
+    );
+
+    textareaValue = formatted;
   }
 
   function updateTemplate() {
-    currentTemplate.tuning = formattedContent;
+    const minified = tryDefault(
+      () =>
+        XmlDocumentNode.from(textareaValue, {
+          recycleNodes: true,
+        }).toXml({ minify: true }),
+      textareaValue
+    );
+
+    if (selectedContentOption === 0) {
+      currentTemplate.tuning = minified;
+    } else {
+      currentTemplate.simdata = minified;
+    }
   }
 
   function deleteTemplate() {
@@ -88,8 +114,8 @@
       globalSettings.templateData.templates.push({
         id: id,
         name: name,
-        tuning: globalSettings.templateData.templates[0].tuning,
-        simdata: globalSettings.templateData.templates[0].simdata,
+        tuning: "",
+        simdata: "",
         locked: false,
       });
 
@@ -158,7 +184,7 @@
     </div>
     <textarea
       class="drop-shadow monospace"
-      value={formattedContent}
+      bind:value={textareaValue}
       on:blur={updateTemplate}
     />
   </div>
