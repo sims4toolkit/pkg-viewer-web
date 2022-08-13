@@ -1,9 +1,9 @@
 <script lang="ts">
   import TextInput from "../../shared/TextInput.svelte";
-  import type { GeneratedFileData } from "./types";
+  import type { GeneratedFileEntry } from "./types";
   const { formatAsHexString } = window.S4TK.formatting;
 
-  export let entry: GeneratedFileData;
+  export let entry: GeneratedFileEntry;
 
   let manualType = formatAsHexString(entry.manualKey.type, 8, false);
   let manualGroup = formatAsHexString(entry.manualKey.group, 8, false);

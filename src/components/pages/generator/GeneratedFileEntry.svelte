@@ -6,14 +6,14 @@
   import AddOnManualKey from "./AddOnManualKey.svelte";
   import AddOnSimData from "./AddOnSimData.svelte";
   import AddOnTemplateId from "./AddOnTemplateId.svelte";
-  import type { GeneratedFileData, GlobalSettings } from "./types";
+  import type { GeneratedFileEntry, GlobalSettings } from "./types";
   const { fnv32, fnv64 } = window.S4TK.hashing;
   const { TuningResourceType } = window.S4TK.enums;
 
   export let globalSettings: GlobalSettings;
   export let nextEntryId: number;
-  export let fileData: GeneratedFileData[];
-  export let entry: GeneratedFileData;
+  export let fileData: GeneratedFileEntry[];
+  export let entry: GeneratedFileEntry;
 
   let hasManualKey = entry.manualKey != undefined;
   let useCustomTemplate = entry.templateId !== 0;
@@ -59,12 +59,12 @@
   }
 
   function duplicateEntry() {
-    const newEntry: Partial<GeneratedFileData> = {};
+    const newEntry: Partial<GeneratedFileEntry> = {};
     for (const key in entry) newEntry[key] = entry[key];
     newEntry.id = nextEntryId++;
     newEntry.filename = "";
     delete newEntry.manualKey;
-    fileData.push(newEntry as GeneratedFileData);
+    fileData.push(newEntry as GeneratedFileEntry);
     fileData = fileData;
   }
 </script>

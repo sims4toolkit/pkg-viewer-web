@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
   import type { Package } from "@s4tk/models";
   import type { ResourceKey } from "@s4tk/models/types";
-  import type { GeneratedFileData, GlobalSettings } from "./types";
+  import type { GeneratedFileEntry, GlobalSettings } from "./types";
   import defaultTemplateData from "../../../data/default-templates.json";
   import PkgBuilderView from "./PkgBuilderView.svelte";
   import PkgViewer from "../viewer/PkgViewer.svelte";
@@ -12,7 +12,7 @@
 
   let isViewingPackage = false;
   let pkg: Package;
-  let fileData: GeneratedFileData[] = [];
+  let fileData: GeneratedFileEntry[] = [];
   let nextEntryId = 0;
   let globalSettings: GlobalSettings = {
     filenamePrefix: "",
@@ -20,6 +20,8 @@
     allHighBit: false,
     templateData: defaultTemplateData,
   };
+
+  //#region Lifecycle
 
   const keySubscriptions = [
     subscribeToKey("b", togglePkgView, {
@@ -32,8 +34,12 @@
     keySubscriptions.forEach((unsub) => unsub());
   });
 
+  //#endregion Lifecycle
+
+  //#region Functions
+
   function getKey(
-    file: GeneratedFileData,
+    file: GeneratedFileEntry,
     kind: "tuning" | "simdata"
   ): ResourceKey {
     const type = file.manualKey?.type ?? file.type;
@@ -104,6 +110,8 @@
       if (pkg) isViewingPackage = true;
     }
   }
+
+  //#endregion Functions
 </script>
 
 <svelte:head>

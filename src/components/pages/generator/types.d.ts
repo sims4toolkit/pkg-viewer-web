@@ -8,7 +8,7 @@ export interface GlobalSettings {
   templateData: XmlFileTemplateData;
 }
 
-export interface GeneratedFileData {
+export interface GeneratedFileEntry {
   id: number;
   filename: string;
   hasSimData: boolean;

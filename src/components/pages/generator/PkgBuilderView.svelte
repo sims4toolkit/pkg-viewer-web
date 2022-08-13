@@ -12,11 +12,11 @@
   import TextInput from "../../shared/TextInput.svelte";
   import GeneratedFileEntry from "./GeneratedFileEntry.svelte";
   import TemplatesEditor from "./TemplatesEditor.svelte";
-  import type { GeneratedFileData, GlobalSettings } from "./types";
+  import type { GeneratedFileEntry, GlobalSettings } from "./types";
   const { enums } = window.S4TK;
 
   export let globalSettings: GlobalSettings;
-  export let fileData: GeneratedFileData[] = [];
+  export let fileData: GeneratedFileEntry[] = [];
   export let nextEntryId = 0;
 
   let editingTemplates = false;
@@ -53,13 +53,13 @@
 
   function copyLastResource() {
     if (fileData.length === 0) return;
-    const entry: Partial<GeneratedFileData> = {};
+    const entry: Partial<GeneratedFileEntry> = {};
     const lastEntry = fileData[fileData.length - 1];
     for (const key in lastEntry) entry[key] = lastEntry[key];
     entry.id = nextEntryId++;
     entry.filename = "";
     delete entry.manualKey;
-    fileData.push(entry as GeneratedFileData);
+    fileData.push(entry as GeneratedFileEntry);
     fileData = fileData;
   }
 
