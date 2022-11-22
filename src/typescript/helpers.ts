@@ -180,8 +180,13 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
     seenKeys.add(formattedKey);
   }
 
+  if (!entry.key.instance)
+    warnings.push("Instance ID should never be 0.");
+
   if (entry.key.type === BinaryResourceType.SimData) {
-    // TODO:
+    if (entry.key.group === 0) {
+      warnings.push(`SimData group should never be 0. Check the <a href="https://sims4toolkit.com/#/docs/models/latest/enums/SimDataGroup" target="_blank">SimDataGroup docs</a> for a list of expected groups.`);
+    }
   } else if (entry.key.type === BinaryResourceType.StringTable) {
     const stbl = entry.value as StringTableResource;
 

@@ -94,7 +94,7 @@
               class="is-svg warning-svg text-height"
               alt="Warning"
             />
-            <p class="my-0">{warning}</p>
+            <p class="my-0">{@html warning}</p>
           </div>
         {/each}
       {:else}
@@ -116,7 +116,7 @@
                 class="is-svg warning-svg text-height"
                 alt="Warning"
               />
-              <p class="my-0">{warning.text}</p>
+              <p class="my-0">{@html warning.text}</p>
             </button>
           </div>
         {/each}
