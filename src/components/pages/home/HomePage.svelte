@@ -22,6 +22,11 @@
         description="Mass generate tuning and SimData files with custom templates."
         link="generate"
       />
+      <ToolView
+        name="Reference Finder"
+        description="Upload some packages and see how all of their files are connected."
+        link="references"
+      />
     </div>
   </ContentArea>
   <Footer />

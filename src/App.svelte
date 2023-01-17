@@ -7,12 +7,14 @@
   import PkgViewerUploaded from "./components/pages/viewer/PkgViewerUploaded.svelte";
   import DiscordDelegate from "./components/pages/viewer/DiscordDelegate.svelte";
   import PkgGeneratorPage from "./components/pages/generator/PkgGeneratorPage.svelte";
+  import PkgReferencesPage from "./components/pages/references/PkgReferencesPage.svelte";
 
   const routes = {
     "/": HomePage,
     "/help": HelpPage,
     "/view": PkgViewerUploaded,
     "/generate": PkgGeneratorPage,
+    "/references": PkgReferencesPage,
     "/discord/:server/:message/:filename": DiscordDelegate,
     "*": NotFoundPage,
   };
