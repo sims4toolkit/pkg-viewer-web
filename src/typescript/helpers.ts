@@ -29,17 +29,22 @@ const BIT32_CLASSES = new Set([
 ]);
 
 export function getTypeDisplay(type: number, group?: number): string {
-  if (type === BinaryResourceType.SimData) {
-    return group in SimDataGroup
-      ? `${useSpaces(SimDataGroup[group])} SimData`
-      : "SimData";
-  } else if (type in TuningResourceType) {
-    if (type === TuningResourceType.Tuning) return "Generic Tuning";
-    return useSpaces(TuningResourceType[type]) + " Tuning";
-  } else if (type in BinaryResourceType) {
-    return useSpaces(BinaryResourceType[type]);
-  } else {
-    return "Type " + formatAsHexString(type, 8, false);
+  try {
+    if (type === BinaryResourceType.SimData) {
+      return group in SimDataGroup
+        ? `${useSpaces(SimDataGroup[group])} SimData`
+        : "SimData";
+    } else if (type in TuningResourceType) {
+      if (type === TuningResourceType.Tuning) return "Generic Tuning";
+      return useSpaces(TuningResourceType[type]) + " Tuning";
+    } else if (type in BinaryResourceType) {
+      return useSpaces(BinaryResourceType[type]);
+    } else {
+      return "Type " + formatAsHexString(type, 8, false);
+    }
+  } catch (e) {
+    console.error(e);
+    return "Error";
   }
 }
 
@@ -66,7 +71,7 @@ export function getDisplayName(entry: ResourceKeyPair): string {
     }
   } catch (e) {
     console.error(e);
-    return "Syntax Error";
+    return "Error";
   }
 }
 
@@ -156,8 +161,14 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
           safeGetWarnings().push("At least one other SimData resource has the same instance as this one. The only resources that should have the same instance are tuning/SimData pairs.");
         }
       } else if (entry.key.type in TuningResourceType) {
-        if (instCounts.get(entry.key.instance).otherTuning) {
+        const instData = instCounts.get(entry.key.instance);
+
+        if (instData.otherTuning) {
           safeGetWarnings().push("At least one other tuning resource has the same instance as this one. The only resources that should have the same instance are tuning/SimData pairs.");
+        }
+
+        if (SimDataGroup.getForTuning(entry.key.type) && !instData.simdata) {
+          safeGetWarnings().push(`The tuning type '${TuningResourceType[entry.key.type]}' is known to require SimData, but no matching SimData was found in this package.`);
         }
       }
     } catch (e) {
