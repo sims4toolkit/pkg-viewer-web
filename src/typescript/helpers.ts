@@ -168,7 +168,7 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
         }
 
         if (SimDataGroup.getForTuning(entry.key.type) && !instData.simdata) {
-          safeGetWarnings().push(`The tuning type '${TuningResourceType[entry.key.type]}' is known to require SimData, but no matching SimData was found in this package.`);
+          safeGetWarnings().push(`Type of ${TuningResourceType[entry.key.type]} (${formatAsHexString(entry.key.type, 8)}) is known to require SimData, but no matching SimData was found in this package.`);
         }
       }
     } catch (e) {
