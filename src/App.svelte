@@ -7,6 +7,7 @@
   import PkgViewerUploaded from "./components/pages/viewer/PkgViewerUploaded.svelte";
   import DiscordDelegate from "./components/pages/viewer/DiscordDelegate.svelte";
   import PkgGeneratorPage from "./components/pages/generator/PkgGeneratorPage.svelte";
+  import InfantBatchFixPage from "./components/pages/infant-batch-fix/InfantBatchFixPage.svelte";
 
   const routes = {
     "/": HomePage,
@@ -14,6 +15,7 @@
     "/view": PkgViewerUploaded,
     "/generate": PkgGeneratorPage,
     "/discord/:server/:message/:filename": DiscordDelegate,
+    "/infant-batch-fix": InfantBatchFixPage,
     "*": NotFoundPage,
   };
 </script>
