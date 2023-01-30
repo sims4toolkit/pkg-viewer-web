@@ -167,7 +167,7 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
           safeGetWarnings().push("At least one other tuning resource has the same instance as this one. The only resources that should have the same instance are tuning/SimData pairs.");
         }
 
-        if (SimDataGroup.getForTuning(entry.key.type) && !instData.simdata) {
+        if (entry.key.type !== TuningResourceType.Snippet && SimDataGroup.getForTuning(entry.key.type) && !instData.simdata) {
           safeGetWarnings().push(`Type of ${TuningResourceType[entry.key.type]} (${formatAsHexString(entry.key.type, 8)}) is known to require SimData, but no matching SimData was found in this package.`);
         }
       }
