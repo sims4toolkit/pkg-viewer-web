@@ -2,12 +2,9 @@
   import { onMount } from "svelte";
   import Footer from "../../Footer.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
-  import FileInput from "../../shared/FileInput.svelte";
   import SectionHeader from "../../shared/SectionHeader.svelte";
+  import InfantBatchFixer from "./InfantBatchFixer.svelte";
   import type { TdescIndexEntry } from "./types";
-  const { Buffer } = window.S4TK.Node;
-  const { Package } = window.S4TK.models;
-  const { BinaryResourceType, SimDataGroup } = window.S4TK.enums;
 
   let simdataIndex: TdescIndexEntry[];
   let tuningIndex: TdescIndexEntry[];
@@ -15,31 +12,8 @@
   let tuningIndexError = false;
   let showingImpactedTunings = false;
 
-  let files: FileList;
-  let processingComplete = false;
-
-  $: filesUploaded = Boolean(files) && files.length > 0;
-
   $: simdataTypes = formatTdescEntries(simdataIndex);
   $: tuningTypes = formatTdescEntries(tuningIndex);
-
-  $: {
-    if (filesUploaded) processFiles();
-  }
-
-  function formatTdescEntries(entries: TdescIndexEntry[] | undefined): string {
-    return entries
-      ?.sort((a, b) => {
-        if (a.tdesc < b.tdesc) return -1;
-        if (b.tdesc > a.tdesc) return 1;
-        return 0;
-      })
-      .map(
-        (entry) =>
-          `<a href="https://lot51.cc/tdesc/${entry.path}/${entry.tdesc}.tdesc" target="_blank">${entry.tdesc}</a>`
-      )
-      .join(", ");
-  }
 
   onMount(() => {
     fetchFileIndex();
@@ -67,26 +41,24 @@
       });
   }
 
-  async function processFiles() {
-    processingComplete = false;
-
-    for (let i = 0; i < files.length; ++i) {
-      const file = files[i];
-      await processPackage(file);
-    }
-
-    processingComplete = true;
+  function formatTdescLink(entry: TdescIndexEntry): string {
+    return `https://lot51.cc/tdesc/${entry.path}/${entry.tdesc}.tdesc`;
   }
 
-  async function processPackage(file: File) {
-    const arrBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrBuffer);
-
-    const pkg = Package.from(buffer, {
-      loadRaw: true,
-    });
-
-    console.log(pkg.size);
+  function formatTdescEntries(entries: TdescIndexEntry[] | undefined): string {
+    return entries
+      ?.sort((a, b) => {
+        if (a.tdesc < b.tdesc) return -1;
+        if (b.tdesc > a.tdesc) return 1;
+        return 0;
+      })
+      .map(
+        (entry) =>
+          `<a href="${formatTdescLink(entry)}" target="_blank">${
+            entry.tdesc
+          }</a>`
+      )
+      .join(", ");
   }
 </script>
 
@@ -139,19 +111,7 @@
       {/if}
     </ContentArea>
     <ContentArea>
-      <FileInput
-        accept=".package"
-        multiple={true}
-        bind:files
-        label="Upload your packages"
-      />
-      {#if filesUploaded}
-        {#if processingComplete}
-          <p>Files processed</p>
-        {:else}
-          <p>Processing files...</p>
-        {/if}
-      {/if}
+      <InfantBatchFixer />
     </ContentArea>
   {/if}
   <Footer />
