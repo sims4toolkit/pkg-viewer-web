@@ -3,6 +3,7 @@
   import Footer from "../../Footer.svelte";
   import ContentArea from "../../layout/ContentArea.svelte";
   import FileInput from "../../shared/FileInput.svelte";
+  import SectionHeader from "../../shared/SectionHeader.svelte";
   import type { TdescIndexEntry } from "./types";
   const { Buffer } = window.S4TK.Node;
   const { Package } = window.S4TK.models;
@@ -103,34 +104,47 @@
       {/if}
     </ContentArea>
   {:else}
-    <ContentArea banded={true}>
-      <FileInput
-        accept=".package"
-        multiple={true}
-        bind:files
-        label="Upload your packages"
-      />
+    <ContentArea banded={true} bottomShadow={true}>
+      <SectionHeader title="Infant Batch Fix" />
+      <p>
+        The infant update added a value to the <code
+          class="accent-color-secondary">Age</code
+        > enum, shifting its integer values. This breaks SimDatas containing ages,
+        and implies that some files referencing babies and/or toddlers may need to
+        be updated as well. This tool will automatically fix your SimDatas, and point
+        out any files that mention babies and/or toddlers.
+      </p>
+
       <p class="subtle-text mb-0">
         Impacted SimDatas: {@html simdataTypes}
       </p>
       <button
         class="mt-1 mb-0"
         on:click={() => (showingImpactedTunings = !showingImpactedTunings)}
-        >{showingImpactedTunings ? "Hide" : "Show"} Impacted Tunings</button
+        >{showingImpactedTunings ? "Hide" : "Show"} Potentially Impacted Tunings</button
       >
       {#if showingImpactedTunings}
         <p class="subtle-text">
           These are all of the tuning types that may contain ages, according to
-          the TDESCs. While they are likely not broken from this patch, you may
-          want to include the new INFANT tag in some of them, depending on your
-          mod's logic. The batch fixer will scan files of these types, and if it
-          detects usage of either the BABY or TODDLER ages, it will ask if you
-          would like to insert an INFANT tag as well.
+          the TDESCs. While they are not necessarily broken, you may want to
+          remove BABY/TODDLER or add INFANT in some of them. The batch fixer
+          will find all of these instances, and allow you to toggle their age
+          tags.
         </p>
-        <p class="subtle-text mb-0">
-          {@html tuningTypes}
-        </p>
+        <div class="scrollable-text-wrapper">
+          <p class="subtle-text my-0">
+            {@html tuningTypes}
+          </p>
+        </div>
       {/if}
+    </ContentArea>
+    <ContentArea>
+      <FileInput
+        accept=".package"
+        multiple={true}
+        bind:files
+        label="Upload your packages"
+      />
       {#if filesUploaded}
         {#if processingComplete}
           <p>Files processed</p>
@@ -139,9 +153,6 @@
         {/if}
       {/if}
     </ContentArea>
-    <ContentArea>
-      <p>Placeholder</p>
-    </ContentArea>
   {/if}
   <Footer />
 </section>
@@ -149,6 +160,15 @@
 <style lang="scss">
   #infant-batch-fix-section {
     min-height: 100vh;
+
+    .scrollable-text-wrapper {
+      padding: 0.5rem;
+      background-color: var(--color-bg);
+      border-radius: 0.5rem;
+      max-height: 6rem;
+      width: 100%;
+      overflow-y: auto;
+    }
 
     button {
       background: none;
