@@ -6,23 +6,39 @@
   import InfantBatchFixer from "./InfantBatchFixer.svelte";
   import type { TdescIndexEntry } from "./types";
 
+  //#region Variables
+
+  const TUNING_INDEX_URL =
+    "https://raw.githubusercontent.com/sims4toolkit/misc/main/web-data/infant-fix-tuning-index.json";
+
+  const SIMDATA_INDEX_URL =
+    "https://raw.githubusercontent.com/sims4toolkit/misc/main/web-data/infant-fix-simdata-index.json";
+
   let simdataIndex: TdescIndexEntry[];
-  let tuningIndex: TdescIndexEntry[];
   let simdataIndexError = false;
+
+  let tuningIndex: TdescIndexEntry[];
   let tuningIndexError = false;
+
   let showingImpactedTunings = false;
 
   $: simdataTypes = formatTdescEntries(simdataIndex);
   $: tuningTypes = formatTdescEntries(tuningIndex);
 
+  //#endregion
+
+  //#region Lifecycle
+
   onMount(() => {
     fetchFileIndex();
   });
 
+  //#endregion
+
+  //#region Functions
+
   async function fetchFileIndex() {
-    fetch(
-      "https://raw.githubusercontent.com/sims4toolkit/misc/main/web-data/infant-fix-simdata-index.json"
-    )
+    fetch(SIMDATA_INDEX_URL)
       .then((data) => data.json())
       .then((json) => (simdataIndex = json))
       .catch((err) => {
@@ -30,9 +46,7 @@
         simdataIndexError = true;
       });
 
-    fetch(
-      "https://raw.githubusercontent.com/sims4toolkit/misc/main/web-data/infant-fix-tuning-index.json"
-    )
+    fetch(TUNING_INDEX_URL)
       .then((data) => data.json())
       .then((json) => (tuningIndex = json))
       .catch((err) => {
@@ -60,6 +74,8 @@
       )
       .join(", ");
   }
+
+  //#endregion
 </script>
 
 <svelte:head>
