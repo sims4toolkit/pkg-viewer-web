@@ -82,7 +82,7 @@
   <title>Infant Batch Fix</title>
 </svelte:head>
 
-<section id="infant-batch-fix-section" class="flex-col flex-space-between">
+<section id="infant-batch-fix-section">
   {#if !(Boolean(simdataIndex) && Boolean(tuningIndex))}
     <ContentArea>
       {#if simdataIndexError || tuningIndexError}
@@ -130,8 +130,8 @@
       <InfantBatchFixer />
     </ContentArea>
   {/if}
-  <Footer />
 </section>
+<Footer />
 
 <style lang="scss">
   #infant-batch-fix-section {
