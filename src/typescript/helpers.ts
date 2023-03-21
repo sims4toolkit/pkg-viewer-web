@@ -26,6 +26,7 @@ const BIT32_CLASSES = new Set([
   'ObjectivelessWhimSet',
   'TimedAspiration',
   'ZoneDirectorEventListener',
+  'DevelopmentalMilestone',
 ]);
 
 export function getTypeDisplay(type: number, group?: number): string {
