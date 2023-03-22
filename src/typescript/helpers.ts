@@ -26,8 +26,12 @@ const BIT32_CLASSES = new Set([
   'ObjectivelessWhimSet',
   'TimedAspiration',
   'ZoneDirectorEventListener',
+]);
+
+const BIT31_CLASSES = new Set([
   'DevelopmentalMilestone',
 ]);
+
 
 export function getTypeDisplay(type: number, group?: number): string {
   try {
@@ -229,6 +233,13 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
 
         if ((entry.key.type === TuningResourceType.Trait) && ((xml.root.findChild("trait_type").innerValue as string).trim() === "PERSONALITY")) {
           warnings.push(`Personality traits are known to require a 32-bit instance, but this one has a 64-bit instance. You might want to replace ${formatAsHexString(entry.key.instance, 16)} with ${formatAsHexString(entry.key.instance & 0xFFFFFFFFn, 8)}.`);
+        }
+      }
+
+      if (entry.key.instance > 2147483647n) {
+        if (BIT31_CLASSES.has(xml.root.attributes.c)) {
+          const expected = entry.key.instance & 2147483647n;
+          warnings.push(`The class "${xml.root.attributes.c}" is a special case, and its instance must be 31 bits or lower (max value = 2,147,483,647). You may want to use ${formatAsHexString(expected, 8)} instead.`);
         }
       }
 
