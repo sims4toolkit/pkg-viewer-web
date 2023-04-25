@@ -211,6 +211,10 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
       warnings.push(`Found repeated keys: [${repeatedKeys.map(formatStringKey).join(", ")}]`);
     }
 
+    if (stbl.hasKey(0x811C9DC5)) {
+      warnings.push("At least one entry is using the key 0x811C9DC5, which is the FNV-32 hash of an empty string. You should change it.");
+    }
+
     if (stbl.hasValue("")) {
       warnings.push("At least one string is empty.");
     }
