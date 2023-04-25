@@ -225,6 +225,8 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
       return;
     }
 
+    const xmlTuningId = BigInt(xml.root.id as string);
+
     if (xml.root.tag === "I") {
       if (entry.key.instance > 0xFFFFFFFFn) {
         if (BIT32_CLASSES.has(xml.root.attributes.c)) {
@@ -249,12 +251,20 @@ function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): st
       }
     } else if (xml.root.tag === "M") {
       const expectedHash = fnv64(xml.root.name.replace(/\./g, "-"));
-      if (BigInt(xml.root.id as string) !== expectedHash) {
+      if (xmlTuningId !== expectedHash) {
         warnings.push(`Module instance does not match its name. It must be the FNV-64 hash of the filename with all '.' characters are replaced with '-', which is ${expectedHash}.`);
       }
     }
 
-    if (BigInt(xml.root.id as string) !== entry.key.instance) {
+
+
+    if (xmlTuningId === 0xCBF29CE484222325n) {
+      warnings.push(`0xCBF29CE484222325 is the FNV-64 hash of an empty string, and using it as the instance of your tuning is not a good idea. You should change it.`);
+    } else if (xmlTuningId === 0x811C9DC5n) {
+      warnings.push(`0x811C9DC5 is the FNV-32 hash of an empty string, and using it as the instance of your tuning is not a good idea.  You should change it.`);
+    }
+
+    if (xmlTuningId !== entry.key.instance) {
       warnings.push(`Instance of ${formatResourceInstance(entry.key.instance)} does not match s="${xml.root.id}".`);
     }
   }
