@@ -114,8 +114,15 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
   const instToTypeMap = new Map<bigint, number>();
   const instCounts = new Map<bigint, { simdata: boolean; tuning: boolean; otherTuning: boolean; otherSimData: boolean; }>();
 
+  const doNotScan = new Set([
+    0x02D5DF13, // ASM
+    0x7FB6AD8A, // S4SMergedPackageManifest
+  ]);
+
   pkg.entries.forEach(entry => {
     try {
+      if (doNotScan.has(entry.key.type)) return;
+
       const isTuning = entry.key.type in TuningResourceType;
       const isSimdata = entry.key.type === BinaryResourceType.SimData;
 
@@ -149,6 +156,8 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 
   pkg.entries.forEach(entry => {
     try {
+      if (doNotScan.has(entry.key.type)) return;
+
       const safeGetWarnings = () => {
         if (!allWarnings.has(entry.id)) allWarnings.set(entry.id, []);
         return allWarnings.get(entry.id)
@@ -186,13 +195,6 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 
 function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): string[] {
   // FIXME: very ugly, very bad, hate hate hate
-
-  const doNotScan = new Set([
-    0x02D5DF13, // ASM
-    0x7FB6AD8A, // S4SMergedPackageManifest
-  ]);
-
-  if (doNotScan.has(entry.key.type)) return;
 
   const warnings: string[] = [];
 
