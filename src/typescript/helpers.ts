@@ -187,6 +187,13 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 function scanEntryForWarnings(entry: ResourceKeyPair, seenKeys: Set<string>): string[] {
   // FIXME: very ugly, very bad, hate hate hate
 
+  const doNotScan = new Set([
+    0x02D5DF13, // ASM
+    0x7FB6AD8A, // S4SMergedPackageManifest
+  ]);
+
+  if (doNotScan.has(entry.key.type)) return;
+
   const warnings: string[] = [];
 
   const formattedKey = formatResourceKey(entry.key, "-");
