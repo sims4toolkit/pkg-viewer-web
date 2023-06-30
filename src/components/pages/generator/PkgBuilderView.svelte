@@ -87,13 +87,22 @@
     <SectionHeader title="Tuning Generator" />
     <p>
       This tool generates tuning/SimData files in a package, so you do not need
-      to manually create them with S4S. All files will be created with
-      bare-bones XML only (including their name and tuning ID) unless you use
-      custom templates. This is an <span class="bold underline error-color"
+      to manually create them. All files are created with bare-bones XML only
+      (including their name and tuning ID) unless you use custom templates. This
+      is an <span class="bold underline error-color"
         >experimental, incomplete, and temporary</span
       >
-      tool while the actual S4TK tuning/SimData generator is being developed - its
-      output will likely need some manual polishing.
+      tool, and will be retired in the near future, as proper file generation will
+      be handled by the
+      <a href="https://vscode.sims4toolkit.com/" target="_blank"
+        >S4TK VS Code extension</a
+      >, and I doubt anyone uses this one anyways.
+    </p>
+    <p class="subtle-text">
+      If you do use it and would like to see it preserved, <a
+        href="https://frankkmods.com/#/contact"
+        target="_blank">let me know</a
+      >, or I'll just yeet it into the void.
     </p>
     <div class="mt-2">
       <p class="small-title mb-half mt-0">Global settings</p>

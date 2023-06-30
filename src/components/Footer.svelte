@@ -53,7 +53,7 @@
         >GitHub Octicons</a
       >.
     </p>
-    <p class="disclaimer">2022 © Frank Kulak</p>
+    <p class="disclaimer">2023 © Frankk</p>
   </ContentArea>
 </div>
 

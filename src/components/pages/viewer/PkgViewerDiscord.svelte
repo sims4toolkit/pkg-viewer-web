@@ -33,6 +33,7 @@
 
           pkg = await Package.fromAsync(Buffer.from(buffer), {
             saveBuffer: true,
+            keepDeletedRecords: true,
           });
         } else {
           errorStatus = res.status;

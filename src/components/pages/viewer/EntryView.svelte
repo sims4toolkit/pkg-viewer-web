@@ -45,6 +45,10 @@
         return (source = JSON.stringify(entry.value.toJsonObject(), null, 2));
       case EncodingType.DDS:
         return await setImageSrc();
+      case EncodingType.Null:
+        displayType = "code";
+        language = "none";
+        return (source = "This record has no content.");
       default:
         if (entry.value.isXml()) {
           displayType = "code";

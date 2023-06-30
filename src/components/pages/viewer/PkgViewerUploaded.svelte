@@ -28,7 +28,9 @@
   async function parsePackage(file: File) {
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
-      pkg = await Package.fromAsync(buffer);
+      pkg = await Package.fromAsync(buffer, {
+        keepDeletedRecords: true,
+      });
 
       if (!(pkg && pkg.size > 0)) {
         filesInvalid = true;

@@ -69,6 +69,8 @@ export function getDisplayName(entry: ResourceKeyPair): string {
           ? "DDS"
           : "DST"
         ) + " Image";
+      case EncodingType.Null:
+        return "Deleted Record";
       case EncodingType.Unknown:
         return entry.value.isXml() ? "Unnamed XML" : "Unnamed";
       default:
@@ -121,6 +123,7 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 
   pkg.entries.forEach(entry => {
     try {
+      if (entry.value.encodingType === EncodingType.Null) return;
       if (doNotScan.has(entry.key.type)) return;
 
       const isTuning = entry.key.type in TuningResourceType;
@@ -156,6 +159,7 @@ export function scanPackageForWarnings(pkg: Package): Map<number, string[]> {
 
   pkg.entries.forEach(entry => {
     try {
+      if (entry.value.encodingType === EncodingType.Null) return;
       if (doNotScan.has(entry.key.type)) return;
 
       const safeGetWarnings = () => {
