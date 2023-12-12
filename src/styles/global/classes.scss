@@ -1,0 +1,100 @@
+//#region SVG
+
+.svg {
+  filter: var(--filter-svg);
+}
+
+.svg-invert {
+  filter: var(--filter-svg-invert);
+}
+
+.svg-dark {
+  filter: var(--filter-dark);
+}
+
+.svg-light {
+  filter: var(--filter-light);
+}
+
+//#endregion
+
+//#region Blurred Background
+
+:root {
+  .blurred-bg {
+    background-color: var(--color-blur-fallback)
+  }
+}
+
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  :root {
+    .blurred-bg {
+      background-color: transparent;
+      backdrop-filter: var(--filter-bg-blur);
+      -webkit-backdrop-filter: var(--filter-bg-blur);
+    }
+  }
+}
+
+//#endregion
+
+//#region Utilities
+
+.bottom-shadow {
+  box-shadow: 0px 2px 4px var(--color-shadow);
+}
+
+.tint-on-hover:hover {
+  opacity: 0.65;
+}
+
+.ellipsis-overflow {
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+}
+
+//#endregion
+
+//#region Colors
+
+.text-primary {
+  color: var(--color-accent);
+}
+
+.text-secondary {
+  color: var(--color-accent-secondary);
+}
+
+.text-subtle,
+.hover\:text-subtle:hover {
+  color: var(--color-text-subtle);
+}
+
+.text-gradient {
+  background-image: linear-gradient(45deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  display: inline-block;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-primary {
+  background-color: var(--color-accent);
+}
+
+.bg-secondary {
+  background-color: var(--color-accent-secondary);
+}
+
+.border-primary {
+  border-color: var(--color-accent);
+}
+
+.border-secondary {
+  border-color: var(--color-accent-secondary);
+}
+
+//#endregion
