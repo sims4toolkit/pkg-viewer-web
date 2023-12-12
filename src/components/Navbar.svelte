@@ -1,86 +1,60 @@
 <script lang="ts">
   import { link, location } from "svelte-spa-router";
-  import ThemeToggler from "./shared/ThemeToggler.svelte";
+  import Modal from "./layout/Modal.svelte";
+  import SettingsMenu from "./settings/SettingsMenu.svelte";
+  import { onDestroy } from "svelte";
 
-  $: homeIcon = $location === "/" ? "home" : "home-outline";
-  $: helpIcon = $location === "/help" ? "help-circle" : "help-circle-outline";
+  let settingsOpen = false;
+  let currentLocation: string;
+
+  const subscriptions = [
+    location.subscribe((value) => {
+      currentLocation = value;
+    }),
+  ];
+
+  onDestroy(() => {
+    subscriptions.forEach((unsub) => unsub());
+  });
+
+  $: titleSuffix =
+    currentLocation === "/generate"
+      ? "Generator"
+      : currentLocation === "/view"
+        ? "Viewer"
+        : "Tools";
 </script>
 
-<nav class="flex-center-v flex-space-between bottom-shadow">
-  <div class="left flex-center-v flex-space-between">
-    <a href="/" use:link class="flex-center-v flex-space-between">
-      <img src="../assets/s4tk-transparent.png" alt="S4TK" />
-      <h3 class="m-0">S4TK Packages</h3>
-    </a>
-  </div>
-  <div class="right flex-center-v flex-space-between">
-    <a href="/" class:active={$location === "/"} use:link title="Home">
-      <img class="is-svg smaller" src="./assets/{homeIcon}.svg" alt="Home" />
-    </a>
-    <a href="/help" class:active={$location === "/help"} use:link title="Help">
-      <img class="is-svg" src="./assets/{helpIcon}.svg" alt="Help" />
-    </a>
-    <ThemeToggler />
+<nav
+  class="fixed top-0 left-0 right-0 h-10 z-10 px-4 flex justify-between gap-4 bg-gray-200 dark:bg-gray-950 bottom-shadow"
+>
+  <a
+    class="flex gap-2 items-center no-underline tint-on-hover whitespace-nowrap"
+    href="/"
+    use:link
+  >
+    <img src="./assets/s4tk-transparent.png" alt="S4TK" class="h-5" />
+    <h2 class="font-bold">S4TK Package {titleSuffix}</h2>
+  </a>
+  <div class="flex gap-3 items-center">
+    <button on:click={() => (settingsOpen = true)} title="Settings">
+      <img
+        src="./assets/icons/settings-outline.svg"
+        alt="settings"
+        class="svg tint-on-hover h-5"
+      />
+    </button>
   </div>
 </nav>
 
+{#if settingsOpen}
+  <Modal>
+    <SettingsMenu onClose={() => (settingsOpen = false)} />
+  </Modal>
+{/if}
+
 <style lang="scss">
-  $navbar-height: 50px;
-
   nav {
-    background-color: var(--color-navbar);
-    padding: 0 1em;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: $navbar-height;
-    z-index: 1024;
-    white-space: nowrap;
-    backdrop-filter: blur(6px);
-    overflow-x: auto;
-    -webkit-backdrop-filter: blur(6px);
-
-    div.left {
-      margin-right: 2em;
-
-      img {
-        width: auto;
-        height: 1.5em;
-        margin-right: 10px;
-      }
-    }
-
-    div.right {
-      img {
-        height: 24px;
-        width: auto;
-        margin-top: 4px;
-
-        &.smaller {
-          height: 20px;
-        }
-      }
-    }
-
-    a {
-      color: var(--color-text);
-      text-decoration: none;
-
-      &:not(:last-child) {
-        margin-right: 1em;
-      }
-
-      &:hover:not(.active) {
-        opacity: 0.65;
-      }
-
-      &.active {
-        pointer-events: none;
-      }
-    }
-  }
-
-  :global(.below-navbar) {
-    margin-top: $navbar-height;
+    overflow: visible !important;
   }
 </style>

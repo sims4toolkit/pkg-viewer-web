@@ -1,0 +1,61 @@
+:root {
+  // info
+  --diagnostics-info-text: #0ea5e9;
+  --diagnostics-info-bg: #0ea5e915;
+  --diagnostics-info-hover: #0ea5e930;
+  // warning
+  --diagnostics-warning-text: #d97706;
+  --diagnostics-warning-bg: #d9770615;
+  --diagnostics-warning-hover: #d9770630;
+  // error
+  --diagnostics-error-text: #ef4444;
+  --diagnostics-error-bg: #ef444415;
+  --diagnostics-error-hover: #ef444430;
+
+  &.dark {
+    // warning
+    --diagnostics-warning-text: #facc15;
+    --diagnostics-warning-bg: #facc1515;
+    --diagnostics-warning-hover: #facc1530;
+  }
+}
+
+.diagnostics-text {
+  &.info {
+    color: var(--diagnostics-info-text);
+  }
+
+  &.warning {
+    color: var(--diagnostics-warning-text);
+  }
+
+  &.error {
+    color: var(--diagnostics-error-text);
+  }
+}
+
+.diagnostics-bg {
+  &.info {
+    background-color: var(--diagnostics-info-bg);
+
+    &:hover {
+      background-color: var(--diagnostics-info-hover);
+    }
+  }
+
+  &.warning {
+    background-color: var(--diagnostics-warning-bg);
+
+    &:hover {
+      background-color: var(--diagnostics-warning-hover);
+    }
+  }
+
+  &.error {
+    background-color: var(--diagnostics-error-bg);
+
+    &:hover {
+      background-color: var(--diagnostics-error-hover);
+    }
+  }
+}

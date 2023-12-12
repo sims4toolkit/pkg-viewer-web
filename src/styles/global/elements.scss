@@ -1,7 +1,4 @@
-// Styling that targets all elements of a specific type
-
 a {
-  color: var(--color-accent-secondary);
   text-decoration: underline;
 
   &:hover {
@@ -9,63 +6,29 @@ a {
   }
 }
 
-code {
-  font-family: Consolas, Monaco, monospace;
+:root {
+  &.dark {
+    --img-select-arrow: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0ye2ZpbGw6I2ZmZjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjEuNDEgNC42NyAyLjQ4IDMuMTggMy41NCA0LjY3IDEuNDEgNC42NyIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzLjU0IDUuMzMgMi40OCA2LjgyIDEuNDEgNS4zMyAzLjU0IDUuMzMiLz48L3N2Zz4=);
+  }
+
+  &:not(.dark) {
+    --img-select-arrow: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0ye2ZpbGw6IzAwMDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjEuNDEgNC42NyAyLjQ4IDMuMTggMy41NCA0LjY3IDEuNDEgNC42NyIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzLjU0IDUuMzMgMi40OCA2LjgyIDEuNDEgNS4zMyAzLjU0IDUuMzMiLz48L3N2Zz4=);
+  }
 }
 
-input,
-label.input,
 select {
-  background: none;
-  border: 1px solid var(--color-bg-secondary);
-  background-color: var(--color-card-secondary);
-  border-radius: 4px;
-  padding: 0.8em;
-  color: var(--color-text);
+	background: var(--img-select-arrow) no-repeat 95% 50%;
+	-moz-appearance: none; 
+	-webkit-appearance: none; 
+	appearance: none;
 }
 
-.input-height {
-  height: 40px;
+option,
+optgroup {
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--color-divider);
-}
-
-section {
-  padding-top: 50px; // for navbar
-  min-height: 100vh;
-}
-
-div[contenteditable="true"] {
-  padding: 4px;
-
-  &[placeholder]:empty::before {
-    content: attr(placeholder);
-    color: var(--color-divider);
-  }
-
-  &[placeholder]:empty:focus::before {
-    content: "";
-  }
-}
-
-hr {
-  background-color: transparent;
-  border: 1px solid  var(--color-divider);
-}
-
-mark.key {
-  color: var(--color-text-subtle);
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-divider);
-  border-radius: 2px;
-  text-transform: uppercase;
-  font-family: $font-roboto-mono, monospace;
-  font-size: 0.8em;
-  padding: {
-    left: 0.35em;
-    right: 0.35em;
-  }
+.cm-editor {
+  height: 100%;
 }

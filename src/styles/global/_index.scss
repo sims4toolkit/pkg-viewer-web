@@ -1,5 +1,6 @@
-@import "./base";
-@import "./typography";
-@import "./elements";
-@import "./utilities";
-@import "./semantics";
+@import "./variables.scss";
+@import "./base.scss";
+@import "./elements.scss";
+@import "./typography.scss";
+@import "./classes.scss";
+@import "./diagnostics.scss";
