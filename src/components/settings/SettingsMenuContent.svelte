@@ -36,8 +36,9 @@
     try {
       const suppressed = new Set<DiagnosticCode>();
       Code.getAll().forEach((code) => {
-        if (code === "Unknown") return;
-        const input = document.getElementsByName(code)[0] as HTMLInputElement;
+        const elements = document.getElementsByName(code);
+        if (!elements?.length) return;
+        const input = elements[0] as HTMLInputElement;
         if (!input.checked) suppressed.add(code);
       });
       Settings.suppressedDiagnosticCodes = suppressed;
