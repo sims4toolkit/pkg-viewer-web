@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { replace } from "svelte-spa-router";
   import ViewerState from "lib/viewer/viewer-state";
   import type { ExplorerSection } from "lib/viewer/explorer-data";
   import ConfirmDialogue from "components/elements/ConfirmDialogue.svelte";
@@ -29,6 +30,7 @@
   function resetViewer() {
     isConfirmingRefresh = false;
     ViewerState.unloadPackage({ requestRefresh: true });
+    replace("#/view");
   }
 </script>
 
