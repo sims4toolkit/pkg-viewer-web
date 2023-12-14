@@ -52,6 +52,9 @@
       searchTerm = term;
       refreshFilteredDiagnostics();
     }),
+    ViewerEvents.onPackageUnloaded.subscribe(() => {
+      filteredDiagnostics = [];
+    }),
     SettingsSubscriptionManager.subscribe("showDiagnosticCodesOnUi", (v) => {
       showDiagnosticCode = v;
     }),

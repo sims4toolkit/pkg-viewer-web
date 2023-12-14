@@ -8,6 +8,7 @@ const ViewerEvents = {
   onSearchTermChange: new EventNotifier<string>(),
   onUserClickedFile: new EventNotifier<void>(),
   onPackageNameChange: new EventNotifier<string>(),
+  onPackageUnloaded: new EventNotifier<void>(),
 };
 
 export default ViewerEvents;

@@ -29,12 +29,7 @@ class _ViewerState {
    * @param filename Name of package file
    */
   async loadPackage(buffer: Buffer, filename: string): Promise<boolean> {
-    this._cachedPackageName = null;
-    this._cachedPackageBuffer = null;
-    this._viewedFileId = 0;
-    this._fileInfoMap.clear();
-    this._explorerSections = [];
-    this._searchTerm = "";
+    this.unloadPackage();
 
     try {
       const resources = validatePackageBuffer(buffer);
@@ -49,6 +44,26 @@ class _ViewerState {
       return false;
     } finally {
       this.requestRefresh();
+    }
+  }
+
+  /**
+   * Resets the viewer to prepare for another upload.
+   * 
+   * @param options Optional arguments
+   */
+  unloadPackage(options?: {
+    requestRefresh: boolean;
+  }) {
+    this._cachedPackageName = null;
+    this._cachedPackageBuffer = null;
+    this._viewedFileId = 0;
+    this._fileInfoMap.clear();
+    this._explorerSections = [];
+    this._searchTerm = "";
+    if (options?.requestRefresh) {
+      this.requestRefresh();
+      ViewerEvents.onPackageUnloaded.notify();
     }
   }
 

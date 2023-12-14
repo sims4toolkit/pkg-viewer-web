@@ -1,10 +1,12 @@
 <script lang="ts">
   import ViewerState from "lib/viewer/viewer-state";
   import type { ExplorerSection } from "lib/viewer/explorer-data";
+  import ConfirmDialogue from "components/elements/ConfirmDialogue.svelte";
 
   export let sections: readonly ExplorerSection[];
 
   let searchTerm: string = "";
+  let isConfirmingRefresh: boolean = false;
 
   $: {
     ViewerState.requestSearch(searchTerm);
@@ -23,10 +25,25 @@
   function clearSearch() {
     searchTerm = "";
   }
+
+  function resetViewer() {
+    isConfirmingRefresh = false;
+    ViewerState.unloadPackage({ requestRefresh: true });
+  }
 </script>
 
 <div class="h-full w-full flex items-center justify-between gap-4 px-2">
   <div class="flex-shrink-0 flex items-center gap-2">
+    <button
+      class="flex-shrink-0"
+      title="Reset Viewer"
+      on:click={() => (isConfirmingRefresh = true)}
+      ><img
+        src="./assets/icons/refresh.svg"
+        alt={collapseExpandImg}
+        class="svg h-4 w-4 tint-on-hover"
+      /></button
+    >
     <button
       class="flex-shrink-0"
       title={collapseExpandTitle}
@@ -61,3 +78,14 @@
     {/if}
   </div>
 </div>
+
+{#if isConfirmingRefresh}
+  <ConfirmDialogue
+    title="Refresh Viewer"
+    description="Are you sure you want to refresh the viewer? You will be able to upload another package."
+    confirmText="Reload Viewer"
+    cancelText="Cancel"
+    onConfirm={resetViewer}
+    onCancel={() => (isConfirmingRefresh = false)}
+  ></ConfirmDialogue>
+{/if}
