@@ -98,9 +98,7 @@
     </div>
     <div class="flex gap-2 sm:gap-4">
       <DiagnosticsBubble diagnostics={currentDiagnostics} />
-      <div class="block sm:hidden">
-        <ChevronToggle bind:isCollapsed={bottomIsCollapsed} />
-      </div>
+      <ChevronToggle bind:isCollapsed={bottomIsCollapsed} />
     </div>
   </div>
   {#if hasDiagnostics}

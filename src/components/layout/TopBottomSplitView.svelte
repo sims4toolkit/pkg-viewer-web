@@ -51,6 +51,11 @@
     bottomPanel.style.height = `${bottomHeight}px`;
     resizer.style.bottom = `${bottomHeight}px`;
     topPanel.style.bottom = `${bottomHeight + 4}px`;
+    if (!bottomIsCollapsed && bottomHeight < 48) {
+      bottomIsCollapsed = true;
+    } else if (bottomIsCollapsed && bottomHeight > 192) {
+      bottomIsCollapsed = false;
+    }
   }
 
   function handleWindowResize() {
