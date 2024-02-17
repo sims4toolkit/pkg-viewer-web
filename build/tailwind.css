@@ -1541,10 +1541,6 @@ video {
 }
 
 @media (min-width: 640px) {
-  .sm\:hidden {
-    display: none;
-  }
-
   .sm\:h-8 {
     height: 2rem;
   }
