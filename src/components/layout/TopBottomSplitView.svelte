@@ -2,17 +2,26 @@
   import { onDestroy, onMount } from "svelte";
 
   const NAVBAR_HEIGHT = 40;
-  const MIN_BOTTOM_HEIGHT = 96;
+  const MIN_BOTTOM_HEIGHT = 40;
   const MAX_BOTTOM_RATIO = 0.6;
+
+  export let bottomIsCollapsed: boolean = null;
 
   let bottomPanel: HTMLDivElement;
   let topPanel: HTMLDivElement;
   let resizer: HTMLDivElement;
   let isResizing = false;
+  let mounted = false;
+
+  $: {
+    bottomIsCollapsed;
+    toggleBottomPanel();
+  }
 
   onMount(() => {
     setPanelSizes(bottomPanel.offsetHeight);
     window.addEventListener("resize", handleWindowResize);
+    mounted = true;
   });
 
   onDestroy(() => {
@@ -46,6 +55,15 @@
 
   function handleWindowResize() {
     setPanelSizes(bottomPanel.offsetHeight);
+  }
+
+  function toggleBottomPanel() {
+    if (!mounted || bottomIsCollapsed == null) return;
+    if (bottomIsCollapsed) {
+      setPanelSizes(MIN_BOTTOM_HEIGHT);
+    } else {
+      setPanelSizes(192); // from default height
+    }
   }
 </script>
 

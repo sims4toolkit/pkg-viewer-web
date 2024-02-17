@@ -9,6 +9,7 @@
   import DiagnosticsPanel from "./diagnostics/DiagnosticsPanel.svelte";
 
   let loadedPackageName: string;
+  let bottomIsCollapsed: boolean = false;
 
   $: pageName = loadedPackageName ? loadedPackageName : "S4TK Package Viewer";
 
@@ -34,9 +35,9 @@
 <section class="pt-10 h-screen w-screen">
   <SplitView compactTitle="File Explorer" {onCompactChange}>
     <FileExplorerPanel slot="secondary" />
-    <TopBottomSplitView slot="primary">
+    <TopBottomSplitView slot="primary" bind:bottomIsCollapsed>
       <EditorPanelDelegate slot="top" />
-      <DiagnosticsPanel slot="bottom" />
+      <DiagnosticsPanel slot="bottom" bind:bottomIsCollapsed />
     </TopBottomSplitView>
   </SplitView>
 </section>

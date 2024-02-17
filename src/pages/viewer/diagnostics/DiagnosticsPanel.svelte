@@ -6,9 +6,12 @@
   import Diagnostics from "lib/viewer/diagnostics";
   import ViewerEvents from "lib/viewer/viewer-events";
   import { ExplorerCell, ExplorerSection } from "lib/viewer/explorer-data";
+  import ChevronToggle from "components/elements/ChevronToggle.svelte";
   import DiagnosticsBubble from "./DiagnosticsBubble.svelte";
   import DiagnosticsSectionButton from "./DiagnosticsSectionButton.svelte";
   import DiagnosticsSwimlane from "./DiagnosticsSwimlane.svelte";
+
+  export let bottomIsCollapsed: boolean;
 
   let allDiagnosticsCount: number = 0;
   let allSections: readonly ExplorerSection[] = [];
@@ -93,7 +96,12 @@
         onClick={() => (showThisFile = true)}
       />
     </div>
-    <DiagnosticsBubble diagnostics={currentDiagnostics} />
+    <div class="flex gap-2 sm:gap-4">
+      <DiagnosticsBubble diagnostics={currentDiagnostics} />
+      <div class="block sm:hidden">
+        <ChevronToggle bind:isCollapsed={bottomIsCollapsed} />
+      </div>
+    </div>
   </div>
   {#if hasDiagnostics}
     <div class="w-full flex-1 overflow-y-auto">
