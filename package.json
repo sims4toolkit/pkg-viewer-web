@@ -23,7 +23,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
-    "@s4tk/models": "^0.6.13",
+    "@s4tk/models": "^0.6.14",
     "@s4tk/validation": "file:../../../Node Libraries/@s4tk/validation/dst",
     "@tsconfig/svelte": "^2.0.0",
     "@types/file-saver": "^2.0.5",
