@@ -6,29 +6,32 @@ import { DisplayType, type ExplorerCell, type ExplorerSection } from "./explorer
 import { addPascalSpaces, addToArrayMap, compareProperty } from "../utils/helpers";
 import Diagnostics from "./diagnostics";
 import Settings from "lib/utils/settings";
+import type ViewerMappings from "./viewer-mappings";
+import type { StringTooltipInfo } from "./tooltips";
 const { models, enums, formatting: fmt } = window.S4TK;
 const { DiagnosticLevel, ValidationSchema } = window.S4TK.validation;
 
 /**
- * Loads the given `resources` into `fileInfoMap` and `explorerSections`. It is
+ * Loads the given `resources` into `mappings` and `explorerSections`. It is
  * assummed that these have been cleared before calling this function, as
- * objects will just be appended to them as-is.
+ * objects will just be added to them as-is.
  * 
  * @param resources List of validated resources to load
- * @param fileInfoMap Map in which to load file info for resources
+ * @param mappings Mappings to load with resources
  * @param explorerSections Array in which to append explorer sections
  */
 export async function loadResources(
   resources: readonly ValidatedResource[],
-  fileInfoMap: Map<number, ViewableFileInfo>,
+  mappings: ViewerMappings,
   explorerSections: ExplorerSection[],
 ) {
   const sectionEntries = new Map<string, ValidatedResource[]>();
+  const fileIdToInfoMap = mappings.fileIdToInfoMap as Map<number, ViewableFileInfo>;
 
   for (let id = 0; id < resources.length; ++id) {
     const entry = resources[id];
     const info = await _loadEntry(entry);
-    fileInfoMap.set(id, info);
+    fileIdToInfoMap.set(id, info);
     const sectionTitle = _getSectionTitle(entry);
     if (sectionTitle) addToArrayMap(sectionEntries, sectionTitle, entry);
   }
@@ -36,7 +39,7 @@ export async function loadResources(
   const collapsed = !Settings.expandFoldersByDefault;
   sectionEntries.forEach((entries, title) => {
     const cells = entries
-      .map(e => _createCell(e, fileInfoMap))
+      .map(e => _createCell(e, mappings))
       .sort(compareProperty("filterName"));
     explorerSections.push({ title, cells, collapsed });
   });
@@ -326,9 +329,9 @@ function _loadObjectDefinition(entry: ValidatedResource): ViewableFileInfo {
 
 function _createCell(
   entry: ValidatedResource,
-  fileInfoMap: ReadonlyMap<number, ViewableFileInfo>
+  mappings: ViewerMappings
 ): ExplorerCell {
-  let info = fileInfoMap.get(entry.id);
+  let info = mappings.fileIdToInfoMap.get(entry.id);
 
   if (entry.isDeleted) return {
     displayType: DisplayType.Unspecified,
@@ -341,7 +344,8 @@ function _createCell(
   switch (entry.schema) {
     case ValidationSchema.Tuning: {
       info = info as PlainTextFileInfo;
-      const simDataInfo = fileInfoMap.get(entry.pairedSimDataId) as PlainTextFileInfo;
+      _addFileTooltip(mappings, entry.key.instance.toString(), info.id);
+      const simDataInfo = mappings.fileIdToInfoMap.get(entry.pairedSimDataId) as PlainTextFileInfo;
       const containedIds = new Set([info.id]);
       if (simDataInfo) containedIds.add(simDataInfo.id);
       return {
@@ -355,6 +359,11 @@ function _createCell(
     }
     case ValidationSchema.StringTable: {
       info = info as StringTableFileInfo;
+      if (info.locale === enums.StringTableLocale.English) {
+        info.entries.forEach(({ key, value }) => {
+          _addStringTooltip(mappings, key, info.id, value);
+        });
+      }
       return {
         displayType: DisplayType.StringTable,
         filterName: "String Table",
@@ -362,12 +371,13 @@ function _createCell(
         containedIds: new Set([info.id, ...entry.otherLocaleIds]),
         sharedResourceKey: _getResourceKey(entry, true),
         localeChoices: [info.id, ...entry.otherLocaleIds]
-          .map(id => fileInfoMap.get(id) as StringTableFileInfo),
+          .map(id => mappings.fileIdToInfoMap.get(id) as StringTableFileInfo),
         chosenLocaleIndex: 0,
       };
     }
   }
 
+  _addFileTooltip(mappings, info.resourceKey, info.id);
   return {
     displayType: DisplayType.Unspecified,
     filterName: info.displayName,
@@ -428,6 +438,16 @@ function _getResourceKey(entry: ValidatedResource, removeLocale = false): string
   } else {
     return fmt.formatResourceKey(entry.key, "-");
   }
+}
+
+function _addFileTooltip(mappings: ViewerMappings, key: string, fileId: number) {
+  const fileKeyToIdMap = mappings.fileKeyToIdMap as Map<string, number>;
+  fileKeyToIdMap.set(key, fileId);
+}
+
+function _addStringTooltip(mappings: ViewerMappings, key: number, stblId: number, text: string) {
+  const stringKeyToTooltipMap = mappings.stringKeyToTooltipMap as Map<number, StringTooltipInfo>;
+  stringKeyToTooltipMap.set(key, { stblId, text });
 }
 
 //#endregion

@@ -8,7 +8,7 @@
   export let info: DiagnosticInfo;
   export let showDiagnosticCode: boolean;
 
-  $: fileInfo = ViewerState.getFile(info.ownerId);
+  $: fileInfo = ViewerState.mappings.getFileInfo(info.ownerId);
   $: fileText = fileInfo
     ? `${fileInfo.resourceKey} = ${fileInfo.displayName}`
     : "Unknown File";

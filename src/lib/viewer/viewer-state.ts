@@ -1,22 +1,23 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import type { ViewableFileInfo } from "./viewable-file-info";
 import type { ExplorerSection } from "./explorer-data";
 import ViewerEvents from "./viewer-events";
 import { loadResources } from "./resource-loader";
+import ViewerMappings from "./viewer-mappings";
 const { validatePackageBuffer } = window.S4TK.validation;
 
 class _ViewerState {
   //#region Fields / Properties
 
+  public readonly mappings = new ViewerMappings();
+
   private _cachedPackageName: string;
   private _cachedPackageBuffer: Buffer;
-  private readonly _fileInfoMap = new Map<number, ViewableFileInfo>();
   private _explorerSections: ExplorerSection[];
   private _viewedFileId = 0;
   private _searchTerm: string;
 
-  private get _viewedFile() { return this._fileInfoMap.get(this._viewedFileId); }
+  private get _viewedFile() { return this.mappings.fileIdToInfoMap.get(this._viewedFileId); }
 
   //#endregion
 
@@ -34,7 +35,7 @@ class _ViewerState {
     try {
       const resources = validatePackageBuffer(buffer);
       if (resources.length < 1) return false;
-      await loadResources(resources, this._fileInfoMap, this._explorerSections);
+      await loadResources(resources, this.mappings, this._explorerSections);
       this._cachedPackageName = filename;
       this._cachedPackageBuffer = buffer;
       this._viewedFileId = this._explorerSections[0]?.cells[0]?.defaultId ?? 0;
@@ -58,7 +59,7 @@ class _ViewerState {
     this._cachedPackageName = null;
     this._cachedPackageBuffer = null;
     this._viewedFileId = 0;
-    this._fileInfoMap.clear();
+    this.mappings.clear();
     this._explorerSections = [];
     this._searchTerm = "";
     if (options?.requestRefresh) {
@@ -72,21 +73,12 @@ class _ViewerState {
   //#region Public Methods
 
   /**
-   * Retrieves a file by its ID.
-   * 
-   * @param id ID of file to get
-   */
-  getFile(id: number): ViewableFileInfo {
-    return this._fileInfoMap.get(id);
-  }
-
-  /**
    * Downloads the file with the given ID.
    * 
    * @param id ID of file to download
    */
   downloadFile(id: number) {
-    const file = this.getFile(id);
+    const file = this.mappings.getFileInfo(id);
     const resourceKey = file.resourceKey.replace(/-/g, "_");
     const displayName = file.displayName.replace(/[^a-z0-9_-]/gi, "_");
     if (file) saveAs(
@@ -108,7 +100,7 @@ class _ViewerState {
   async downloadAllFiles() {
     const zip = new JSZip();
 
-    this._fileInfoMap.forEach(info => {
+    this.mappings.fileIdToInfoMap.forEach(info => {
       const resourceKey = info.resourceKey.replace(/-/g, "_");
       const displayName = info.displayName.replace(/[^a-z0-9_-]/gi, "_");
       const filename = `${resourceKey}.${displayName}.${info.extension}`;
@@ -136,7 +128,7 @@ class _ViewerState {
    * @param fromUser Whether the request is from the user
    */
   requestFile(id: number, fromUser: boolean) {
-    if (this._fileInfoMap.has(id)) {
+    if (this.mappings.fileIdToInfoMap.has(id)) {
       this._viewedFileId = id;
       ViewerEvents.onViewedFileChange.notify(this._viewedFile);
       if (fromUser) ViewerEvents.onUserClickedFile.notify();

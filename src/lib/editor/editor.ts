@@ -8,6 +8,7 @@ import { python } from "@codemirror/lang-python";
 import { javascript } from "@codemirror/lang-javascript";
 import { darkEditor } from "./editor-theme-dark";
 import { lightEditor } from "./editor-theme-light";
+import { resourceKeyHoverTooltip } from "./tooltips";
 
 type SupportedLanguage = "xml" | "json" | "py" | "js";
 
@@ -29,6 +30,7 @@ namespace CodemirrorEditor {
           _langCompartment.of(_getLanguageSupport(language)),
           _themeCompartment.of(isDarkTheme ? darkEditor : lightEditor),
           EditorState.readOnly.of(true),
+          resourceKeyHoverTooltip,
         ]
       })
     });
