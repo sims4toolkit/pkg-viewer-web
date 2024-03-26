@@ -4,8 +4,8 @@
   import ViewerState from "lib/viewer/viewer-state";
   import LoadingIndicator from "components/elements/LoadingIndicator.svelte";
   import PackageViewerPage from "../PackageViewerPage.svelte";
-  import PlainTextViewer from "./PlainTextViewer.svelte";
-  import HtmlViewer from "./HtmlViewer.svelte";
+  import PlainTextViewer from "../shared/PlainTextViewer.svelte";
+  import HtmlViewer from "../shared/HtmlViewer.svelte";
 
   export let params: {
     server: string;

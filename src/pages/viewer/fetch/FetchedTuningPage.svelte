@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import config from "src/config";
-  import PlainTextViewer from "../discord/PlainTextViewer.svelte"; // FIXME: change location of file
+  import PlainTextViewer from "../shared/PlainTextViewer.svelte";
   import Settings from "lib/utils/settings";
   import LoadingIndicator from "components/elements/LoadingIndicator.svelte";
   const { XmlResource } = window.S4TK.models;
