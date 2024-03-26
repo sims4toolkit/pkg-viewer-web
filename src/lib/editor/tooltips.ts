@@ -67,12 +67,14 @@ const _POSSIBLE_TOOLTIPS: TooltipGenerator[] = [
   { // hex resource key (tuning or simdata)
     tokenRegex: /^[\da-fA-F]{8}[:-][\da-fA-F]{8}[:-][\da-fA-F]{16}$/,
     getTooltip(token): FileTooltipInfo {
-      token = token.replace(/:/g, "-");
-      let tooltip = ViewerState.mappings.getFileTooltip(token);
-      if (!tooltip && token.toLowerCase().startsWith("2f7d0004")) {
-        token = token.replace(/^2f7d0004/i, "00B2D882");
-        tooltip = ViewerState.mappings.getFileTooltip(token);
-      }
+      token = token.toUpperCase().replace(/:/g, "-").replace(/^2F7D0004/, "00B2D882");
+      const tooltip = ViewerState.mappings.getFileTooltip(token);
+      if (!tooltip && token.startsWith("00B2D882")) return {
+        id: -1,
+        sourceUrl: `https://tdesc.lot51.cc/api/simdex/icon/0x${token.split("-")[2]}`,
+        resourceKey: token,
+        displayName: "DST Image",
+      };
       return tooltip;
     },
     generateView: (tooltip: FileTooltipInfo) => _tooltipViewWrapper(tooltip, "File", dom => {
@@ -80,17 +82,26 @@ const _POSSIBLE_TOOLTIPS: TooltipGenerator[] = [
       const typeName = BinaryResourceType[type] ?? "Unknown";
       const formattedTypeName = addPascalSpaces(typeName);
 
-      const fileInfo = tooltip as ViewableFileInfo;
-      if (fileInfo.renderType === RenderType.Image) {
+      if (tooltip.sourceUrl) {
         _addTextToDom(dom, formattedTypeName, { title: true });
-        _addImageToDom(dom, fileInfo);
+        _addImageToDom(dom, tooltip.sourceUrl);
       } else {
-        if (tooltip.displayName.toLowerCase() !== formattedTypeName.toLowerCase())
+        const fileInfo = tooltip as ViewableFileInfo;
+        if (fileInfo.renderType === RenderType.Image) {
           _addTextToDom(dom, formattedTypeName, { title: true });
-        _addTextToDom(dom, tooltip.displayName);
+          _addImageToDom(dom, tooltip.sourceUrl ?? fileInfo);
+        } else {
+          if (tooltip.displayName.toLowerCase() !== formattedTypeName.toLowerCase())
+            _addTextToDom(dom, formattedTypeName, { title: true });
+          _addTextToDom(dom, tooltip.displayName);
+        }
       }
 
-      _addFileLinkToDom(dom, tooltip.id);
+      if (tooltip.sourceUrl) {
+        _addSourceAttributionToDom(dom, tooltip.sourceUrl);
+      } else {
+        _addFileLinkToDom(dom, tooltip.id);
+      }
     }),
   },
   { // string key
@@ -142,24 +153,26 @@ function _addTextToDom(
   dom.appendChild(p);
 }
 
-function _addImageToDom(dom: HTMLDivElement, fileInfo: ImageFileInfo) {
+function _addImageToDom(dom: HTMLDivElement, imageSource: ImageFileInfo | string) {
   const wrapper = document.createElement("div");
-
+  dom.appendChild(wrapper);
   const img = document.createElement("img");
   img.classList.add("border", "border-solid", "border-black", "dark:border-white");
-  img.src = fileInfo.pngBase64;
-  img.alt = "Preview";
-  img.style.maxWidth = "100px";
+  img.alt = "Not Found";
+  img.style.maxWidth = "120px";
+  img.style.maxHeight = "100px";
   wrapper.appendChild(img);
-
-  if (fileInfo.width && fileInfo.height) {
-    const p = document.createElement("p");
-    p.classList.add("mt-1", "text-subtle", "text-center", "text-xs");
-    p.textContent = `${fileInfo.width} x ${fileInfo.height}`;
-    wrapper.appendChild(p);
+  if (typeof imageSource === "string") {
+    img.src = imageSource;
+  } else {
+    img.src = imageSource.pngBase64;
+    if (imageSource.width && imageSource.height) {
+      const p = document.createElement("p");
+      p.classList.add("mt-1", "text-subtle", "text-center", "text-xs");
+      p.textContent = `${imageSource.width} x ${imageSource.height}`;
+      wrapper.appendChild(p);
+    }
   }
-
-  dom.appendChild(wrapper);
 }
 
 function _addFileLinkToDom(dom: HTMLDivElement, fileId: number) {
@@ -172,6 +185,22 @@ function _addFileLinkToDom(dom: HTMLDivElement, fileId: number) {
   button.textContent = "Go to File";
   button.onclick = () => ViewerState.requestFile(fileId, true);
   dom.appendChild(button);
+}
+
+function _addSourceAttributionToDom(dom: HTMLDivElement, sourceUrl: string) {
+  const hr = document.createElement("hr");
+  hr.classList.add("opacity-20", "w-full");
+  dom.appendChild(hr);
+
+  const a = document.createElement("a");
+  a.target = "_blank";
+  a.href = sourceUrl;
+  a.textContent = new URL(sourceUrl).hostname;
+  a.classList.add("text-secondary");
+  const span = document.createElement("span");
+  span.textContent = "From: ";
+  span.appendChild(a);
+  dom.appendChild(span);
 }
 
 //#endregion
