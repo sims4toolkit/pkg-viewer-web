@@ -2,8 +2,10 @@ import { hoverTooltip, TooltipView } from "@codemirror/view";
 import ViewerState from "lib/viewer/viewer-state";
 import { addPascalSpaces } from "lib/utils/helpers";
 import Settings from "lib/utils/settings";
-import type { FileTooltipInfo, StringTooltipInfo } from "lib/viewer/tooltips";
+import type { FileTooltipInfo, StringTooltipInfo, TooltipInfo } from "lib/viewer/tooltips";
 const { TuningResourceType, BinaryResourceType } = window.S4TK.enums;
+
+//#region Tooltips
 
 export const resourceKeyHoverTooltip = hoverTooltip((view, pos, side) => {
   if (!Settings.showRefTooltips) return null;
@@ -32,23 +34,14 @@ export const resourceKeyHoverTooltip = hoverTooltip((view, pos, side) => {
   return null;
 });
 
-function _addFileLinkButton(dom: HTMLDivElement, fileId: number) {
-  const hr = document.createElement("hr");
-  hr.classList.add("opacity-20", "w-full")
-  dom.appendChild(hr);
-  const button = document.createElement("button");
-  button.classList.add("text-secondary");
-  dom.appendChild(button);
-  button.textContent = "Go to File";
-  button.onclick = function () {
-    ViewerState.requestFile(fileId, true);
-  }
-}
+//#endregion
 
-interface _TooltipGenerator<TooltipType> {
+//#region Tooltip Generators
+
+interface _TooltipGenerator<T extends TooltipInfo> {
   tokenRegex: RegExp;
-  getTooltip(token: string): TooltipType;
-  generateView(tooltip: TooltipType): () => TooltipView;
+  getTooltip(token: string): T;
+  generateView(tooltip: T): () => TooltipView;
 }
 
 type FileTooltipGenerator = _TooltipGenerator<FileTooltipInfo>;
@@ -61,33 +54,14 @@ const _POSSIBLE_TOOLTIPS: TooltipGenerator[] = [
     getTooltip(token): FileTooltipInfo {
       return ViewerState.mappings.getFileTooltip(token);
     },
-    generateView(tooltip: FileTooltipInfo) {
-      return () => {
-        const dom = document.createElement("div");
-        dom.classList.add("p-1", "text-sm", "flex", "flex-col", "items-start", "gap-1");
-
-        if (tooltip) {
-          const type = parseInt(tooltip.resourceKey.split("-")[0], 16);
-          const typeName = TuningResourceType[type] ?? "Unknown";
-
-          const title = document.createElement("p");
-          title.classList.add("uppercase", "text-xs", "font-bold", "text-subtle");
-          title.textContent = `${addPascalSpaces(typeName)} Tuning`;
-          dom.appendChild(title);
-
-          const body = document.createElement("p");
-          body.classList.add("monospace");
-          body.textContent = tooltip.displayName;
-          dom.append(body);
-
-          _addFileLinkButton(dom, tooltip.id);
-        } else {
-          dom.innerHTML = `<em>Tuning not found in package.</em>`;
-        }
-
-        return { dom };
-      };
-    }
+    generateView: (tooltip: FileTooltipInfo) => _tooltipViewWrapper(tooltip, "Tuning", dom => {
+      const type = parseInt(tooltip.resourceKey.split("-")[0], 16);
+      const typeName = TuningResourceType[type] ?? "Unknown";
+      const formattedTypeName = `${addPascalSpaces(typeName)} Tuning`;
+      _addTextToDom(dom, formattedTypeName, { title: true });
+      _addTextToDom(dom, tooltip.displayName, { classes: ["monospace"] });
+      _addFileLinkToDom(dom, tooltip.id);
+    }),
   },
   { // hex resource key (tuning or simdata)
     tokenRegex: /^[\da-fA-F]{8}[:-][\da-fA-F]{8}[:-][\da-fA-F]{16}$/,
@@ -100,63 +74,75 @@ const _POSSIBLE_TOOLTIPS: TooltipGenerator[] = [
       }
       return tooltip;
     },
-    generateView(tooltip: FileTooltipInfo) {
-      return () => {
-        const dom = document.createElement("div");
-        dom.classList.add("p-1", "text-sm", "flex", "flex-col", "items-start", "gap-1");
-
-        if (tooltip) {
-          const type = parseInt(tooltip.resourceKey.split("-")[0], 16);
-          const typeName = BinaryResourceType[type] ?? "Unknown";
-
-          const title = document.createElement("p");
-          title.classList.add("uppercase", "text-xs", "font-bold", "text-subtle");
-          title.textContent = addPascalSpaces(typeName);
-
-          const body = document.createElement("p");
-          body.classList.add("monospace");
-          body.textContent = tooltip.displayName;
-
-          if (body.textContent.toLowerCase() !== title.textContent.toLowerCase())
-            dom.appendChild(title);
-          dom.append(body);
-
-          _addFileLinkButton(dom, tooltip.id);
-        } else {
-          dom.innerHTML = `<em>File not found in package.</em>`;
-        }
-
-        return { dom };
-      };
-    }
+    generateView: (tooltip: FileTooltipInfo) => _tooltipViewWrapper(tooltip, "File", dom => {
+      const type = parseInt(tooltip.resourceKey.split("-")[0], 16);
+      const typeName = BinaryResourceType[type] ?? "Unknown";
+      const formattedTypeName = addPascalSpaces(typeName);
+      if (tooltip.displayName.toLowerCase() !== formattedTypeName.toLowerCase())
+        _addTextToDom(dom, formattedTypeName, { title: true });
+      _addTextToDom(dom, tooltip.displayName);
+      _addFileLinkToDom(dom, tooltip.id);
+    }),
   },
   { // string key
     tokenRegex: /^0x[\da-fA-F]{1,8}$/,
     getTooltip(token): StringTooltipInfo {
       return ViewerState.mappings.getStringTooltip(token);
     },
-    generateView(tooltip: StringTooltipInfo) {
-      return () => {
-        const dom = document.createElement("div");
-        dom.classList.add("p-1", "text-sm", "flex", "flex-col", "items-start", "gap-1");
-
-        if (tooltip) {
-          const title = document.createElement("p");
-          title.classList.add("uppercase", "text-xs", "font-bold", "text-subtle");
-          title.textContent = "String";
-          dom.appendChild(title);
-
-          const body = document.createElement("p");
-          body.textContent = `"${tooltip.text}"`;
-          dom.append(body);
-
-          _addFileLinkButton(dom, tooltip.stblId);
-        } else {
-          dom.innerHTML = `<em>String not found in package.</em>`;
-        }
-
-        return { dom };
-      };
-    }
+    generateView: (tooltip: StringTooltipInfo) => _tooltipViewWrapper(tooltip, "String", dom => {
+      _addTextToDom(dom, "String", { title: true });
+      _addTextToDom(dom, `"${tooltip.text}"`);
+      _addFileLinkToDom(dom, tooltip.stblId);
+    }),
   },
 ];
+
+//#endregion
+
+//#region Tooltip Creation Helpers
+
+function _tooltipViewWrapper<T extends TooltipInfo>(
+  tooltip: T,
+  tooltipType: string,
+  buildDom: (dom: HTMLDivElement) => void
+): () => TooltipView {
+  return () => {
+    const dom = document.createElement("div");
+    dom.classList.add("p-1", "text-sm", "flex", "flex-col", "items-start", "gap-1");
+    if (tooltip) {
+      buildDom(dom);
+    } else {
+      dom.innerHTML = `<em>${tooltipType} not found.</em>`;
+    }
+    return { dom };
+  };
+}
+
+function _addTextToDom(
+  dom: HTMLDivElement,
+  text: string,
+  options?: {
+    title?: boolean;
+    classes?: string[];
+  }
+) {
+  const p = document.createElement("p");
+  if (options?.title) p.classList.add("uppercase", "text-xs", "font-bold", "text-subtle");
+  if (options?.classes?.length) p.classList.add(...options.classes);
+  p.textContent = text;
+  dom.appendChild(p);
+}
+
+function _addFileLinkToDom(dom: HTMLDivElement, fileId: number) {
+  const hr = document.createElement("hr");
+  hr.classList.add("opacity-20", "w-full");
+  dom.appendChild(hr);
+
+  const button = document.createElement("button");
+  button.classList.add("text-secondary");
+  button.textContent = "Go to File";
+  button.onclick = () => ViewerState.requestFile(fileId, true);
+  dom.appendChild(button);
+}
+
+//#endregion

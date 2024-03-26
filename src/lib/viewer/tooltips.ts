@@ -11,3 +11,5 @@ export interface FileTooltipInfo {
   readonly resourceKey: string;
   readonly diagnostics: readonly DiagnosticInfo[];
 }
+
+export type TooltipInfo = StringTooltipInfo | FileTooltipInfo;
