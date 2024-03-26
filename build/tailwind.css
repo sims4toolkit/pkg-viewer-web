@@ -660,20 +660,20 @@ video {
   margin-right: 0.25rem;
 }
 
-.mt-4 {
-  margin-top: 1rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
-}
-
 .mt-1 {
   margin-top: 0.25rem;
 }
 
 .ml-3 {
   margin-left: 0.75rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .mb-3 {
@@ -809,16 +809,16 @@ video {
   max-width: fit-content;
 }
 
+.max-w-2xl {
+  max-width: 42rem;
+}
+
 .max-w-screen-md {
   max-width: 768px;
 }
 
 .max-w-full {
   max-width: 100%;
-}
-
-.max-w-2xl {
-  max-width: 42rem;
 }
 
 .flex-1 {
