@@ -1,5 +1,8 @@
 import type { DiagnosticInfo, DiagnosticLevel } from "@s4tk/validation";
 import Settings from "lib/utils/settings";
+import ViewerState from "./viewer-state";
+import { RenderType } from "./viewable-file-info";
+const { StringTableLocale } = window.S4TK.enums;
 
 namespace Diagnostics {
   export function countExact(
@@ -19,6 +22,11 @@ namespace Diagnostics {
   export function passesSettings(info: DiagnosticInfo): boolean {
     if (Settings.suppressedDiagnosticLevels.has(info.level)) return false;
     if (Settings.suppressedDiagnosticCodes.has(info.code)) return false;
+    if (!Settings.showNonEnglishDiagnostics) {
+      const fileInfo = ViewerState.mappings.getFileInfo(info.ownerId);
+      if ((fileInfo.renderType === RenderType.StringTable)
+        && (fileInfo.locale !== StringTableLocale.English)) return false;
+    }
     return true;
   }
 

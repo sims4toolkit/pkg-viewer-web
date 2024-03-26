@@ -13,6 +13,7 @@
     Settings.expandFoldersByDefault = expandFoldersByDefault;
     Settings.showRefTooltips = showRefTooltips;
     Settings.showMissingRefTooltips = showMissingRefTooltips;
+    Settings.showNonEnglishDiagnostics = showNonEnglishDiagnostics;
     saveLevels();
     saveCodes();
   };
@@ -22,6 +23,7 @@
   let expandFoldersByDefault = Settings.expandFoldersByDefault;
   let showRefTooltips = Settings.showRefTooltips;
   let showMissingRefTooltips = Settings.showMissingRefTooltips;
+  let showNonEnglishDiagnostics = Settings.showNonEnglishDiagnostics;
 
   function saveLevels() {
     try {
@@ -65,6 +67,10 @@
     <Switch
       label="Show diagnostic codes in bottom panel"
       bind:checked={showDiagnosticCodesOnUi}
+    />
+    <Switch
+      label="Show diagnostics for non-English STBLs"
+      bind:checked={showNonEnglishDiagnostics}
     />
     <Switch
       label="Expand file explorer folders by default"

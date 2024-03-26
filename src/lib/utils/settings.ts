@@ -167,6 +167,7 @@ interface UserSettings {
   formatXmlSpaces: number;
   showRefTooltips: boolean;
   showMissingRefTooltips: boolean;
+  showNonEnglishDiagnostics: boolean;
 }
 
 type StoredUserSettings = {
@@ -241,6 +242,10 @@ const Settings = getSettingsProxy({
     cls: StoredBoolean,
     defaultValue: true
   },
+  showNonEnglishDiagnostics: {
+    cls: StoredBoolean,
+    defaultValue: true
+  }
 });
 
 export default Settings;
