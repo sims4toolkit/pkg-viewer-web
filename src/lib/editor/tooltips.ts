@@ -3,6 +3,7 @@ import ViewerState from "lib/viewer/viewer-state";
 import { addPascalSpaces } from "lib/utils/helpers";
 import Settings from "lib/utils/settings";
 import type { FileTooltipInfo, StringTooltipInfo, TooltipInfo } from "lib/viewer/tooltips";
+import { ImageFileInfo, RenderType, type ViewableFileInfo } from "lib/viewer/viewable-file-info";
 const { TuningResourceType, BinaryResourceType } = window.S4TK.enums;
 
 //#region Tooltips
@@ -78,9 +79,17 @@ const _POSSIBLE_TOOLTIPS: TooltipGenerator[] = [
       const type = parseInt(tooltip.resourceKey.split("-")[0], 16);
       const typeName = BinaryResourceType[type] ?? "Unknown";
       const formattedTypeName = addPascalSpaces(typeName);
-      if (tooltip.displayName.toLowerCase() !== formattedTypeName.toLowerCase())
+
+      const fileInfo = tooltip as ViewableFileInfo;
+      if (fileInfo.renderType === RenderType.Image) {
         _addTextToDom(dom, formattedTypeName, { title: true });
-      _addTextToDom(dom, tooltip.displayName);
+        _addImageToDom(dom, fileInfo);
+      } else {
+        if (tooltip.displayName.toLowerCase() !== formattedTypeName.toLowerCase())
+          _addTextToDom(dom, formattedTypeName, { title: true });
+        _addTextToDom(dom, tooltip.displayName);
+      }
+
       _addFileLinkToDom(dom, tooltip.id);
     }),
   },
@@ -131,6 +140,26 @@ function _addTextToDom(
   if (options?.classes?.length) p.classList.add(...options.classes);
   p.textContent = text;
   dom.appendChild(p);
+}
+
+function _addImageToDom(dom: HTMLDivElement, fileInfo: ImageFileInfo) {
+  const wrapper = document.createElement("div");
+
+  const img = document.createElement("img");
+  img.classList.add("border", "border-solid", "border-black", "dark:border-white");
+  img.src = fileInfo.pngBase64;
+  img.alt = "Preview";
+  img.style.maxWidth = "100px";
+  wrapper.appendChild(img);
+
+  if (fileInfo.width && fileInfo.height) {
+    const p = document.createElement("p");
+    p.classList.add("mt-1", "text-subtle", "text-center", "text-xs");
+    p.textContent = `${fileInfo.width} x ${fileInfo.height}`;
+    wrapper.appendChild(p);
+  }
+
+  dom.appendChild(wrapper);
 }
 
 function _addFileLinkToDom(dom: HTMLDivElement, fileId: number) {
