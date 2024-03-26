@@ -5,6 +5,7 @@ import ViewerEvents from "./viewer-events";
 import { loadResources } from "./resource-loader";
 import ViewerMappings from "./viewer-mappings";
 import ViewerBreadcrumbs from "./viewer-breadcrumbs";
+import { setDiagnosticsViewerState } from "./diagnostics";
 const { validatePackageBuffer } = window.S4TK.validation;
 
 class _ViewerState {
@@ -25,6 +26,10 @@ class _ViewerState {
   //#endregion
 
   //#region Lifecycle
+
+  constructor() {
+    setDiagnosticsViewerState(this);
+  }
 
   /**
    * Loads a package from the given buffer into the viewer.
