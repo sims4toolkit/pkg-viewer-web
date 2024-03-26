@@ -7,7 +7,7 @@ import { addPascalSpaces, addToArrayMap, compareProperty } from "../utils/helper
 import Diagnostics from "./diagnostics";
 import Settings from "lib/utils/settings";
 import type ViewerMappings from "./viewer-mappings";
-import type { StringTooltipInfo } from "./tooltips";
+import type { StringTooltipInfo } from "./tooltip-info";
 const { models, enums, formatting: fmt } = window.S4TK;
 const { DiagnosticLevel, ValidationSchema } = window.S4TK.validation;
 

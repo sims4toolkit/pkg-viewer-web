@@ -2,7 +2,7 @@ import { hoverTooltip, TooltipView } from "@codemirror/view";
 import ViewerState from "lib/viewer/viewer-state";
 import { addPascalSpaces } from "lib/utils/helpers";
 import Settings from "lib/utils/settings";
-import type { FileTooltipInfo, StringTooltipInfo, TooltipInfo } from "lib/viewer/tooltips";
+import type { FileTooltipInfo, StringTooltipInfo, TooltipInfo } from "lib/viewer/tooltip-info";
 import { ImageFileInfo, RenderType, type ViewableFileInfo } from "lib/viewer/viewable-file-info";
 const { TuningResourceType, BinaryResourceType } = window.S4TK.enums;
 

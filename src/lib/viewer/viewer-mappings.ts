@@ -1,4 +1,4 @@
-import type { FileTooltipInfo, StringTooltipInfo } from "./tooltips";
+import type { FileTooltipInfo, StringTooltipInfo } from "./tooltip-info";
 import type { ViewableFileInfo } from "./viewable-file-info";
 
 export default class ViewerMappings {
