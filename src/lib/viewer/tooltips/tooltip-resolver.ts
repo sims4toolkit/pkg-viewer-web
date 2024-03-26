@@ -58,8 +58,8 @@ const _TOOLTIP_RESOLVERS: readonly TooltipResolver[] = [
       const typeName = TuningResourceType[external.type] ?? "Unknown";
       const formattedTypeName = addPascalSpaces(typeName);
       const packNote = external.group === "00000000" ?
-        "From Base Game" :
-        `From Pack (Group: ${external.group})`;
+        "Base Game" :
+        `Pack Group: ${external.group}`;
 
       return new TooltipBuilder()
         .setTitle(formattedTypeName)
@@ -86,8 +86,8 @@ const _TOOLTIP_RESOLVERS: readonly TooltipResolver[] = [
       if (!external) return null;
 
       const packNote = external.pack === "BASE_GAME" ?
-        "From Base Game" :
-        `From Pack (${external.pack})`;
+        "Base Game" :
+        `Pack: ${external.pack}`;
 
       return new TooltipBuilder()
         .setTitle("String")
