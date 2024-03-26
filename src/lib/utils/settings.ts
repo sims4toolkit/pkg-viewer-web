@@ -165,6 +165,8 @@ interface UserSettings {
   showDiagnosticCodesOnUi: boolean;
   expandFoldersByDefault: boolean;
   formatXmlSpaces: number;
+  showRefTooltips: boolean;
+  showMissingRefTooltips: boolean;
 }
 
 type StoredUserSettings = {
@@ -230,7 +232,15 @@ const Settings = getSettingsProxy({
   formatXmlSpaces: {
     cls: StoredInteger,
     defaultValue: 2
-  }
+  },
+  showRefTooltips: {
+    cls: StoredBoolean,
+    defaultValue: true
+  },
+  showMissingRefTooltips: {
+    cls: StoredBoolean,
+    defaultValue: true
+  },
 });
 
 export default Settings;

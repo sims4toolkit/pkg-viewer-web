@@ -11,6 +11,8 @@
     Settings.formatXmlSpaces = Math.min(8, Math.max(1, xmlSpaces));
     Settings.showDiagnosticCodesOnUi = showDiagnosticCodesOnUi;
     Settings.expandFoldersByDefault = expandFoldersByDefault;
+    Settings.showRefTooltips = showRefTooltips;
+    Settings.showMissingRefTooltips = showMissingRefTooltips;
     saveLevels();
     saveCodes();
   };
@@ -18,6 +20,8 @@
   let xmlSpaces = Settings.formatXmlSpaces;
   let showDiagnosticCodesOnUi = Settings.showDiagnosticCodesOnUi;
   let expandFoldersByDefault = Settings.expandFoldersByDefault;
+  let showRefTooltips = Settings.showRefTooltips;
+  let showMissingRefTooltips = Settings.showMissingRefTooltips;
 
   function saveLevels() {
     try {
@@ -50,6 +54,14 @@
 
 <div class="w-full h-full overflow-y-auto flex flex-col gap-6">
   <div class="w-full flex flex-col gap-2">
+    <Switch
+      label="Show tuning ID and resource key tooltips"
+      bind:checked={showRefTooltips}
+    />
+    <Switch
+      label="Show tooltips for files not in package"
+      bind:checked={showMissingRefTooltips}
+    />
     <Switch
       label="Show diagnostic codes in bottom panel"
       bind:checked={showDiagnosticCodesOnUi}
