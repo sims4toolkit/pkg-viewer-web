@@ -1,7 +1,7 @@
 import type { DiagnosticInfo, DiagnosticLevel } from "@s4tk/validation";
 import Settings from "lib/utils/settings";
 import type ViewerState from "./viewer-state";
-import { RenderType } from "./viewable-file-info";
+import { RenderType } from "./index-data-types";
 const { StringTableLocale } = window.S4TK.enums;
 
 // HACK: just to remove circular dependency... I know this is gross

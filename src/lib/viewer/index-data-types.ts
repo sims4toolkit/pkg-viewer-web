@@ -1,5 +1,3 @@
-// TODO: rename file `index-data.ts`
-
 import type { StringTableLocale } from "@s4tk/models/enums";
 import type { DiagnosticInfo } from "@s4tk/validation";
 

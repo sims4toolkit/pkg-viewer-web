@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ImageFileInfo } from "lib/viewer/viewable-file-info";
+  import type { ImageFileInfo } from "lib/viewer/index-data-types";
 
   export let info: ImageFileInfo;
 </script>

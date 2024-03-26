@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ViewableFileInfo } from "lib/viewer/viewable-file-info";
+  import type { ViewableFileInfo } from "lib/viewer/index-data-types";
 
   export let info: ViewableFileInfo;
   export let title: string;

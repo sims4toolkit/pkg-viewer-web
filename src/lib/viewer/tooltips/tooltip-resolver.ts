@@ -4,7 +4,7 @@ import type { TooltipInfo } from "./tooltip-info";
 import TooltipBuilder from "./tooltip-builder";
 import ExternalTooltips from "./external-tooltips";
 import Settings from "lib/utils/settings";
-import { RenderType } from "../viewable-file-info";
+import { RenderType } from "../index-data-types";
 const { TuningResourceType, BinaryResourceType } = window.S4TK.enums;
 
 /**

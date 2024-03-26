@@ -1,5 +1,5 @@
 import type { DiagnosticInfo } from "@s4tk/validation";
-import type { PlainTextFileInfo, StringTableFileInfo, ViewableFileInfo } from "./viewable-file-info";
+import type { PlainTextFileInfo, StringTableFileInfo, ViewableFileInfo } from "./index-data-types";
 import Diagnostics from "./diagnostics";
 
 export enum DisplayType {

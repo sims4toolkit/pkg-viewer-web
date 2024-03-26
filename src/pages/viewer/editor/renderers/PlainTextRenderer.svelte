@@ -3,7 +3,7 @@
   import type { EditorView } from "codemirror";
   import CodemirrorEditor from "lib/editor/editor";
   import Settings, { SettingsSubscriptionManager } from "lib/utils/settings";
-  import type { PlainTextFileInfo } from "lib/viewer/viewable-file-info";
+  import type { PlainTextFileInfo } from "lib/viewer/index-data-types";
   import CornerAlert from "components/elements/CornerAlert.svelte";
   import { text } from "svelte/internal";
   const { XmlDocumentNode } = window.S4TK.xml;

@@ -1,6 +1,6 @@
 import EventNotifier from "../utils/event-notifier";
 import type { ExplorerSection } from "./explorer-data";
-import type { ViewableFileInfo } from "./viewable-file-info";
+import type { ViewableFileInfo } from "./index-data-types";
 
 const ViewerEvents = {
   onExplorerSectionsChange: new EventNotifier<readonly ExplorerSection[]>(),

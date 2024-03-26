@@ -1,4 +1,4 @@
-import type { ViewableFileInfo, StringEntryInfo } from "./viewable-file-info";
+import type { ViewableFileInfo, StringEntryInfo } from "./index-data-types";
 
 export default class ViewerMappings {
   private readonly _fileIdToInfoMap = new Map<number, ViewableFileInfo>();

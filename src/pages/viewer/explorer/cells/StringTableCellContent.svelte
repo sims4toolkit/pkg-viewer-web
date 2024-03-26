@@ -3,7 +3,7 @@
   import { ExplorerCell } from "lib/viewer/explorer-data";
   import type { StringTableExplorerCell } from "lib/viewer/explorer-data";
   import DiagnosticsBubble from "pages/viewer/diagnostics/DiagnosticsBubble.svelte";
-  import type { StringTableFileInfo } from "lib/viewer/viewable-file-info";
+  import type { StringTableFileInfo } from "lib/viewer/index-data-types";
   import Diagnostics from "lib/viewer/diagnostics";
 
   export let cell: StringTableExplorerCell;

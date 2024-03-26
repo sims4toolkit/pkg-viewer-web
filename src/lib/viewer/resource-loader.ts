@@ -1,7 +1,7 @@
 import type * as modelsTypes from "@s4tk/models";
 import type { ValidatedResource, ValidatedTuning, ValidatedSimData, ValidatedStringTable, DiagnosticInfo } from "@s4tk/validation";
-import type { PlainTextFileInfo, StringEntryInfo, StringTableFileInfo, ViewableFileInfo } from "./viewable-file-info";
-import { RenderType } from "./viewable-file-info";
+import type { PlainTextFileInfo, StringEntryInfo, StringTableFileInfo, ViewableFileInfo } from "./index-data-types";
+import { RenderType } from "./index-data-types";
 import { DisplayType, type ExplorerCell, type ExplorerSection } from "./explorer-data";
 import { addPascalSpaces, addToArrayMap, compareProperty } from "../utils/helpers";
 import Diagnostics from "./diagnostics";

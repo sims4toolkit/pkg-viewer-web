@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { StringTableFileInfo } from "lib/viewer/viewable-file-info";
+  import type { StringTableFileInfo } from "lib/viewer/index-data-types";
   const { StringTableLocale } = window.S4TK.enums;
   const { formatStringKey } = window.S4TK.formatting;
 
