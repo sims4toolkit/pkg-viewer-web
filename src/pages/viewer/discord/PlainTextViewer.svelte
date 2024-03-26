@@ -4,7 +4,6 @@
   import type { EditorView } from "codemirror";
   import CodemirrorEditor from "lib/editor/editor";
   import Settings, { SettingsSubscriptionManager } from "lib/utils/settings";
-  import { get } from "svelte/store";
   const { XmlDocumentNode } = window.S4TK.xml;
 
   export let filename: string;

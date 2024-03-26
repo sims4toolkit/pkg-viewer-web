@@ -6,12 +6,14 @@
   import PackageViewerPage from "pages/viewer/PackageViewerPage.svelte";
   import PackageGeneratorDelegate from "pages/generator/PackageGeneratorDelegate.svelte";
   import DiscordViewerDelegate from "pages/viewer/discord/DiscordViewerDelegate.svelte";
+  import FetchedTuningPage from "pages/viewer/fetch/FetchedTuningPage.svelte";
 
   const routes = {
     "/": HomePage,
     "/view": PackageViewerPage,
     "/generate": PackageGeneratorDelegate,
     "/discord/:server/:message/:filename": DiscordViewerDelegate,
+    "/fetch/tuning/:instance": FetchedTuningPage,
     "*": NotFoundPage,
   };
 </script>
