@@ -1,13 +1,12 @@
 import type * as modelsTypes from "@s4tk/models";
 import type { ValidatedResource, ValidatedTuning, ValidatedSimData, ValidatedStringTable, DiagnosticInfo } from "@s4tk/validation";
-import type { PlainTextFileInfo, StringTableFileInfo, ViewableFileInfo } from "./viewable-file-info";
+import type { PlainTextFileInfo, StringEntryInfo, StringTableFileInfo, ViewableFileInfo } from "./viewable-file-info";
 import { RenderType } from "./viewable-file-info";
 import { DisplayType, type ExplorerCell, type ExplorerSection } from "./explorer-data";
 import { addPascalSpaces, addToArrayMap, compareProperty } from "../utils/helpers";
 import Diagnostics from "./diagnostics";
 import Settings from "lib/utils/settings";
 import type ViewerMappings from "./viewer-mappings";
-import type { StringTooltipInfo } from "./tooltip-info";
 const { models, enums, formatting: fmt } = window.S4TK;
 const { DiagnosticLevel, ValidationSchema } = window.S4TK.validation;
 
@@ -344,7 +343,7 @@ function _createCell(
   switch (entry.schema) {
     case ValidationSchema.Tuning: {
       info = info as PlainTextFileInfo;
-      _addFileTooltip(mappings, entry.key.instance.toString(), info.id);
+      _addFileKeyToId(mappings, entry.key.instance.toString(), info.id);
       const simDataInfo = mappings.fileIdToInfoMap.get(entry.pairedSimDataId) as PlainTextFileInfo;
       const containedIds = new Set([info.id]);
       if (simDataInfo) containedIds.add(simDataInfo.id);
@@ -361,7 +360,7 @@ function _createCell(
       info = info as StringTableFileInfo;
       if (info.locale === enums.StringTableLocale.English) {
         info.entries.forEach(({ key, value }) => {
-          _addStringTooltip(mappings, key, info.id, value);
+          _addStringKeyToInfo(mappings, key, info.id, value);
         });
       }
       return {
@@ -377,7 +376,7 @@ function _createCell(
     }
   }
 
-  _addFileTooltip(mappings, info.resourceKey, info.id);
+  _addFileKeyToId(mappings, info.resourceKey, info.id);
   return {
     displayType: DisplayType.Unspecified,
     filterName: info.displayName,
@@ -440,14 +439,14 @@ function _getResourceKey(entry: ValidatedResource, removeLocale = false): string
   }
 }
 
-function _addFileTooltip(mappings: ViewerMappings, key: string, fileId: number) {
+function _addFileKeyToId(mappings: ViewerMappings, key: string, fileId: number) {
   const fileKeyToIdMap = mappings.fileKeyToIdMap as Map<string, number>;
   fileKeyToIdMap.set(key, fileId);
 }
 
-function _addStringTooltip(mappings: ViewerMappings, key: number, stblId: number, text: string) {
-  const stringKeyToTooltipMap = mappings.stringKeyToTooltipMap as Map<number, StringTooltipInfo>;
-  stringKeyToTooltipMap.set(key, { stblId, text });
+function _addStringKeyToInfo(mappings: ViewerMappings, key: number, stblId: number, text: string) {
+  const stringKeyToInfoMap = mappings.stringKeyToInfoMap as Map<number, StringEntryInfo>;
+  stringKeyToInfoMap.set(key, { stblId, text });
 }
 
 //#endregion

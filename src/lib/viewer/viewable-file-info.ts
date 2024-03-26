@@ -1,5 +1,9 @@
+// TODO: rename file `index-data.ts`
+
 import type { StringTableLocale } from "@s4tk/models/enums";
 import type { DiagnosticInfo } from "@s4tk/validation";
+
+//#region Render Types
 
 export enum RenderType {
   Unknown,
@@ -14,6 +18,10 @@ type UnrenderableRenderType =
   RenderType.Unknown |
   RenderType.Corrupt |
   RenderType.Deleted;
+
+//#endregion
+
+//#region File Info
 
 interface _ViewableFileInfoBase {
   readonly renderType: RenderType;
@@ -58,3 +66,14 @@ export type ViewableFileInfo =
   PlainTextFileInfo |
   StringTableFileInfo |
   ImageFileInfo;
+
+//#endregion
+
+//#region String Info
+
+export interface StringEntryInfo {
+  readonly stblId: number;
+  readonly text: string;
+}
+
+//#endregion
