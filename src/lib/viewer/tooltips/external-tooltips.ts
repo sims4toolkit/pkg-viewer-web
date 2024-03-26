@@ -1,4 +1,5 @@
 import type { TuningResourceType } from "@s4tk/models/enums";
+import config from "src/config";
 const { enums } = window.S4TK;
 
 interface _FetchedData {
@@ -21,8 +22,6 @@ interface FetchedImageData extends _FetchedData {
 }
 
 namespace ExternalTooltips {
-  const _API_BASE = "https://tdesc.lot51.cc/api/simdex";
-
   /**
    * Returns a `FetchedStringData` for the string with the given key.
    * 
@@ -30,7 +29,7 @@ namespace ExternalTooltips {
    */
   export async function fetchStringData(key: string): Promise<FetchedStringData | null> {
     try {
-      const endpoint = getEndpoint(`search/strings?q=${key}&offset=0&limit=1&locales[]=0`);
+      const endpoint = _getSearchEndpoint(`strings?q=${key}&offset=0&limit=1&locales[]=0`);
       const res = await fetch(endpoint);
       if (!res.ok) return null;
       const { value, pack } = await _getFirstHit(res);
@@ -48,7 +47,7 @@ namespace ExternalTooltips {
    */
   export async function fetchTuningData(instance: string): Promise<FetchedTuningData | null> {
     try {
-      const endpoint = getEndpoint(`search/tuning?q=${instance}&offset=0&limit=1`);
+      const endpoint = _getSearchEndpoint(`tuning?q=${instance}&offset=0&limit=1`);
       const res = await fetch(endpoint);
       if (!res.ok) return null;
       const { instance_id, instance_type, group_id_hash, name } = await _getFirstHit(res);
@@ -73,7 +72,7 @@ namespace ExternalTooltips {
       resKey = resKey.toUpperCase().replace(/:/g, "-").replace(/^2F7D0004/, "00B2D882");
       if (!resKey.startsWith("00B2D882")) return null;
       const instance = resKey.split("-")[2];
-      const source = `https://tdesc.lot51.cc/api/simdex/icon/0x${instance}`;
+      const source = _getImageEndpoint(`0x${instance}`);
       return { source, endpoint: source };
     } catch (e) {
       console.error(`Error fetching image '${resKey}':`, e);
@@ -81,8 +80,12 @@ namespace ExternalTooltips {
     }
   }
 
-  function getEndpoint(path: string): string {
-    return `${_API_BASE}/${path}`;
+  function _getSearchEndpoint(path: string): string {
+    return `${config.TDESC_SEARCH_API}/${path}`;
+  }
+
+  function _getImageEndpoint(path: string): string {
+    return `${config.TDESC_ICON_API}/${path}`;
   }
 
   async function _getFirstHit(res: Response): Promise<any> {

@@ -55,7 +55,7 @@
 
   async function safeFetch(endpoint: string, onOk: (res: Response) => void) {
     try {
-      const res = await fetch(`${config.API_BASE}/${endpoint}`);
+      const res = await fetch(`${config.DISCORD_API}/${endpoint}`);
       if (res.ok) {
         onOk(res);
       } else {
