@@ -50,7 +50,7 @@ type TooltipGenerator = FileTooltipGenerator | StringTooltipGenerator;
 
 const _POSSIBLE_TOOLTIPS: TooltipGenerator[] = [
   { // decimal instance
-    tokenRegex: /^\d+$/,
+    tokenRegex: /^\d{4,}$/,
     getTooltip(token): FileTooltipInfo {
       return ViewerState.mappings.getFileTooltip(token);
     },
