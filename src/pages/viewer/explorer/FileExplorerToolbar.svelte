@@ -1,13 +1,23 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import { replace } from "svelte-spa-router";
   import ViewerState from "lib/viewer/viewer-state";
   import type { ExplorerSection } from "lib/viewer/explorer-data";
   import ConfirmDialogue from "components/elements/ConfirmDialogue.svelte";
+  import ViewerEvents from "lib/viewer/viewer-events";
+
+  //#region Exported
 
   export let sections: readonly ExplorerSection[];
 
+  //#endregion
+
+  //#region Variables
+
   let searchTerm: string = "";
   let isConfirmingRefresh: boolean = false;
+  let canGoBack = false;
+  let canGoNext = false;
 
   $: {
     ViewerState.requestSearch(searchTerm);
@@ -16,6 +26,25 @@
   $: allCollapsed = sections?.every((section) => section.collapsed);
   $: collapseExpandTitle = allCollapsed ? "Expand All" : "Collapse All";
   $: collapseExpandImg = allCollapsed ? "expand" : "collapse";
+
+  //#endregion
+
+  //#region Lifecycle
+
+  const subscriptions = [
+    ViewerEvents.onViewedFileChange.subscribe(() => {
+      canGoBack = ViewerState.canGoBack;
+      canGoNext = ViewerState.canGoNext;
+    }),
+  ];
+
+  onDestroy(() => {
+    subscriptions.forEach((unsub) => unsub());
+  });
+
+  //#endregion
+
+  //#region Functions
 
   function collapseExpandAll() {
     const newCollapsed = !allCollapsed;
@@ -32,17 +61,45 @@
     ViewerState.unloadPackage({ requestRefresh: true });
     replace("#/view");
   }
+
+  //#endregion
 </script>
 
 <div class="h-full w-full flex items-center justify-between gap-4 px-2">
   <div class="flex-shrink-0 flex items-center gap-2">
     <button
       class="flex-shrink-0"
+      class:opacity-20={!canGoBack}
+      title="Previous File"
+      disabled={!canGoBack}
+      on:click={() => ViewerState.requestPreviousFile(true)}
+      ><img
+        src="./assets/icons/arrow-back.svg"
+        alt="previous"
+        class="svg h-4 w-4"
+        class:tint-on-hover={canGoBack}
+      /></button
+    >
+    <button
+      class="flex-shrink-0"
+      class:opacity-20={!canGoNext}
+      title="Next File"
+      disabled={!canGoNext}
+      on:click={() => ViewerState.requestNextFile(true)}
+      ><img
+        src="./assets/icons/arrow-forward.svg"
+        alt="next"
+        class="svg h-4 w-4"
+        class:tint-on-hover={canGoBack}
+      /></button
+    >
+    <button
+      class="flex-shrink-0"
       title="Reset Viewer"
       on:click={() => (isConfirmingRefresh = true)}
       ><img
         src="./assets/icons/refresh.svg"
-        alt={collapseExpandImg}
+        alt="refresh"
         class="svg h-4 w-4 tint-on-hover"
       /></button
     >
@@ -85,7 +142,7 @@
   <ConfirmDialogue
     title="Refresh Viewer"
     description="Are you sure you want to refresh the viewer? You will be able to upload another package."
-    confirmText="Reload Viewer"
+    confirmText="Refresh Viewer"
     cancelText="Cancel"
     onConfirm={resetViewer}
     onCancel={() => (isConfirmingRefresh = false)}

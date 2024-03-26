@@ -4,20 +4,23 @@ import type { ExplorerSection } from "./explorer-data";
 import ViewerEvents from "./viewer-events";
 import { loadResources } from "./resource-loader";
 import ViewerMappings from "./viewer-mappings";
+import ViewerBreadcrumbs from "./viewer-breadcrumbs";
 const { validatePackageBuffer } = window.S4TK.validation;
 
 class _ViewerState {
   //#region Fields / Properties
 
   public readonly mappings = new ViewerMappings();
-
+  private readonly _breadcrumbs = new ViewerBreadcrumbs();
   private _cachedPackageName: string;
   private _cachedPackageBuffer: Buffer;
   private _explorerSections: ExplorerSection[];
-  private _viewedFileId = 0;
   private _searchTerm: string;
 
-  private get _viewedFile() { return this.mappings.fileIdToInfoMap.get(this._viewedFileId); }
+  public get canGoBack() { return this._breadcrumbs.canGoBack; }
+  public get canGoNext() { return this._breadcrumbs.canGoNext; }
+  private get _currentFileId() { return this._breadcrumbs.currentFileId; }
+  private get _currentFileInfo() { return this.mappings.getFileInfo(this._currentFileId); }
 
   //#endregion
 
@@ -38,7 +41,8 @@ class _ViewerState {
       await loadResources(resources, this.mappings, this._explorerSections);
       this._cachedPackageName = filename;
       this._cachedPackageBuffer = buffer;
-      this._viewedFileId = this._explorerSections[0]?.cells[0]?.defaultId ?? 0;
+      const initialFileId = this._explorerSections[0]?.cells[0]?.defaultId ?? 0;
+      this._breadcrumbs.reset(initialFileId);
       return true;
     } catch (e) {
       console.error(e);
@@ -58,8 +62,8 @@ class _ViewerState {
   }) {
     this._cachedPackageName = null;
     this._cachedPackageBuffer = null;
-    this._viewedFileId = 0;
     this.mappings.clear();
+    this._breadcrumbs.reset();
     this._explorerSections = [];
     this._searchTerm = "";
     if (options?.requestRefresh) {
@@ -91,7 +95,7 @@ class _ViewerState {
    * Downloads the current viewed file.
    */
   downloadCurrentFile() {
-    this.downloadFile(this._viewedFileId);
+    this.downloadFile(this._currentFileId);
   }
 
   /**
@@ -128,13 +132,37 @@ class _ViewerState {
    * @param fromUser Whether the request is from the user
    */
   requestFile(id: number, fromUser: boolean) {
-    if (this.mappings.fileIdToInfoMap.has(id)) {
-      this._viewedFileId = id;
-      ViewerEvents.onViewedFileChange.notify(this._viewedFile);
-      if (fromUser) ViewerEvents.onUserClickedFile.notify();
-    } else {
+    if (id === this._currentFileId) return;
+    if (!this.mappings.fileIdToInfoMap.has(id)) {
       console.error(`Cannot switch to entry ${id} because it does not exist.`);
+      return;
     }
+
+    this._breadcrumbs.updateFile(id);
+    ViewerEvents.onViewedFileChange.notify(this._currentFileInfo);
+    if (fromUser) ViewerEvents.onUserClickedFile.notify();
+  }
+
+  /**
+   * Requests the previous file in the file history.
+   * 
+   * @param fromUser Whether the request is from the user
+   */
+  requestPreviousFile(fromUser: boolean) {
+    if (!this._breadcrumbs.tryGoBack()) return;
+    ViewerEvents.onViewedFileChange.notify(this._currentFileInfo);
+    if (fromUser) ViewerEvents.onUserClickedFile.notify();
+  }
+
+  /**
+   * Requests the next file in the file history.
+   * 
+   * @param fromUser Whether the request is from the user
+   */
+  requestNextFile(fromUser: boolean) {
+    if (!this._breadcrumbs.tryGoNext()) return;
+    ViewerEvents.onViewedFileChange.notify(this._currentFileInfo);
+    if (fromUser) ViewerEvents.onUserClickedFile.notify();
   }
 
   /**
@@ -142,7 +170,7 @@ class _ViewerState {
    */
   requestRefresh() {
     ViewerEvents.onExplorerSectionsChange.notify(this._explorerSections);
-    ViewerEvents.onViewedFileChange.notify(this._viewedFile);
+    ViewerEvents.onViewedFileChange.notify(this._currentFileInfo);
     ViewerEvents.onSearchTermChange.notify(this._searchTerm);
     ViewerEvents.onPackageNameChange.notify(this._cachedPackageName);
   }
