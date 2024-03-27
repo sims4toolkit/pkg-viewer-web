@@ -96,11 +96,12 @@ export default class TooltipBuilder {
    * Set a link to an external page in the footer. Replaces any other links
    * already in the footer.
    * 
+   * @param text Text to appear in the link
    * @param href HREF of external link
-   * @param attribution URL to use for attribution, if different from href
+   * @param attribution Optional URL to use for attribution
    */
-  setFooterUrl(href: string, attribution?: string): TooltipBuilder {
-    this._footer = { type: "url", href, attribution };
+  setFooterUrl(text: string, href: string, attribution?: string): TooltipBuilder {
+    this._footer = { type: "url", text, href, attribution };
     return this;
   }
 }

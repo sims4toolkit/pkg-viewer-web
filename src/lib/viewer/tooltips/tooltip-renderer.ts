@@ -1,5 +1,5 @@
 import ViewerState from "../viewer-state";
-import type { TooltipContent, TooltipFooter, TooltipImageContent, TooltipInfo } from "./tooltip-info";
+import type { TooltipContent, TooltipFooter, TooltipImageContent, TooltipInfo, TooltipUrlFooter } from "./tooltip-info";
 
 /**
  * Renders an `HTMLDivElement` for the given tooltip.
@@ -47,7 +47,7 @@ function _renderFooter(dom: HTMLDivElement, footer: TooltipFooter) {
       });
       return;
     case "url":
-      _addExternalLinkToDom(dom, footer.href, footer.attribution);
+      _addExternalLinkToDom(dom, footer);
       return;
   }
 }
@@ -98,16 +98,21 @@ function _addButtonToDom(dom: HTMLDivElement, text: string, onClick: () => void)
   dom.appendChild(button);
 }
 
-function _addExternalLinkToDom(dom: HTMLDivElement, href: string, attribution?: string) {
+function _addExternalLinkToDom(dom: HTMLDivElement, footer: TooltipUrlFooter) {
   const a = document.createElement("a");
-  a.target = "_blank";
-  a.href = href;
-  a.textContent = new URL(attribution ?? href).hostname;
   a.classList.add("text-secondary");
-  const span = document.createElement("span");
-  span.textContent = "From: ";
-  span.appendChild(a);
-  dom.appendChild(span);
+  a.textContent = footer.text;
+  a.href = footer.href;
+  a.target = "_blank";
+
+  const p = document.createElement("p");
+  p.appendChild(a);
+
+  if (footer.attribution) p.appendChild(
+    document.createTextNode(` (From: ${new URL(footer.attribution).hostname})`)
+  );
+
+  dom.appendChild(p);
 }
 
 //#endregion

@@ -65,7 +65,7 @@ const _TOOLTIP_RESOLVERS: readonly TooltipResolver[] = [
         .setTitle(formattedTypeName)
         .addTextContent(external.name, ["monospace"])
         .addTextContent(packNote, ["text-xs", "text-subtle"])
-        .setFooterUrl(`#/fetch/tuning/${token}`, external.endpoint)
+        .setFooterUrl("View File", `#/fetch/tuning/${token}`, external.endpoint)
         .build();
     }
   },
@@ -93,7 +93,7 @@ const _TOOLTIP_RESOLVERS: readonly TooltipResolver[] = [
         .setTitle("String")
         .addTextContent(`"${external.text}"`)
         .addTextContent(packNote, ["text-xs", "text-subtle"])
-        .setFooterUrl("https://tdesc.lot51.cc/tools/strings", external.endpoint)
+        .setFooterUrl("View Strings", "https://tdesc.lot51.cc/tools/strings", external.endpoint)
         .build();
     },
   },
@@ -135,7 +135,7 @@ const _TOOLTIP_RESOLVERS: readonly TooltipResolver[] = [
       return new TooltipBuilder()
         .setTitle(formattedTypeName)
         .addImageContent(external.source)
-        .setFooterUrl(external.source, external.endpoint)
+        .setFooterUrl("View Image", external.source, external.endpoint)
         .build();
     },
   }

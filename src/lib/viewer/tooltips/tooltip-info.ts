@@ -48,6 +48,7 @@ export interface TooltipFileFooter extends _TooltipFooter {
 export interface TooltipUrlFooter extends _TooltipFooter {
   readonly type: "url";
   readonly href: string;
+  readonly text: string;
   readonly attribution?: string;
 }
 
