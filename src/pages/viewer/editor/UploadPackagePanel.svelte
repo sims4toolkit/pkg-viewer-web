@@ -8,6 +8,7 @@
 
   let isParsingFiles = false;
   let filesInvalid = false;
+  let fetchSampleError: string;
 
   async function handleFilesChanged(files: FileList) {
     if (files.length < 1) return;
@@ -18,26 +19,32 @@
     filesInvalid = !(await ViewerState.loadPackage(buffer, filename));
     isParsingFiles = false;
   }
+
+  async function viewSamplePackage() {
+    try {
+      const res = await fetch("./assets/files/BrokenPackage.package");
+      const arrayBuffer = await res.arrayBuffer();
+      const buffer = window.NodeJS.Buffer.from(arrayBuffer);
+      if (!(await ViewerState.loadPackage(buffer, "BrokenPackage.package")))
+        throw "Failed to load package into viewer state.";
+    } catch (e) {
+      console.error(e);
+      fetchSampleError = "Something went wrong. Please report this.";
+    }
+  }
 </script>
 
 <div class="flex justify-center items-center h-full w-full px-4">
   <div class="max-w-2xl">
     <SectionHeader title="Scan package for issues" />
     <div class="my-8">
-      <!-- TODO: use this when TDESC added back -->
-      <!-- <p>
-        Select a TS4 package file, and its contents will be shown. If any issues
-        with meta data are found, they will be displayed. You can optionally run
-        TDESC validation as well.
-      </p> -->
-      <p>
-        Select a TS4 package file, and its contents will be shown. If any issues
-        with meta data are found, they will be displayed. Note that TDESC
-        validation is not yet available.
+      <p class="text-sm sm:text-base">
+        Select a Sims 4 package file, and its contents (along with any issues)
+        will be shown.
       </p>
       <p class="mt-1 text-xs text-subtle">
-        A lack of warnings does not guarantee that everything is working; the
-        scanner cannot check logic.
+        A lack of issues does not mean everything is working; the scanner cannot
+        check logic.
       </p>
     </div>
     <FileInput
@@ -48,6 +55,17 @@
       {filesInvalid}
       multiple={false}
     />
+    <p class="mt-8 text-xs text-subtle">
+      Just checking things out? View this error-laden <button
+        class="text-secondary underline hover:no-underline"
+        on:click={viewSamplePackage}>sample package</button
+      >.
+    </p>
+    {#if fetchSampleError}
+      <p class="mt-1 text-xs text-red-600 dark:text-red-400">
+        {fetchSampleError}
+      </p>
+    {/if}
   </div>
 </div>
 
