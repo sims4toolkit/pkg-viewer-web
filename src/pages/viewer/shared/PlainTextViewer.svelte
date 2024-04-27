@@ -12,9 +12,10 @@
 
   let editor: EditorView;
   let editorElement: HTMLDivElement;
-  let isXmlFormatted = false;
+  let isFileFormatted = false;
 
-  $: canFormatXml = !isXmlFormatted && extension === "xml";
+  $: canFormatFile =
+    !isFileFormatted && (extension === "xml" || extension === "json");
 
   const subscriptions = [
     SettingsSubscriptionManager.subscribe("isLightTheme", (isLightTheme) => {
@@ -69,14 +70,27 @@
     saveAs(new Blob([content]), filename);
   }
 
-  function formatXml() {
+  function formatFile() {
     try {
-      const doc = XmlDocumentNode.from(content);
-      const formattedContent = doc.toXml({
-        spacesPerIndent: Settings.formatXmlSpaces,
-      });
-      CodemirrorEditor.updateContent(editor, formattedContent, "xml");
-      isXmlFormatted = true;
+      if (extension === "xml") {
+        const doc = XmlDocumentNode.from(content);
+        var formattedContent = doc.toXml({
+          spacesPerIndent: Settings.formatXmlSpaces,
+        });
+        CodemirrorEditor.updateContent(editor, formattedContent, "xml");
+      } else {
+        var formattedContent = JSON.stringify(
+          JSON.parse(content),
+          null,
+          Settings.formatXmlSpaces
+        );
+      }
+      CodemirrorEditor.updateContent(
+        editor,
+        formattedContent,
+        extension as any
+      );
+      isFileFormatted = true;
     } catch (e) {
       console.error(e);
     }
@@ -106,9 +120,9 @@
         />
         Download</button
       >
-      {#if canFormatXml}
+      {#if canFormatFile}
         <button
-          on:click={formatXml}
+          on:click={formatFile}
           class="download-button text-xs px-2 py-1 rounded border border-solid border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
           ><img
             src="./assets/icons/code-slash-outline.svg"
