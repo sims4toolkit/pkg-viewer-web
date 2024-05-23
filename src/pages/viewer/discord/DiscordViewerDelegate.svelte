@@ -88,14 +88,23 @@
       <div class="text-center">
         <h2 class="mb-4 text-2xl font-bold">Error {fetchedFileErrorCode}</h2>
         <p class="mb-8">{fetchedFileErrorMessage}</p>
-        <p class="text-sm text-subtle">
-          Not sure why you're seeing this error? <a
-            href="https://frankkmods.com/#/contact"
-            target="_blank"
-            rel="noreferrer"
-            class="text-secondary">Contact me</a
-          >.
-        </p>
+        {#if fetchedFileErrorCode === "410"}
+          <p class="text-sm text-subtle mb-2">
+            Trying to view a file from the S4TK or Bingo bot?
+          </p>
+          <p class="text-sm text-subtle">
+            React to the message with 🔄 to generate a new URL.
+          </p>
+        {:else}
+          <p class="text-sm text-subtle">
+            Not sure why you're seeing this error? <a
+              href="https://frankkmods.com/#/contact"
+              target="_blank"
+              rel="noreferrer"
+              class="text-secondary">Contact me</a
+            >.
+          </p>
+        {/if}
       </div>
     {:else}
       <div class="text-center">
